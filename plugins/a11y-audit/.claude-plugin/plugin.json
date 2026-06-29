@@ -1,0 +1,9 @@
+{
+  "name": "a11y-audit",
+  "version": "0.1.0",
+  "description": "Accessibility audit skill (WCAG 2.1/2.2) — example vetted entry.",
+  "author": { "name": "Weywey" },
+  "repository": "https://github.com/USERNAME/my-skills-marketplace",
+  "license": "MIT",
+  "keywords": ["accessibility", "a11y", "wcag"]
+}

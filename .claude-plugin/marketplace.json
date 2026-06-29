@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "my-skills",
+  "owner": {
+    "name": "Weywey"
+  },
+  "metadata": {
+    "description": "Personal, hand-vetted collection of Claude skills. Every plugin here has passed static audit (audit_skill.py) and sandbox first-run (sandbox_skill.sh). Trusted source = white-list.",
+    "version": "1.0.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "a11y-audit",
+      "source": "a11y-audit",
+      "strict": false,
+      "version": "0.1.0",
+      "description": "Accessibility (WCAG 2.1/2.2) audit skill — vetted local copy. Replace this example with a real skill you've vetted, or point source at an upstream repo pinned by sha.",
+      "author": { "name": "Weywey" },
+      "category": "quality",
+      "keywords": ["accessibility", "a11y", "wcag", "audit"]
+    }
+  ]
+}

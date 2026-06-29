@@ -1,0 +1,42 @@
+name: vet-skills
+
+# Runs the static auditor against every plugin on each push and PR.
+# A CRITICAL finding (exit code 2) fails the build, so a compromised skill
+# can't land on the main branch unnoticed.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Audit every plugin
+        run: |
+          set -e
+          fail=0
+          for dir in plugins/*/; do
+            [ -d "$dir" ] || continue
+            echo "::group::Auditing $dir"
+            # exit 2 = critical -> fail; exit 1 = high -> warn; 0 = clean
+            python3 vetting/audit_skill.py "$dir" --no-color || rc=$?
+            rc=${rc:-0}
+            if [ "$rc" -eq 2 ]; then
+              echo "::error::CRITICAL findings in $dir"
+              fail=1
+            elif [ "$rc" -eq 1 ]; then
+              echo "::warning::HIGH findings in $dir — review"
+            fi
+            unset rc
+            echo "::endgroup::"
+          done
+          exit $fail
