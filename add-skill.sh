@@ -104,7 +104,7 @@ cat > "$DEST/.claude-plugin/plugin.json" << JSON
   "name": "$NAME",
   "version": "0.1.0",
   "description": "Vetted $(date +%Y-%m-%d). Source: $SRC",
-  "author": { "name": "Weywey" },
+  "author": { "name": "weiwei-tsao" },
   "license": "MIT"
 }
 JSON
@@ -114,11 +114,10 @@ c_yel "Final manual step: add this entry to .claude-plugin/marketplace.json"
 cat << JSON
     {
       "name": "$NAME",
-      "source": "$NAME",
-      "strict": false,
+      "source": "./plugins/$NAME",
       "version": "0.1.0",
       "description": "TODO: one-line description",
-      "author": { "name": "Weywey" },
+      "author": { "name": "weiwei-tsao" },
       "category": "TODO",
       "keywords": []
     }
