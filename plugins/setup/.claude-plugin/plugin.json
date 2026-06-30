@@ -1,0 +1,7 @@
+{
+  "name": "setup",
+  "version": "0.1.0",
+  "description": "Initializes and maintains .claude/ infrastructure: CLAUDE.md, topic-organized rules, project-specific skills, and hooks. Includes a companion refresh skill for keeping docs in sync as code evolves.",
+  "author": { "name": "weiwei-tsao" },
+  "license": "MIT"
+}

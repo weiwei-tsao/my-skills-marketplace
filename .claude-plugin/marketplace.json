@@ -34,6 +34,15 @@
       "author": { "name": "weiwei-tsao" },
       "category": "workflow",
       "keywords": ["debug", "fix", "diagnosis"]
+    },
+    {
+      "name": "setup",
+      "source": "./plugins/setup",
+      "version": "0.1.0",
+      "description": "Initializes .claude/ infrastructure (CLAUDE.md, rules, skills, hooks) for any project. Includes a companion refresh skill for keeping docs in sync as code evolves.",
+      "author": { "name": "weiwei-tsao" },
+      "category": "workflow",
+      "keywords": ["setup", "init", "rules", "skills", "hooks", "refresh"]
     }
   ]
 }
