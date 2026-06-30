@@ -21,10 +21,19 @@
       "name": "git-commit",
       "source": "./plugins/git-commit",
       "version": "0.1.0",
-      "description": "TODO: one-line description",
+      "description": "Run quality checks and draft a Conventional Commits message, then commit staged changes.",
       "author": { "name": "weiwei-tsao" },
-      "category": "TODO",
-      "keywords": []
+      "category": "workflow",
+      "keywords": ["git", "commit", "conventional-commits"]
+    },
+    {
+      "name": "fix",
+      "source": "./plugins/fix",
+      "version": "0.1.0",
+      "description": "Structured bug diagnosis and resolution — no code changes until root cause is confirmed.",
+      "author": { "name": "weiwei-tsao" },
+      "category": "workflow",
+      "keywords": ["debug", "fix", "diagnosis"]
     }
   ]
 }
