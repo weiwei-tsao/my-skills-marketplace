@@ -16,6 +16,15 @@
       "author": { "name": "weiwei-tsao" },
       "category": "quality",
       "keywords": ["accessibility", "a11y", "wcag"]
+    },
+    {
+      "name": "git-commit",
+      "source": "./plugins/git-commit",
+      "version": "0.1.0",
+      "description": "TODO: one-line description",
+      "author": { "name": "weiwei-tsao" },
+      "category": "TODO",
+      "keywords": []
     }
   ]
 }
