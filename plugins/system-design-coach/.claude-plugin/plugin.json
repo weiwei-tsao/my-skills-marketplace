@@ -1,0 +1,7 @@
+{
+  "name": "system-design-coach",
+  "version": "0.1.0",
+  "description": "System design learning coach with roadmap planning, case drills, and answer review. V1 uses source-linked workflows instead of redistributing upstream course text.",
+  "author": { "name": "weiwei-tsao" },
+  "license": "MIT"
+}

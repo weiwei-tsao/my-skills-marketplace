@@ -52,6 +52,15 @@
       "author": { "name": "weiwei-tsao" },
       "category": "workflow",
       "keywords": ["handoff", "context", "session", "resume", "persistence"]
+    },
+    {
+      "name": "system-design-coach",
+      "source": "./plugins/system-design-coach",
+      "version": "0.1.0",
+      "description": "System design learning coach with roadmap planning, interactive case drills, answer review, and a maintenance handoff for future expansion.",
+      "author": { "name": "weiwei-tsao" },
+      "category": "learning",
+      "keywords": ["system-design", "architecture", "interview", "learning"]
     }
   ]
 }
