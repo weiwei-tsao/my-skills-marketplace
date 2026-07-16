@@ -54,6 +54,15 @@
       "keywords": ["handoff", "context", "session", "resume", "persistence"]
     },
     {
+      "name": "ai-engineering-workspace",
+      "source": "./plugins/ai-engineering-workspace",
+      "version": "0.1.0",
+      "description": "Structured ticket workspace for AI-assisted engineering: read-only investigation first, owner-repo confirmation, minimal diffs, and session handoffs, with prompts and ticket templates.",
+      "author": { "name": "weiwei-tsao" },
+      "category": "workflow",
+      "keywords": ["ticket", "investigation", "handoff", "workflow", "multi-repo"]
+    },
+    {
       "name": "system-design-coach",
       "source": "./plugins/system-design-coach",
       "version": "0.1.0",
