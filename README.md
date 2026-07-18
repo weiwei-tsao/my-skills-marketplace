@@ -1,123 +1,142 @@
-# my-skills — a private, hand-vetted Claude skill marketplace
+# my-skills
 
-A single GitHub repo that holds the skills you trust, installable on any machine
-with two commands. Every skill in here has passed a vetting pipeline, so the
-"convenient everywhere" and "safe" goals are solved by the same structure: a
-white-list you control.
+Private, hand-vetted Claude Code skill marketplace.
 
-## Why this exists
+This repository is a trusted allow-list for Claude Code plugins and skills. It
+keeps the skills you personally approve in one public GitHub repository, so they
+can be installed on any machine through Claude Code's plugin marketplace flow.
 
-- **Use anywhere**: register the marketplace once per machine, then
-  `/plugin install` anything in it. No copying files around, no re-cloning,
-  versioned in git.
-- **Safe by construction**: nothing enters `plugins/` until it passes
-  `add-skill.sh` (static audit → sandbox first-run → your own read). The repo
-  _is_ your trusted source.
+English is the primary documentation language. A Chinese companion is available
+in [README.zh-CN.md](README.zh-CN.md).
 
----
+## What This Repository Provides
 
-## One-time setup on each machine
+- **Portable installation**: add this marketplace once, then install any listed
+  skill from Claude Code without copying files between machines.
+- **Controlled admission**: new skills enter `plugins/` only through the local
+  vetting workflow in `add-skill.sh`.
+- **Static and dynamic checks**: the admission workflow runs a Python auditor,
+  an optional no-network Docker sandbox, and a manual `SKILL.md` review.
+- **CI protection**: GitHub Actions re-runs the static auditor on every push and
+  pull request, and blocks CRITICAL findings.
+- **Readable ownership model**: `.claude-plugin/marketplace.json` is the catalog;
+  `plugins/<name>/` contains the plugin manifest and skill payload.
 
-In Claude Code:
+## Available Plugins
+
+The current marketplace catalog includes:
+
+| Plugin | Category | Purpose |
+| --- | --- | --- |
+| `a11y-audit` | quality | Accessibility audit support for WCAG 2.1/2.2 checks. |
+| `git-commit` | workflow | Runs quality checks, drafts a Conventional Commits message, and commits staged changes. |
+| `fix` | workflow | Structured bug diagnosis and resolution with root-cause confirmation first. |
+| `setup` | workflow | Initializes and refreshes `.claude/` project infrastructure. |
+| `handoff` | workflow | Persists and restores ticket context through a `HANDOFF.md` file. |
+| `ai-engineering-workspace` | workflow | Provides a structured ticket workspace for AI-assisted engineering. |
+| `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. |
+
+The source of truth for the list is
+[.claude-plugin/marketplace.json](.claude-plugin/marketplace.json).
+
+## Install From Claude Code
+
+Add the marketplace once on each machine:
 
 ```text
 /plugin marketplace add weiwei-tsao/my-skills-marketplace
+```
+
+Install a skill:
+
+```text
 /plugin install a11y-audit@my-skills
 ```
 
-Later, to pick up new or updated skills:
+Update the marketplace when this repository changes:
 
 ```text
 /plugin marketplace update
 ```
 
-This works on any machine — your laptop, a work computer — with no GitHub
-account configured locally, as long as the repo is **public**.
+This flow assumes the repository is public, because Claude Code fetches the
+marketplace from GitHub. Do not store secrets or proprietary private skill
+content in this repository.
 
----
+## Add a New Skill
 
-## Adding a new skill (the only way in)
-
-A skill can live anywhere on disk — the default `~/.claude/skills/`, or inside a
-project like `some-project/.claude/skills/<name>/`. Point the vetting pipeline at
-whatever directory contains its `SKILL.md`.
+Use `add-skill.sh` as the only admission path:
 
 ```bash
 cd my-skills-marketplace
-./add-skill.sh /path/to/the/skill <plugin-name>
+./add-skill.sh /path/to/skill-dir <plugin-name>
 ```
 
-For example, vetting a skill that lives inside another project:
+For example:
 
 ```bash
 ./add-skill.sh ~/Documents/Repositories/plain-dock/.claude/skills/git-commit git-commit
 ```
 
-`add-skill.sh` will:
+The script runs four gates:
 
-1. Run `vetting/audit_skill.py` (regex + AST taint analysis) — CRITICAL findings
-   or any taint flow hard-stop.
-2. Run `vetting/sandbox_skill.sh` — no-network container, logs real network +
-   credential-file access (skipped with a loud warning if Docker is absent).
-3. Show you the `SKILL.md` to read and confirm.
-4. Copy it into `plugins/<plugin-name>/` and **print a marketplace.json entry**.
+1. **Static audit**: `vetting/audit_skill.py` scans for risky patterns and
+   Python taint flows. CRITICAL findings stop the process.
+2. **Sandbox first run**: `vetting/sandbox_skill.sh` runs the skill in a Docker
+   container with networking disabled and logs suspicious access. If Docker is
+   unavailable, the script warns loudly and asks before continuing.
+3. **Human review**: the script prints the discovered `SKILL.md` for manual
+   confirmation.
+4. **Admission**: the skill is copied into `plugins/<plugin-name>/`, a minimal
+   plugin manifest is generated, and a catalog entry is printed.
 
-Then paste that printed entry into the `plugins` array in
-`.claude-plugin/marketplace.json`, fill in `description` and `category`,
-**validate**, and push:
+After admission, paste the printed entry into the `plugins` array in
+`.claude-plugin/marketplace.json`, fill in `description`, `category`, and
+`keywords`, then validate and commit:
 
 ```bash
-claude plugin validate .                 # catches JSON / format errors locally
+claude plugin validate .
 git add -A
 git commit -m "add <plugin-name> (vetted)"
 git push
 ```
 
-On any other machine: `/plugin marketplace update` then
-`/plugin install <plugin-name>@my-skills`.
+## Marketplace Source Format
 
-> For a skill you wrote yourself and already trust, the sandbox step is optional
-> — but still run the static auditor; it catches accidentally hard-coded tokens
-> or stray network calls.
-
----
-
-## The plugin `source` format (read this — it's the #1 install failure)
-
-Each entry's `source` must be a **relative path that starts with `./`**:
+For vendored local plugins, each catalog entry must use a relative source path
+that starts with `./`:
 
 ```json
 {
   "name": "git-commit",
   "source": "./plugins/git-commit",
   "version": "0.1.0",
-  "description": "…",
+  "description": "Run quality checks and draft a Conventional Commits message, then commit staged changes.",
   "author": { "name": "weiwei-tsao" },
   "category": "workflow",
-  "keywords": ["git", "commit"]
+  "keywords": ["git", "commit", "conventional-commits"]
 }
 ```
 
-Rules that matter:
+Rules that prevent common install failures:
 
-- **Always** write `"source": "./plugins/<name>"`. A bare `"<name>"` (no `./`)
-  fails on many Claude Code versions with _"This plugin uses a source type your
-  version does not support."_
-- **Do not** add a top-level `pluginRoot` in `metadata`, and **do not** add a
-  `strict` field — older versions choke on these.
-- Relative-path sources only resolve when the marketplace is added **via Git**
-  (`owner/repo`), which is exactly how you add this one. (Adding a marketplace by
-  a direct URL to the JSON file would NOT download the plugin dirs — avoid that.)
+- Use `"source": "./plugins/<name>"`, not `"plugins/<name>"` or `"<name>"`.
+- Do not add a top-level `pluginRoot` field.
+- Do not add a top-level `strict` field.
+- Run `claude plugin validate .` before pushing.
 
-Always run `claude plugin validate .` before pushing; it reports format problems
-in seconds instead of after a failed install.
+Older Claude Code versions can reject unsupported source shapes with the error:
 
----
+```text
+This plugin uses a source type your version does not support.
+```
 
-## Pinning upstream skills instead of vendoring
+When that happens, update Claude Code and verify the source path format above.
 
-If you'd rather reference an upstream repo than copy it in, point `source` at it
-pinned by commit SHA (reproducible even if the branch moves):
+## Pin an Upstream Skill Instead
+
+If you prefer to reference an upstream repository instead of vendoring a skill,
+pin it by commit SHA:
 
 ```json
 {
@@ -125,72 +144,90 @@ pinned by commit SHA (reproducible even if the branch moves):
   "source": {
     "source": "github",
     "repo": "someone/cool-skill",
-    "sha": "<40-char-commit-sha>"
+    "sha": "<40-character-commit-sha>"
   }
 }
 ```
 
-Pinning by `sha` (not just a branch ref) means an upstream force-push or tag move
-can't silently change what you install. Re-vet and bump the SHA when you update.
+Use a SHA, not a branch or moving tag. Re-vet the upstream content before
+updating the pinned SHA.
 
----
+## Repository Layout
 
-## Layout
-
-```
-.claude-plugin/marketplace.json   # the catalog (what /plugin sees)
+```text
+.claude-plugin/marketplace.json   # marketplace catalog consumed by Claude Code
+.github/workflows/vet-skills.yml  # CI static audit gate
+CLAUDE.md                         # maintainer guidance for Claude Code
+README.md                         # English primary documentation
+README.zh-CN.md                   # Chinese companion documentation
+add-skill.sh                      # vetting and admission workflow
 plugins/<name>/
-  .claude-plugin/plugin.json      # per-plugin manifest
-  skills/<name>/SKILL.md          # the skill itself
+  .claude-plugin/plugin.json      # plugin manifest
+  skills/<name>/SKILL.md          # skill instructions
 vetting/
-  audit_skill.py                  # static auditor (regex + AST taint analysis)
-  taint_python.py                 # AST data-flow engine used by the auditor
-  sandbox_skill.sh                # docker sandbox first-run
-add-skill.sh                      # the vetting + admit pipeline
-.github/workflows/vet-skills.yml  # CI gate (re-audits every plugin on push)
+  audit_skill.py                  # static auditor
+  taint_python.py                 # Python AST taint analyzer
+  sandbox_skill.sh                # Docker sandbox first-run helper
 ```
 
----
+## Audit Tool Exit Codes
+
+`vetting/audit_skill.py` returns:
+
+| Code | Meaning | Effect |
+| --- | --- | --- |
+| `0` | Clean | Continue. |
+| `1` | HIGH findings | Warn locally; CI reports a warning. |
+| `2` | CRITICAL findings | Stop locally; CI fails. |
+
+Run a manual audit with:
+
+```bash
+python3 vetting/audit_skill.py plugins/<name> --no-color
+```
+
+Add `--json report.json` if you need a machine-readable report.
+
+## Maintenance Rules
+
+- Keep this public repository free of secrets, tokens, credentials, and private
+  company material.
+- Admit one skill per commit where practical, with the commit message noting it
+  was vetted.
+- Re-run the vetting workflow whenever a skill is updated.
+- Keep every catalog source path aligned with `plugins/<name>/`.
+- Treat a clean audit as "no red flags found", not as proof that a skill is
+  safe.
+- Remove accidental macOS metadata before committing; `.gitignore` excludes
+  `.DS_Store`, but existing files can still appear in a working tree.
 
 ## Troubleshooting
 
-**"This plugin uses a source type your Claude Code version does not support."**
-Two causes: (a) Claude Code is outdated — run `claude update` and check
-`claude --version`; (b) the `source` is the wrong format — it must be
-`"./plugins/<name>"`, with no `pluginRoot` or `strict` fields. Fix, run
-`claude plugin validate .`, commit, push, then `/plugin marketplace update`.
+**Plugin source type is not supported**
 
-**`git push` → "Permission denied to <other-account>" / 403.**
-Your machine has cached credentials for the wrong GitHub account. Clear them
-(macOS: `git credential-osxkeychain erase`, or delete the `github.com` entry in
-Keychain Access) and re-authenticate as the repo owner. GitHub no longer accepts
-account passwords for git — use a Personal Access Token (Settings → Developer
-settings → Tokens, `repo` scope) as the password, or `gh auth login`.
+Update Claude Code, then check that the catalog source is exactly
+`"./plugins/<name>"`. Remove unsupported `pluginRoot` or `strict` fields, run
+`claude plugin validate .`, commit, push, and run `/plugin marketplace update`.
 
-**`git push` → "Repository not found."**
-The repo doesn't exist on GitHub yet. Create an empty **public** repo (no README/
-license) at github.com/new, then push.
+**`git push` fails with permission denied or 403**
 
-**Plugin installs but the skill never triggers.**
-The skill activates from its `SKILL.md` frontmatter `description`. Make the
-description say _when_ to use it ("Use when reviewing code / writing commits…").
+The machine may have cached credentials for the wrong GitHub account. Clear the
+credential, then authenticate as the repository owner with `gh auth login` or a
+Personal Access Token with appropriate repository access.
 
----
+**`git push` says repository not found**
 
-## Repo hygiene
+Create the GitHub repository first, preferably public and empty, then push this
+local repository to it.
 
-- Keep the repo **public** (Claude Code fetches marketplaces from GitHub) but put
-  nothing secret in it — it only holds skills you're willing to expose. For
-  company-proprietary skills, use a separate **private** marketplace repo instead.
-- On macOS, don't commit `.DS_Store` (the `.gitignore` already excludes it;
-  `find . -name .DS_Store -delete` before a commit if any slipped in).
-- One skill = one commit, message noting it was vetted and the date.
-- Re-run `add-skill.sh` (or at least the auditor) whenever you bump a skill.
+**The plugin installs, but the skill never triggers**
 
----
+Review the skill's `SKILL.md` frontmatter. The `description` should clearly say
+when the skill should be used, not only what the skill is.
 
-## Limits worth remembering
+## Security Boundary
 
-The vetting tools catch known-bad patterns and observe one sandboxed run. They
-don't replace reading the code. Treat a green pipeline as "no red flags found,"
-not "proven safe" — especially for skills that fetch dependencies or need network.
+This repository reduces risk by combining a private allow-list, static scanning,
+sandbox observation, human review, and CI. It does not prove that a skill is
+safe. Read unfamiliar skills carefully, especially if they execute scripts,
+touch credentials, install dependencies, or require network access.
