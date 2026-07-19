@@ -31,6 +31,7 @@ plugin marketplace 流程安装。
 | `setup` | workflow | 初始化和刷新项目中的 `.claude/` 基础设施。 |
 | `ai-engineering-workspace` | workflow | Ticket 全家桶：工作区脚手架、阶段门控 ticket 流程、结构化 bug 修复、跨会话 handoff —— 四个 skill，均可单独使用。 |
 | `system-design-coach` | learning | 通过路线图、case drill 和答案 review 辅助学习系统设计。 |
+| `weiwei-notes` | writing | 把讨论、排查过程或 ticket 分析整理成 Weiwei 风格的笔记 / blog 文章（结论先行、根因导向、中英混合）。 |
 
 权威列表以
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) 为准。

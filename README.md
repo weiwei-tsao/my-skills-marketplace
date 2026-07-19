@@ -33,6 +33,7 @@ The current marketplace catalog includes:
 | `setup` | workflow | Initializes and refreshes `.claude/` project infrastructure. |
 | `ai-engineering-workspace` | workflow | Ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, and cross-session handoff — four skills, each usable standalone. |
 | `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. |
+| `weiwei-notes` | writing | Turns discussions, debugging sessions, or ticket analysis into notes/blog articles in Weiwei's writing style. |
 
 The source of truth for the list is
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json).
