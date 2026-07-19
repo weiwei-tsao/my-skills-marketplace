@@ -52,6 +52,15 @@
       "author": { "name": "weiwei-tsao" },
       "category": "learning",
       "keywords": ["system-design", "architecture", "interview", "learning"]
+    },
+    {
+      "name": "weiwei-notes",
+      "source": "./plugins/weiwei-notes",
+      "version": "0.1.0",
+      "description": "Turn discussions, debugging sessions, or ticket analysis into notes/blog articles in Weiwei's writing style (结论先行, 根因导向, 中英混合).",
+      "author": { "name": "weiwei-tsao" },
+      "category": "writing",
+      "keywords": ["blog", "notes", "writing", "笔记", "写作"]
     }
   ]
 }
