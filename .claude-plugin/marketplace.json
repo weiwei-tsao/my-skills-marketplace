@@ -27,15 +27,6 @@
       "keywords": ["git", "commit", "conventional-commits"]
     },
     {
-      "name": "fix",
-      "source": "./plugins/fix",
-      "version": "0.1.0",
-      "description": "Structured bug diagnosis and resolution — no code changes until root cause is confirmed.",
-      "author": { "name": "weiwei-tsao" },
-      "category": "workflow",
-      "keywords": ["debug", "fix", "diagnosis"]
-    },
-    {
       "name": "setup",
       "source": "./plugins/setup",
       "version": "0.1.0",
@@ -43,15 +34,6 @@
       "author": { "name": "weiwei-tsao" },
       "category": "workflow",
       "keywords": ["setup", "init", "rules", "skills", "hooks", "refresh"]
-    },
-    {
-      "name": "handoff",
-      "source": "./plugins/handoff",
-      "version": "0.1.0",
-      "description": "Persist and restore working context across sessions on a single ticket via a HANDOFF.md file.",
-      "author": { "name": "weiwei-tsao" },
-      "category": "workflow",
-      "keywords": ["handoff", "context", "session", "resume", "persistence"]
     },
     {
       "name": "ai-engineering-workspace",

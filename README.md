@@ -30,10 +30,8 @@ The current marketplace catalog includes:
 | --- | --- | --- |
 | `a11y-audit` | quality | Accessibility audit support for WCAG 2.1/2.2 checks. |
 | `git-commit` | workflow | Runs quality checks, drafts a Conventional Commits message, and commits staged changes. |
-| `fix` | workflow | Structured bug diagnosis and resolution with root-cause confirmation first. |
 | `setup` | workflow | Initializes and refreshes `.claude/` project infrastructure. |
-| `handoff` | workflow | Persists and restores ticket context through a `HANDOFF.md` file. |
-| `ai-engineering-workspace` | workflow | Provides a structured ticket workspace for AI-assisted engineering. |
+| `ai-engineering-workspace` | workflow | Ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, and cross-session handoff — four skills, each usable standalone. |
 | `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. |
 
 The source of truth for the list is

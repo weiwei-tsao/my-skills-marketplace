@@ -28,10 +28,8 @@ plugin marketplace 流程安装。
 | --- | --- | --- |
 | `a11y-audit` | quality | 辅助进行 WCAG 2.1/2.2 可访问性审计。 |
 | `git-commit` | workflow | 运行质量检查，起草 Conventional Commits 信息，并提交 staged changes。 |
-| `fix` | workflow | 以根因确认为前提的结构化 bug 诊断与修复。 |
 | `setup` | workflow | 初始化和刷新项目中的 `.claude/` 基础设施。 |
-| `handoff` | workflow | 通过 `HANDOFF.md` 保存和恢复单个 ticket 的上下文。 |
-| `ai-engineering-workspace` | workflow | 为 AI 辅助工程任务提供结构化 ticket 工作区。 |
+| `ai-engineering-workspace` | workflow | Ticket 全家桶：工作区脚手架、阶段门控 ticket 流程、结构化 bug 修复、跨会话 handoff —— 四个 skill，均可单独使用。 |
 | `system-design-coach` | learning | 通过路线图、case drill 和答案 review 辅助学习系统设计。 |
 
 权威列表以
