@@ -5,7 +5,7 @@ TICKET_ID="${1:-}"
 TITLE="${2:-}"
 
 if [[ -z "$TICKET_ID" ]]; then
-  echo "Usage: ./scripts/new-ticket.sh PUB-11743 \"Short ticket title\""
+  echo "Usage: ./scripts/new-ticket.sh ABC-123 \"Short ticket title\""
   exit 1
 fi
 
@@ -41,5 +41,4 @@ $TICKET_DIR
 
 Next step:
 Open tickets/$TICKET_ID/context.md and fill Goal / Current behavior / Expected behavior.
-Then use prompts/01-start-investigation.md with Claude Code.
 MSG

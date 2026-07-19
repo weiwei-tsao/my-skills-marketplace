@@ -10,11 +10,9 @@
 
 ## Expected behavior
 
-<!-- What should users/editors/PMs see? -->
-
 ## Current behavior
 
-<!-- What is happening now? Include URLs/screenshots if available. -->
+<!-- Include URLs/screenshots if available. -->
 
 ## Scope
 
@@ -26,25 +24,23 @@
 
 - 
 
-## Brands / repos likely involved
+## Repos / modules likely involved
 
-| Area | Repo | Why it may be involved |
+| Area | Repo / module | Why it may be involved |
 |---|---|---|
-| Brand | `../pub-...` |  |
-| Shared React | `../pub-shared-react` |  |
-| API | `../pub-platform-api` |  |
+|  |  |  |
 
 ## Links
 
 - Ticket:
 - PR:
-- UAT URL:
-- PROD URL:
-- Slack thread:
+- Staging URL:
+- Production URL:
+- Discussion thread:
 - Design/spec:
 
 ## Important constraints
 
-- Do not edit code until repo ownership is confirmed.
+- Do not edit code until ownership is confirmed.
 - Keep the diff minimal.
 - Avoid unrelated formatting.

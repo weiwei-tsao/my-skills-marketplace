@@ -1,7 +1,7 @@
 {
   "name": "ai-engineering-workspace",
-  "version": "0.1.0",
-  "description": "Vetted 2026-07-15. Source: /Users/bule-station/Documents/Repositories/skills/ai_engineering_workspace",
+  "version": "0.2.0",
+  "description": "Generic AI-engineering ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, and cross-session handoff. Each skill usable standalone. Vetted 2026-07-18.",
   "author": { "name": "weiwei-tsao" },
   "license": "MIT"
 }

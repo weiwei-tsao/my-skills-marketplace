@@ -20,8 +20,6 @@ Branch:
 ## Implementation plan
 
 1. 
-2. 
-3. 
 
 ## Actual changes made
 
@@ -31,8 +29,6 @@ Branch:
 
 ## Diff summary
 
-<!-- Summarize the final diff. -->
-
 - 
 
 ## Constraints followed
@@ -40,8 +36,8 @@ Branch:
 - [ ] Minimal diff
 - [ ] No unrelated formatting
 - [ ] No broad refactor
-- [ ] Owner repo confirmed
-- [ ] Cross-brand impact considered
+- [ ] Ownership confirmed
+- [ ] Cross-module impact considered
 
 ## Risks
 

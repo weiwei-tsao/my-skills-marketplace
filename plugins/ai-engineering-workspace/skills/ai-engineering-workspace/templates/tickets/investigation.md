@@ -3,8 +3,6 @@
 ## Reproduction steps
 
 1. 
-2. 
-3. 
 
 ## Facts
 
@@ -27,8 +25,7 @@
 ## Data / component flow
 
 ```text
-URL
-→ 
+Entry
 → 
 → 
 ```
@@ -43,17 +40,15 @@ URL
 
 <!-- Fill only when confirmed or highly likely. -->
 
-## Owner repo
+## Owner repo / module
 
-<!-- Which repo should own the fix and why? -->
+<!-- Which one should own the fix and why? -->
 
-## Non-owner repos
-
-<!-- Repos checked but not responsible. -->
+## Checked but not responsible
 
 ## Evidence
 
-<!-- Paste short snippets, commands, screenshots paths, UAT URLs, etc. Link instead of dumping large content. -->
+<!-- Short snippets, commands, screenshot paths, URLs. Link instead of dumping large content. -->
 
 ## Open questions
 

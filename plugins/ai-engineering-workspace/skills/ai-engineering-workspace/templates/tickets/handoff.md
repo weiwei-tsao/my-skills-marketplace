@@ -23,7 +23,7 @@ PR:
 |---|---|---|
 |  |  |  |
 
-## Key findings
+## Key findings (code facts — anchor each: path :: symbol)
 
 - 
 
@@ -31,11 +31,13 @@ PR:
 
 - 
 
+## Dead-ends (append-only — do not retry these)
+
+- 
+
 ## Next steps
 
 1. 
-2. 
-3. 
 
 ## Blockers
 
@@ -44,8 +46,8 @@ PR:
 ## Do not do
 
 - Do not refactor unrelated code.
-- Do not change another repo unless investigation confirms ownership.
-- Do not deploy until UAT acceptance is confirmed.
+- Do not change another repo/module unless investigation confirms ownership.
+- Do not deploy until acceptance is confirmed.
 
 ## Prompt for next AI session
 
@@ -63,8 +65,9 @@ Read these files first:
 
 Before editing code:
 1. Summarize current status.
-2. Check current repo, branch, git status, and diff.
-3. Confirm the next safest action.
+2. Verify the code facts above still hold (files/symbols may have moved).
+3. Check current repo, branch, git status, and diff.
+4. Confirm the next safest action.
 
-Then continue from the Next steps section in handoff.md.
+Then continue from the Next steps section.
 ```

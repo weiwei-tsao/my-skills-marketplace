@@ -56,11 +56,11 @@
     {
       "name": "ai-engineering-workspace",
       "source": "./plugins/ai-engineering-workspace",
-      "version": "0.1.0",
-      "description": "Structured ticket workspace for AI-assisted engineering: read-only investigation first, owner-repo confirmation, minimal diffs, and session handoffs, with prompts and ticket templates.",
+      "version": "0.2.0",
+      "description": "Generic AI-engineering ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, and cross-session handoff — four skills, each usable standalone.",
       "author": { "name": "weiwei-tsao" },
       "category": "workflow",
-      "keywords": ["ticket", "investigation", "handoff", "workflow", "multi-repo"]
+      "keywords": ["ticket", "investigation", "handoff", "bugfix", "workflow", "multi-repo"]
     },
     {
       "name": "system-design-coach",

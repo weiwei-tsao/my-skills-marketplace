@@ -1,14 +1,12 @@
 # <TICKET-ID> Timeline
 
-Use this file to track human-facing events: Slack updates, PM/editor acceptance, deployment, and status changes.
+Human-facing events: status updates, acceptance, deployment, status changes.
 
 | Date/time | Source | Person | Event | Notes |
 |---|---|---|---|---|
-|  | Slack/Jira/GitHub |  |  |  |
+|  |  |  |  |  |
 
 ## Important messages
-
-### Message 1
 
 ```text
 
@@ -18,7 +16,7 @@ Use this file to track human-facing events: Slack updates, PM/editor acceptance,
 
 - Open:
 - In progress:
-- UAT ready:
+- Ready for verification:
 - Accepted:
 - Deployed:
 - Done:
