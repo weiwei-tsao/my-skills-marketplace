@@ -13,6 +13,8 @@ in [README.zh-CN.md](README.zh-CN.md).
 
 - **Portable installation**: add this marketplace once, then install any listed
   skill from Claude Code without copying files between machines.
+- **Codex local use**: link the same skill payloads into Codex's local
+  filesystem skill directory for personal use.
 - **Controlled admission**: new skills enter `plugins/` only through the local
   vetting workflow in `add-skill.sh`.
 - **Static and dynamic checks**: the admission workflow runs a Python auditor,
@@ -61,6 +63,50 @@ Update the marketplace when this repository changes:
 This flow assumes the repository is public, because Claude Code fetches the
 marketplace from GitHub. Do not store secrets or proprietary private skill
 content in this repository.
+
+## Install For Codex
+
+Codex can load local filesystem skills from directories such as
+`$HOME/.agents/skills` and repository-scoped `.agents/skills` folders. The skill
+payloads in this repository already live under `plugins/*/skills/*`, so the
+safest local Codex setup is to symlink those payload directories into Codex's
+user-level skill directory.
+
+Preview the install plan:
+
+```bash
+./install-codex-skills.sh
+```
+
+Create the symlinks:
+
+```bash
+./install-codex-skills.sh --apply
+```
+
+Install into a different Codex skill scope:
+
+```bash
+./install-codex-skills.sh --apply --target /path/to/.agents/skills
+```
+
+The script is intentionally conservative:
+
+- It defaults to a dry run.
+- It links skill directories instead of copying them.
+- It does not overwrite existing files, directories, or symlinks that point
+  somewhere else.
+- It validates that each discovered skill has a simple `name` in `SKILL.md`.
+
+After installing, restart Codex or start a new session if the skills do not
+appear. In Codex CLI or the IDE extension, run `/skills` or type `$` to mention a
+skill explicitly, such as `$weiwei-notes` or `$ticket-workflow`.
+
+This is not the same as installing this repository as a Codex plugin
+marketplace. The repository currently uses the Claude Code marketplace layout
+under `.claude-plugin/`; Codex plugin distribution uses its own plugin manifest
+and marketplace structure. Use the symlink installer for local personal use, and
+create Codex plugin packaging only when you want marketplace-based distribution.
 
 ## Add a New Skill
 
@@ -160,6 +206,7 @@ CLAUDE.md                         # maintainer guidance for Claude Code
 README.md                         # English primary documentation
 README.zh-CN.md                   # Chinese companion documentation
 add-skill.sh                      # vetting and admission workflow
+install-codex-skills.sh           # symlink installer for Codex local skills
 plugins/<name>/
   .claude-plugin/plugin.json      # plugin manifest
   skills/<name>/SKILL.md          # skill instructions

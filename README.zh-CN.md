@@ -12,6 +12,8 @@ plugin marketplace 流程安装。
 
 - **跨机器安装**：每台机器只需添加一次 marketplace，之后即可安装列表里的
   任意技能。
+- **Codex 本地使用**：把同一份 skill payload 软链接到 Codex 的本地
+  filesystem skill 目录中，供个人使用。
 - **受控准入**：新的 skill 必须通过 `add-skill.sh` 才能进入 `plugins/`。
 - **静态与动态检查**：准入流程包含 Python 静态审计、可选的无网络 Docker
   沙箱运行，以及人工阅读 `SKILL.md`。
@@ -58,6 +60,47 @@ plugin marketplace 流程安装。
 
 这个流程假设仓库是公开的，因为 Claude Code 会从 GitHub 拉取 marketplace。
 不要把密钥、token、凭据或公司私有 skill 内容放进这个公开仓库。
+
+## 在 Codex 中安装
+
+Codex 可以从 `$HOME/.agents/skills` 和仓库级 `.agents/skills` 等目录读取本地
+filesystem skills。本仓库的 skill payload 已经位于 `plugins/*/skills/*`，所以
+最低风险的 Codex 本地安装方式，是把这些 payload 目录软链接到 Codex 的用户级
+skill 目录。
+
+预览安装计划：
+
+```bash
+./install-codex-skills.sh
+```
+
+创建软链接：
+
+```bash
+./install-codex-skills.sh --apply
+```
+
+安装到其他 Codex skill scope：
+
+```bash
+./install-codex-skills.sh --apply --target /path/to/.agents/skills
+```
+
+这个脚本刻意保持保守：
+
+- 默认只 dry run，不写入。
+- 使用软链接，不复制 skill 内容。
+- 不覆盖已有文件、目录，或指向其他位置的 symlink。
+- 会检查每个发现的 `SKILL.md` 是否包含简单的 `name`。
+
+安装后，如果 Codex 没有立刻显示新 skills，请重启 Codex 或开启新 session。在
+Codex CLI 或 IDE extension 中，可以运行 `/skills`，也可以输入 `$` 显式 mention
+某个 skill，例如 `$weiwei-notes` 或 `$ticket-workflow`。
+
+这不是把本仓库作为 Codex plugin marketplace 直接安装。当前仓库使用
+`.claude-plugin/` 下的 Claude Code marketplace 结构；Codex plugin 分发使用自己
+的 plugin manifest 和 marketplace 结构。个人本地使用优先采用 symlink installer；
+只有需要 marketplace 分发时，再迁移/新增 Codex plugin packaging。
 
 ## 添加新的 Skill
 
@@ -153,6 +196,7 @@ CLAUDE.md                         # 给 Claude Code 的维护说明
 README.md                         # 英文主文档
 README.zh-CN.md                   # 中文配套文档
 add-skill.sh                      # vetting 与准入流程
+install-codex-skills.sh           # Codex 本地 skills 软链接安装脚本
 plugins/<name>/
   .claude-plugin/plugin.json      # plugin manifest
   skills/<name>/SKILL.md          # skill 指令
