@@ -1,32 +1,42 @@
 # my-skills
 
-Private, hand-vetted Claude Code skill marketplace.
+Private, hand-vetted skills collection for Claude Code and Codex.
 
-This repository is a trusted allow-list for Claude Code plugins and skills. It
-keeps the skills you personally approve in one public GitHub repository, so they
-can be installed on any machine through Claude Code's plugin marketplace flow.
+This repository is a trusted allow-list for reusable agent skills. It has two
+installation paths:
+
+- **Claude Code** installs the approved bundles through the repository's
+  `.claude-plugin/` marketplace catalog.
+- **Codex** uses the same skill payloads as local filesystem skills by symlinking
+  `plugins/*/skills/*` into a Codex skill directory.
+
+The goal is to keep the skills you personally approve in one public GitHub
+repository, with clear vetting and update steps for both environments.
 
 English is the primary documentation language. A Chinese companion is available
 in [README.zh-CN.md](README.zh-CN.md).
 
 ## What This Repository Provides
 
-- **Portable installation**: add this marketplace once, then install any listed
-  skill from Claude Code without copying files between machines.
-- **Codex local use**: link the same skill payloads into Codex's local
-  filesystem skill directory for personal use.
+- **Portable Claude Code installation**: add this marketplace once, then install
+  any listed bundle without copying files between machines.
+- **Codex local install and update**: link the same skill payloads into Codex's
+  local filesystem skill directory for personal use.
 - **Controlled admission**: new skills enter `plugins/` only through the local
   vetting workflow in `add-skill.sh`.
 - **Static and dynamic checks**: the admission workflow runs a Python auditor,
   an optional no-network Docker sandbox, and a manual `SKILL.md` review.
 - **CI protection**: GitHub Actions re-runs the static auditor on every push and
   pull request, and blocks CRITICAL findings.
-- **Readable ownership model**: `.claude-plugin/marketplace.json` is the catalog;
-  `plugins/<name>/` contains the plugin manifest and skill payload.
+- **Readable ownership model**: `.claude-plugin/marketplace.json` is the Claude
+  Code catalog; `plugins/<name>/` contains the plugin manifest and one or more
+  skill payloads that Codex can link directly.
 
-## Available Plugins
+## Available Plugins and Skills
 
-The current marketplace catalog includes:
+The current catalog includes these plugin bundles. For Claude Code, each row is
+installed as a plugin from the marketplace. For Codex, `install-codex-skills.sh`
+discovers and links the individual `skills/*` directories inside those bundles.
 
 | Plugin | Category | Purpose |
 | --- | --- | --- |
@@ -40,7 +50,7 @@ The current marketplace catalog includes:
 The source of truth for the list is
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json).
 
-## Install From Claude Code
+## Install Through Claude Code Marketplace
 
 Add the marketplace once on each machine:
 
@@ -48,7 +58,7 @@ Add the marketplace once on each machine:
 /plugin marketplace add weiwei-tsao/my-skills-marketplace
 ```
 
-Install a skill:
+Install a plugin bundle:
 
 ```text
 /plugin install a11y-audit@my-skills
@@ -64,13 +74,14 @@ This flow assumes the repository is public, because Claude Code fetches the
 marketplace from GitHub. Do not store secrets or proprietary private skill
 content in this repository.
 
-## Install For Codex
+## Install or Update For Codex
 
 Codex can load local filesystem skills from directories such as
 `$HOME/.agents/skills` and repository-scoped `.agents/skills` folders. The skill
 payloads in this repository already live under `plugins/*/skills/*`, so the
 safest local Codex setup is to symlink those payload directories into Codex's
-user-level skill directory.
+user-level skill directory. The same installer is used for the first install and
+for later updates when this repository changes.
 
 Preview the install plan:
 
@@ -84,23 +95,40 @@ Create the symlinks:
 ./install-codex-skills.sh --apply
 ```
 
+Update an existing Codex install after pulling repository changes:
+
+```bash
+git pull
+./install-codex-skills.sh
+./install-codex-skills.sh --apply
+```
+
 Install into a different Codex skill scope:
 
 ```bash
 ./install-codex-skills.sh --apply --target /path/to/.agents/skills
 ```
 
+You can also set `CODEX_SKILLS_DIR` instead of passing `--target`.
+
 The script is intentionally conservative:
 
 - It defaults to a dry run.
 - It links skill directories instead of copying them.
+- It is idempotent for links that already point to the current repository.
 - It does not overwrite existing files, directories, or symlinks that point
   somewhere else.
 - It validates that each discovered skill has a simple `name` in `SKILL.md`.
+- It does not prune stale links for skills that were removed or renamed; inspect
+  and delete those symlinks manually if needed.
 
 After installing, restart Codex or start a new session if the skills do not
 appear. In Codex CLI or the IDE extension, run `/skills` or type `$` to mention a
 skill explicitly, such as `$weiwei-notes` or `$ticket-workflow`.
+
+If you moved this checkout or cloned it into a new path, existing symlinks may
+still point at the old location. The installer will skip those as "already links
+elsewhere" so you can inspect them before replacing them.
 
 This is not the same as installing this repository as a Codex plugin
 marketplace. The repository currently uses the Claude Code marketplace layout
@@ -145,6 +173,11 @@ git add -A
 git commit -m "add <plugin-name> (vetted)"
 git push
 ```
+
+Codex does not need a separate catalog update for vendored skills. Once the
+skill is under `plugins/<plugin-name>/skills/<skill-name>/`, re-run
+`./install-codex-skills.sh --apply` to link it into the selected Codex skill
+directory.
 
 ## Marketplace Source Format
 

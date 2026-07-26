@@ -1,30 +1,39 @@
 # my-skills
 
-私人维护、人工审核的 Claude Code 技能市场。
+私人维护、人工审核的 Claude Code 与 Codex skills 集合。
 
-本仓库是一个 Claude Code 插件和技能的可信白名单。你可以把自己认可的
-skills 放在这个公开 GitHub 仓库里，然后在任意机器上通过 Claude Code 的
-plugin marketplace 流程安装。
+本仓库是一个可复用 agent skills 的可信白名单，并同时支持两种安装路径：
+
+- **Claude Code** 通过仓库里的 `.claude-plugin/` marketplace catalog 安装已审核的
+  plugin bundles。
+- **Codex** 复用同一份 skill payload，把 `plugins/*/skills/*` 软链接到 Codex 的
+  skill 目录，作为本地 filesystem skills 使用。
+
+目标是把你亲自认可的 skills 放在同一个公开 GitHub 仓库里，并为 Claude Code 和
+Codex 都提供清晰的审核、安装和更新流程。
 
 英文版 [README.md](README.md) 是主文档；本文档是中文配套说明。
 
 ## 这个仓库解决什么问题
 
-- **跨机器安装**：每台机器只需添加一次 marketplace，之后即可安装列表里的
-  任意技能。
-- **Codex 本地使用**：把同一份 skill payload 软链接到 Codex 的本地
+- **Claude Code 跨机器安装**：每台机器只需添加一次 marketplace，之后即可安装
+  列表里的任意 bundle。
+- **Codex 本地安装与更新**：把同一份 skill payload 软链接到 Codex 的本地
   filesystem skill 目录中，供个人使用。
 - **受控准入**：新的 skill 必须通过 `add-skill.sh` 才能进入 `plugins/`。
 - **静态与动态检查**：准入流程包含 Python 静态审计、可选的无网络 Docker
   沙箱运行，以及人工阅读 `SKILL.md`。
 - **CI 防护**：GitHub Actions 会在 push 和 pull request 时重新运行静态审计，
   CRITICAL 级别问题会阻止合入。
-- **结构清晰**：`.claude-plugin/marketplace.json` 是市场目录，
-  `plugins/<name>/` 保存插件 manifest 和 skill 内容。
+- **结构清晰**：`.claude-plugin/marketplace.json` 是 Claude Code catalog，
+  `plugins/<name>/` 保存 plugin manifest 和一个或多个 Codex 可直接链接的
+  skill payload。
 
-## 当前插件
+## 当前插件与 Skills
 
-当前 marketplace 包含：
+当前 catalog 包含这些 plugin bundles。对 Claude Code 来说，每一行都是 marketplace
+里可安装的 plugin；对 Codex 来说，`install-codex-skills.sh` 会发现并链接这些
+bundle 内部的各个 `skills/*` 目录。
 
 | 插件 | 分类 | 用途 |
 | --- | --- | --- |
@@ -38,7 +47,7 @@ plugin marketplace 流程安装。
 权威列表以
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) 为准。
 
-## 在 Claude Code 中安装
+## 通过 Claude Code Marketplace 安装
 
 每台机器添加一次 marketplace：
 
@@ -46,7 +55,7 @@ plugin marketplace 流程安装。
 /plugin marketplace add weiwei-tsao/my-skills-marketplace
 ```
 
-安装某个 skill：
+安装某个 plugin bundle：
 
 ```text
 /plugin install a11y-audit@my-skills
@@ -61,12 +70,12 @@ plugin marketplace 流程安装。
 这个流程假设仓库是公开的，因为 Claude Code 会从 GitHub 拉取 marketplace。
 不要把密钥、token、凭据或公司私有 skill 内容放进这个公开仓库。
 
-## 在 Codex 中安装
+## 在 Codex 中安装或更新
 
 Codex 可以从 `$HOME/.agents/skills` 和仓库级 `.agents/skills` 等目录读取本地
 filesystem skills。本仓库的 skill payload 已经位于 `plugins/*/skills/*`，所以
 最低风险的 Codex 本地安装方式，是把这些 payload 目录软链接到 Codex 的用户级
-skill 目录。
+skill 目录。首次安装和仓库更新后的同步都使用同一个 installer。
 
 预览安装计划：
 
@@ -80,22 +89,38 @@ skill 目录。
 ./install-codex-skills.sh --apply
 ```
 
+拉取仓库更新后，同步已有的 Codex 安装：
+
+```bash
+git pull
+./install-codex-skills.sh
+./install-codex-skills.sh --apply
+```
+
 安装到其他 Codex skill scope：
 
 ```bash
 ./install-codex-skills.sh --apply --target /path/to/.agents/skills
 ```
 
+也可以设置 `CODEX_SKILLS_DIR`，而不是传 `--target`。
+
 这个脚本刻意保持保守：
 
 - 默认只 dry run，不写入。
 - 使用软链接，不复制 skill 内容。
+- 对已经指向当前仓库的链接是幂等的，可以重复运行。
 - 不覆盖已有文件、目录，或指向其他位置的 symlink。
 - 会检查每个发现的 `SKILL.md` 是否包含简单的 `name`。
+- 不会自动清理已删除或重命名 skill 留下的旧 symlink；如有需要，请先人工检查再删除。
 
 安装后，如果 Codex 没有立刻显示新 skills，请重启 Codex 或开启新 session。在
 Codex CLI 或 IDE extension 中，可以运行 `/skills`，也可以输入 `$` 显式 mention
 某个 skill，例如 `$weiwei-notes` 或 `$ticket-workflow`。
+
+如果你移动了这个 checkout，或重新 clone 到了新路径，已有 symlink 可能仍指向旧
+位置。installer 会把这类情况标记为 "already links elsewhere" 并跳过，方便你先
+检查再决定是否替换。
 
 这不是把本仓库作为 Codex plugin marketplace 直接安装。当前仓库使用
 `.claude-plugin/` 下的 Claude Code marketplace 结构；Codex plugin 分发使用自己
@@ -136,6 +161,10 @@ git add -A
 git commit -m "add <plugin-name> (vetted)"
 git push
 ```
+
+Codex 不需要单独更新 catalog。只要 skill 已经位于
+`plugins/<plugin-name>/skills/<skill-name>/`，重新运行
+`./install-codex-skills.sh --apply` 即可把它链接到选定的 Codex skill 目录。
 
 ## Marketplace Source 格式
 
