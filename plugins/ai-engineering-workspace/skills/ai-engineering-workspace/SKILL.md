@@ -1,6 +1,6 @@
 ---
 name: ai-engineering-workspace
-description: Scaffold and navigate a structured ticket workspace for AI-assisted engineering on any team. Use when the user wants to set up a ticket workspace, asks how the ai-engineering-workspace suite works, or you need to pick between its skills (ticket-workflow, structured-bug-fix, handoff).
+description: Scaffold and navigate a structured ticket workspace for AI-assisted engineering on any team. Use when the user wants to set up a ticket workspace, asks how the ai-engineering-workspace suite works, or you need to pick between its skills (ticket-workflow, structured-bug-fix, handoff, complete-ticket).
 ---
 
 # AI Engineering Workspace
@@ -23,9 +23,10 @@ Each skill works on its own — install once, use only what the project needs:
 
 | Skill | Use when | Standalone (no workspace) |
 |---|---|---|
-| `ticket-workflow` | Working a ticket end to end: investigate → implement → finish | Applies the phase discipline without ticket files |
+| `ticket-workflow` | Working a ticket end to end: investigate -> implement -> finish | Applies the phase discipline without ticket files |
 | `structured-bug-fix` | Diagnosing a bug, especially cross-repo | Works in any repo; presents diagnosis before editing |
 | `handoff` | Saving state before ending a session, or resuming one | Uses `.handoff/HANDOFF.md` at repo root |
+| `complete-ticket` | Turning a finished or intentionally drafted ticket into private context plus public-safe reusable knowledge | Draft mode only without workspace files |
 | this skill | Scaffolding the workspace, or routing between the above | — |
 
 **Workspace detection**: a directory containing `ecosystem.md` and
@@ -33,6 +34,9 @@ Each skill works on its own — install once, use only what the project needs:
 repo the user points to), the other skills read/write ticket files there.
 When none exists, they degrade to standalone mode — never block on missing
 workspace files.
+
+`complete-ticket` is stricter than the other suite skills: final completion
+requires ticket evidence, while standalone mode is draft-only.
 
 ## Scaffolding a workspace
 
