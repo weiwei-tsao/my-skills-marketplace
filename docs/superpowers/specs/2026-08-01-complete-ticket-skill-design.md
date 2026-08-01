@@ -66,9 +66,10 @@ outcome, root cause or final decision, owner repo/module, implementation
 summary, tests, acceptance, deploy or rollback notes, knowledge artifact links,
 and follow-ups.
 
-`repo-relationships.md` is the detailed relationship analysis for this ticket.
-It records involved repos, services, surfaces, request or data flow, ownership
-boundaries, hidden coupling, surprising dependencies, and the specific lesson
+`repo-relationships.md` is the ticket-local evidence narrative. It is optimized
+for reconstructing what happened in this ticket. It records involved repos,
+services, surfaces, request or data flow, ownership boundaries, hidden coupling,
+surprising dependencies, evidence links, rejected paths, and the specific lesson
 learned from the ticket.
 
 ### Workspace Knowledge Layer
@@ -90,8 +91,15 @@ knowledge/
       ABC-123-<slug>.md
 ```
 
-`knowledge/private/repo-relationships/ABC-123.md` preserves real context and
-can mirror or condense the ticket-local relationship analysis.
+`knowledge/private/repo-relationships/ABC-123.md` is the reusable relationship
+card for future recall. It also preserves real context, but it must not mirror
+the ticket-local evidence narrative. It is optimized for explaining what the
+ticket taught about how the repos or systems relate. It should include the
+mental model, involved repos/surfaces, ownership boundary, request or data flow,
+when to consult this note again, and links back to the ticket-local evidence. It
+should omit step-by-step investigation history, rejected debugging paths, raw
+command output, and PR/process details unless they directly explain a system
+relationship.
 
 `knowledge/private/repo-relationships-index.md` is cumulative and short. Each
 entry should help Weiwei quickly remember what a past ticket taught and where to
@@ -340,7 +348,7 @@ Before final response, run a review checklist:
 ## Follow-Ups
 ```
 
-### `repo-relationships.md`
+### Ticket-Local `repo-relationships.md`
 
 ```markdown
 # <TICKET-ID> Repo Relationships
@@ -355,9 +363,31 @@ Before final response, run a review checklist:
 
 ## Hidden Couplings Or Surprising Dependencies
 
+## Rejected Paths / Not Responsible
+
 ## What This Ticket Taught Us
 
 ## Links Back To Evidence
+```
+
+### Private Relationship Card
+
+For `knowledge/private/repo-relationships/<TICKET-ID>.md`:
+
+```markdown
+# <TICKET-ID> <Relationship Topic>
+
+## Mental Model
+
+## Repos / Surfaces
+
+## Ownership Boundary
+
+## Request Or Data Flow
+
+## Useful When
+
+## Ticket Evidence
 ```
 
 ### Cumulative Index Entry
