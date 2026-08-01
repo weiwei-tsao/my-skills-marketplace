@@ -148,6 +148,42 @@ On re-run, the implementation should match by `<TICKET-ID>` even if `<Topic>`
 changes, then rewrite the heading and body with the latest evidence. If no entry
 for the ticket exists, append a new entry.
 
+## Slug Generation
+
+Public-safe artifact filenames use:
+
+```text
+<TICKET-ID>-<slug>.md
+```
+
+`<TICKET-ID>` is the stable private identity. `<slug>` is only a readable hint
+for humans browsing the knowledge directory.
+
+Generate `<slug>` from the final public-safe article title after redaction, not
+from the raw ticket title, repo names, service names, branch names, PR titles, or
+other private source material. This prevents sensitive internal terms from
+leaking through filenames.
+
+Slug rules:
+
+- Lowercase.
+- ASCII only.
+- Replace spaces and punctuation with single hyphens.
+- Remove characters outside `a-z`, `0-9`, and `-`.
+- Collapse repeated hyphens.
+- Trim leading and trailing hyphens.
+- Limit to 60 characters.
+
+If the redacted title produces an empty slug, use an artifact-specific fallback:
+
+- `technical-note`
+- `system-design-lesson`
+
+Slug uniqueness is scoped by artifact directory. Different tickets may use the
+same slug because the ticket ID prefix keeps filenames distinct. For the same
+ticket, the idempotency rules apply: keep exactly one current file per artifact
+type, even if the regenerated title changes the slug.
+
 ## Privacy And Redaction Rules
 
 Private artifacts preserve real context:
