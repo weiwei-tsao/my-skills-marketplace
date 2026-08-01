@@ -101,6 +101,53 @@ file.
 `technical-notes` and `system-design-lessons` are public-safe by default. They
 use `weiwei-notes` redaction and writing style.
 
+## Idempotency And Re-Runs
+
+The skill must be safe to run more than once for the same ticket. Re-runs happen
+when new evidence, tests, acceptance notes, or repo relationship details are
+added after an earlier completion pass.
+
+Ticket-local generated files are authoritative snapshots and should be replaced
+on re-run:
+
+- `tickets/<TICKET-ID>/completion.md`
+- `tickets/<TICKET-ID>/repo-relationships.md`
+
+Knowledge detail files are also authoritative snapshots for the ticket and
+should be replaced on re-run:
+
+- `knowledge/private/repo-relationships/<TICKET-ID>.md`
+- `knowledge/public-safe/technical-notes/<TICKET-ID>-<slug>.md`
+- `knowledge/public-safe/system-design-lessons/<TICKET-ID>-<slug>.md`
+
+Because public-safe filenames include a slug, the skill must treat
+`<TICKET-ID>` as the stable identity. On re-run, it should find existing
+technical note and system design lesson files with the same ticket ID prefix and
+keep exactly one current file per artifact type. If the regenerated title changes
+the slug, the stale same-ticket file should be removed or replaced so the
+knowledge directory does not accumulate multiple public-safe files for the same
+ticket.
+
+When replacing a file, the skill should preserve only intentional user-owned
+content if the file has a clearly marked manual section. The first version does
+not require manual sections, so the default behavior is full regeneration from
+the current ticket evidence.
+
+The cumulative index must use upsert behavior, not append-only behavior. For
+`knowledge/private/repo-relationships-index.md`, the skill must find the
+existing section for the ticket and replace that section. It must not create
+duplicate entries for the same ticket.
+
+Index entries should use a stable heading key:
+
+```markdown
+## <Topic> - <TICKET-ID>
+```
+
+On re-run, the implementation should match by `<TICKET-ID>` even if `<Topic>`
+changes, then rewrite the heading and body with the latest evidence. If no entry
+for the ticket exists, append a new entry.
+
 ## Privacy And Redaction Rules
 
 Private artifacts preserve real context:
@@ -190,7 +237,7 @@ Generate private artifacts first:
 1. `tickets/<TICKET-ID>/completion.md`
 2. `tickets/<TICKET-ID>/repo-relationships.md`
 3. `knowledge/private/repo-relationships/<TICKET-ID>.md`
-4. Update `knowledge/private/repo-relationships-index.md`
+4. Upsert `knowledge/private/repo-relationships-index.md`
 
 Then generate public-safe artifacts:
 
@@ -227,6 +274,8 @@ Before final response, run a review checklist:
 - Evidence links point back to the ticket-local files where useful.
 - Missing inputs or unresolved questions are visible.
 - The cumulative repo relationship index is short and scannable.
+- Re-running the same ticket replaced generated snapshots and did not duplicate
+  the cumulative index entry.
 - The final response lists files written and any gaps.
 
 ## Output Contracts
