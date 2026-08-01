@@ -44,6 +44,9 @@ completion, interim writeup, or pre-completion knowledge extraction. Draft mode
 may write artifacts, but every artifact and the final response must clearly
 label unresolved gaps.
 
+Do not enter strict-mode validation or write any authoritative artifact until
+ticket resolution has produced exactly one ticket ID and one ticket directory.
+
 ## Workspace Discovery
 
 Workspace mode exists when a directory contains both:
@@ -55,8 +58,7 @@ In workspace mode:
 
 1. Read `ecosystem.md`.
 2. Read `conventions.md` when present.
-3. Identify the ticket directory from the user request, current path, branch
-   name, or existing `tickets/<TICKET-ID>/` folders.
+3. Resolve the ticket as described below.
 4. Read the selected ticket files when present:
    - `context.md`
    - `investigation.md`
@@ -65,6 +67,27 @@ In workspace mode:
    - `pr.md`
    - `timeline.md`
    - `handoff.md`
+
+### Ticket Resolution
+
+Resolve the ticket before strict mode or any authoritative write. The result
+must be exactly one `<TICKET-ID>` and its `tickets/<TICKET-ID>/` path.
+
+Use this precedence:
+
+1. An explicit ticket ID or ticket path supplied by the user. If both are
+   supplied, they must identify the same ticket.
+2. The current ticket directory when the current path is inside
+   `tickets/<TICKET-ID>/`.
+3. The ticket ID unambiguously represented by the current branch name.
+4. Existing `tickets/<TICKET-ID>/` folders only when there is exactly one
+   candidate.
+
+Collect available signals while resolving. If signals disagree, an explicit ID
+and path conflict, a signal is ambiguous, or more than one folder candidate
+exists at the applicable precedence, stop and ask the user to select the
+ticket. Do not guess, create a ticket directory, enter strict mode, or write
+authoritative artifacts until the selection is unambiguous.
 
 If no workspace exists, operate in standalone draft mode only. Use the current
 conversation and user-provided files as source material, and explain that final
@@ -128,11 +151,18 @@ Public-safe artifacts must be redacted:
 - `knowledge/public-safe/technical-notes/<TICKET-ID>-<slug>.md`
 - `knowledge/public-safe/system-design-lessons/<TICKET-ID>-<slug>.md`
 
-Public-safe bodies must not expose company names, customer names, internal
-project names, real repo names, ticket IDs, PR links, Slack links, people, file
-paths, URLs, domains, table names, queue names, service names, environment
-names, internal constants, API routes, feature flags, exact incident
-identifiers, or uniquely identifying timing and scale details.
+When `weiwei-notes` is unavailable, apply this fallback public-safe redaction
+policy before writing and during final review. Public-safe bodies must not expose
+company, customer, supplier, team, brand, account, project, or product-code
+names; real repo names; ticket, issue, PR, incident, Slack, document, or
+dashboard identifiers or links; people, handles, emails, organization details,
+or roles that identify a person; file paths, URLs, domains, buckets, database,
+table, schema, queue, topic, service, or environment names; internal constants,
+API routes, feature flags, config keys, or secret/token-shaped values; or exact
+geography, dates/timing, monetary details, counts, scale, and combinations of
+details that could identify the event. Generalize these to stable system roles
+and public technical concepts; remove a detail that cannot be safely
+generalized.
 
 Public-safe writing should preserve the transferable technical idea: product
 goal, generic system roles, tradeoffs, data flow, ownership boundaries, failure
@@ -174,10 +204,12 @@ manual sections, so the default is full regeneration from current ticket
 evidence.
 
 For public-safe files, treat `<TICKET-ID>` as the stable identity. On re-run,
-find existing files in the artifact directory with the same ticket ID prefix and
-keep exactly one current file per artifact type. If the regenerated title
-changes the slug, remove or replace the stale same-ticket file. Track removed or
-replaced files and report them in the final response.
+find existing files in the artifact directory only with the exact filename
+prefix boundary `<TICKET-ID>-` (equivalently, `^<TICKET-ID>-`), never a loose
+ticket-ID substring match, and keep exactly one current file per artifact type.
+If the regenerated title changes the slug, remove or replace the stale
+same-ticket file. Track removed or replaced files and report them in the final
+response.
 
 For `knowledge/private/repo-relationships-index.md`, upsert by ticket ID. Find
 the existing section for the ticket and replace that section. Append a new
@@ -352,6 +384,14 @@ Before the final response, check:
 - Public-safe files are redacted.
 - Ticket IDs and real repo/service names do not appear in public-safe article
   bodies.
+- Perform a final public-safe redaction review of each article body: scan for
+  companies, customers, suppliers, teams, brands, accounts, people, emails,
+  repos, ticket/PR/incident links or IDs, paths, URLs/domains, buckets,
+  databases/tables/schemas, queues/topics, services/environments, config keys,
+  secret/token-shaped values, API routes, feature flags, geography, timing,
+  monetary details, counts, and scale. Generalize or remove every match, then
+  confirm the remaining text stands on public product, technical tradeoff, and
+  system-design reasoning alone.
 - Evidence links point back to ticket-local files where useful.
 - Missing inputs or unresolved questions are visible.
 - The cumulative repo relationship index is short and scannable.
