@@ -134,7 +134,8 @@ technical note and system design lesson files with the same ticket ID prefix and
 keep exactly one current file per artifact type. If the regenerated title changes
 the slug, the stale same-ticket file should be removed or replaced so the
 knowledge directory does not accumulate multiple public-safe files for the same
-ticket.
+ticket. The skill must track any stale public-safe files it removes or replaces
+and report them in the final response.
 
 When replacing a file, the skill should preserve only intentional user-owned
 content if the file has a clearly marked manual section. The first version does
@@ -320,7 +321,8 @@ Before final response, run a review checklist:
 - The cumulative repo relationship index is short and scannable.
 - Re-running the same ticket replaced generated snapshots and did not duplicate
   the cumulative index entry.
-- The final response lists files written and any gaps.
+- The final response lists files written, files removed or replaced, and any
+  gaps.
 
 ## Output Contracts
 
