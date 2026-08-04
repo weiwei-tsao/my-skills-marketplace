@@ -243,6 +243,7 @@ install-codex-skills.sh           # symlink installer for Codex local skills
 plugins/<name>/
   .claude-plugin/plugin.json      # plugin manifest
   skills/<name>/SKILL.md          # skill instructions
+  hooks/hooks.json                # optional: lifecycle hooks (auto-run, see Security Boundary)
 vetting/
   audit_skill.py                  # static auditor
   taint_python.py                 # Python AST taint analyzer
@@ -310,3 +311,10 @@ This repository reduces risk by combining a private allow-list, static scanning,
 sandbox observation, human review, and CI. It does not prove that a skill is
 safe. Read unfamiliar skills carefully, especially if they execute scripts,
 touch credentials, install dependencies, or require network access.
+
+A plugin may also ship a `hooks/hooks.json` — lifecycle hooks that run
+automatically once the plugin is enabled, with no separate confirmation
+prompt. The static auditor covers hook *scripts* the same way it covers any
+other script file, but not shell commands embedded directly in
+`hooks.json`'s `command` fields — read those by hand. See CLAUDE.md's
+"Plugin hooks" section for the exact coverage boundary.
