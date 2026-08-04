@@ -2,8 +2,30 @@
 set -u
 
 check() {
-  found=$(find tickets -maxdepth 2 -iname 'handoff.md' 2>/dev/null; find .handoff -maxdepth 1 -iname '*.md' 2>/dev/null)
-  [ -z "$found" ] && return 0
+  local files=()
+  while IFS= read -r -d '' f; do
+    files+=("$f")
+  done < <(
+    { find tickets -maxdepth 2 -type f -iname 'handoff.md' -print0 2>/dev/null
+      find .handoff -maxdepth 1 -type f -iname '*.md' -print0 2>/dev/null
+    }
+  )
+  [ "${#files[@]}" -eq 0 ] && return 0
+
+  # Cap the list and sanitize each path on its own (not the joined stream) so
+  # an embedded newline/control byte inside one filename can't be mistaken
+  # for a record separator or inject fake lines into the reminder.
+  found=""
+  local n=0 clean
+  for f in "${files[@]}"; do
+    [ "$n" -ge 20 ] && break
+    clean=$(printf '%s' "$f" | tr -cd '\40-\176')
+    found="${found}${clean}
+"
+    n=$((n + 1))
+  done
+  found="${found%$'\n'}"
+
   cat <<EOF
 Handoff file(s) found from a previous session:
 $found

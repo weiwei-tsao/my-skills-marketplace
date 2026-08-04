@@ -52,12 +52,17 @@ scripts referenced via `${CLAUDE_PLUGIN_ROOT}`). Hooks activate automatically
 when the plugin is enabled, with no separate user confirmation, so they get
 the same scrutiny as skill content:
 
-- The existing audit command already covers them: `vetting/audit_skill.py`
-  walks the whole directory passed to it and applies `SCRIPT_RULES` to every
+- The existing audit command covers hook *scripts*: `vetting/audit_skill.py`
+  walks the whole directory passed to it and applies `SCRIPT_RULES` (the
+  curl-pipe-to-shell, network-call, destructive-command checks) to every
   script-extension file it finds, including anything under `hooks/` or
-  `scripts/`. Running `python3 vetting/audit_skill.py plugins/<name>` (as
-  already documented above) is sufficient — no separate command is needed
-  for hook scripts.
+  `scripts/`. It does **not** apply those checks to `hooks/hooks.json`
+  itself — `.json` files only get the prompt-injection wordlist, not the
+  script-danger patterns. A `"command"` string embedded directly in
+  `hooks.json` (rather than calling out to a separate script file) is not
+  caught by `SCRIPT_RULES`. Always read `hooks.json`'s `command` values by
+  hand; prefer keeping real logic in a separate, audited script file rather
+  than inlining shell in the manifest.
 - A clean static-analysis pass is triage, not proof of safety. Read any new
   or changed hook script by hand before merging, the same way `SKILL.md` gets
   a human read in the `add-skill.sh` pipeline.
