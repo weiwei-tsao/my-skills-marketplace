@@ -229,6 +229,7 @@ install-codex-skills.sh           # Codex 本地 skills 软链接安装脚本
 plugins/<name>/
   .claude-plugin/plugin.json      # plugin manifest
   skills/<name>/SKILL.md          # skill 指令
+  hooks/hooks.json                # 可选：生命周期 hooks（自动执行，见"安全边界"）
 vetting/
   audit_skill.py                  # 静态审计器
   taint_python.py                 # Python AST taint 分析器
@@ -290,3 +291,8 @@ python3 vetting/audit_skill.py plugins/<name> --no-color
 本仓库通过私人白名单、静态扫描、沙箱观察、人工阅读和 CI 降低风险，但不能证明
 skill 绝对安全。对不熟悉的 skill 仍需仔细阅读，尤其是会执行脚本、访问凭据、
 安装依赖或需要网络访问的 skill。
+
+插件也可以带一个 `hooks/hooks.json`——插件一启用，这些生命周期 hook 就会自动
+运行，没有额外的确认弹窗。静态审计器对 hook *脚本* 的覆盖跟其他脚本文件一样，
+但不覆盖 `hooks.json` 里 `command` 字段直接内嵌的 shell 命令——这部分需要人工
+阅读。具体覆盖边界见 CLAUDE.md 的"Plugin hooks"一节。

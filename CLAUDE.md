@@ -75,6 +75,7 @@ Each plugin follows this structure:
 plugins/<name>/
   .claude-plugin/plugin.json   # manifest (name, version, author, license)
   skills/<name>/SKILL.md       # the skill payload
+  hooks/hooks.json             # optional: lifecycle hooks, see "Plugin hooks" above
 ```
 
 The root catalog is `.claude-plugin/marketplace.json`.
