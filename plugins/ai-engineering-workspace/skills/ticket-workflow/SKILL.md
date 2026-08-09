@@ -31,12 +31,18 @@ reaches a ticket first, a command run later still has a real precondition
 to check instead of guessing.
 
 **Workspace mode**: if a ticket workspace exists (a directory with
-`ecosystem.md` and `tickets/<TICKET-ID>/`), call it `WORKSPACE_ROOT` and
-read `$WORKSPACE_ROOT/ecosystem.md`, `$WORKSPACE_ROOT/conventions.md`,
-and the ticket's files before starting, and record results into the
-ticket files as you go — always via an explicit `WORKSPACE_ROOT`-relative
-path, since it's frequently a different directory from your cwd or the
-implementation repo you're working in.
+`ecosystem.md` and `tickets/` — not `tickets/<TICKET-ID>/`; a new
+ticket's own directory won't exist yet, and that must not be read as "no
+workspace"), call it `WORKSPACE_ROOT` and read
+`$WORKSPACE_ROOT/ecosystem.md`, `$WORKSPACE_ROOT/conventions.md`, and the
+ticket's files before starting. If
+`$WORKSPACE_ROOT/tickets/<TICKET-ID>/` doesn't exist yet, create it with
+`$WORKSPACE_ROOT/scripts/new-ticket.sh <TICKET-ID> "<title>"` — the same
+thing `/ticket-understand` does — rather than falling back to standalone
+mode. Record results into the ticket files as you go — always via an
+explicit `WORKSPACE_ROOT`-relative path, since it's frequently a
+different directory from your cwd or the implementation repo you're
+working in.
 **Standalone mode**: no workspace — follow the same phases, keep the
 records in your responses (or a scratch file if the user wants
 persistence), and infer conventions from the repo (recent commits, PR
