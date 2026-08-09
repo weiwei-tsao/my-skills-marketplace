@@ -30,12 +30,23 @@ Rules:
 - Don't touch multiple repos/modules unless the investigation justifies
   it.
 - Preserve existing behavior unless the ticket requires changing it.
-- Run every configured "Verification command" from `conventions.md`
-  (typecheck/lint/test/build); skip any entry marked `N/A` or left unset.
-  Report results honestly, including failures.
+- Run verification commands in the confirmed implementation owner
+  repository — not the notes workspace or ambient cwd. If
+  `conventions.md`'s "Per-repo overrides" table has a row for this repo,
+  use those typecheck/lint/test/build commands; otherwise use the
+  default "Verification commands". Skip any entry marked `N/A` or left
+  unset. Report results honestly, including failures. If the ticket
+  touches multiple repos, repeat this for each repo touched.
 - Record what changed and how it was tested into `implementation.md` and
   `test.md` (create them from `tickets/_template/implementation.md` and
   `tickets/_template/test.md` if they don't exist yet, replacing
-  `<TICKET-ID>` with $ARGUMENTS in each).
+  `<TICKET-ID>` with $ARGUMENTS in each; `implementation.md`'s `Status:`
+  line starts as `draft`).
 
-Once checks pass, tell the user to run `/ai-engineering-workspace:ticket-finish $ARGUMENTS`.
+Gate: if every verification command that ran passed (or all were `N/A`
+or unset), update `implementation.md`'s `Status:` line to `complete`,
+then tell the user to run
+`/ai-engineering-workspace:ticket-finish $ARGUMENTS`. If any verification
+command failed, do not update `Status:` — report the failure and stop;
+do not suggest running `/ticket-finish` until it's fixed and
+re-verified.

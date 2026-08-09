@@ -6,6 +6,17 @@ disable-model-invocation: true
 
 You are finishing ticket $ARGUMENTS. This is Phase 4 of 4: Finish.
 
+Precondition (workspace mode): `implementation.md` must contain
+`Status: complete`. If it doesn't (missing file, `Status: draft`, or any
+other value), STOP and tell the user to run
+`/ai-engineering-workspace:ticket-implement $ARGUMENTS` first — check the
+literal `Status:` value only, not whether PR notes already look ready to
+write.
+
+Precondition (standalone mode): require an explicit indication earlier in
+this conversation that implementation and verification finished; if there
+isn't one, stop and ask before generating PR notes.
+
 1. Generate PR title, PR description, test notes, and a short status
    update (follow `conventions.md`'s style, or repo precedent if unset).
    Save into `pr.md` (create it from `tickets/_template/pr.md` if it

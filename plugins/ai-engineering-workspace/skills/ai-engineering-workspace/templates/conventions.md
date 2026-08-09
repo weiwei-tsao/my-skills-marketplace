@@ -60,12 +60,25 @@ Auto-push workflow files: <yes / no — default: no>
 <!-- Typecheck / lint / test / build commands to run before considering an
      implementation done. Referenced by /ai-engineering-workspace:ticket-implement — set once here
      instead of re-deriving per ticket. Mark any that don't apply to this
-     project as N/A rather than leaving them unset. -->
+     project as N/A rather than leaving them unset. These are the default
+     commands; see "Per-repo overrides" below for multi-repo tickets. -->
 
 - Typecheck: `<command or N/A>`
 - Lint: `<command or N/A>`
 - Test: `<command or N/A>`
 - Build: `<command or N/A>`
+
+### Per-repo overrides (multi-repo tickets)
+
+<!-- Optional. Only needed when different repos in this workspace use
+     different toolchains — e.g. a Go API repo and a Next.js frontend repo
+     can't share one Test command. If a repo isn't listed here, the
+     default commands above apply to it. Leave this table empty for
+     single-repo/single-toolchain workspaces. -->
+
+| Repo | Typecheck | Lint | Test | Build |
+|---|---|---|---|---|
+|  |  |  |  |  |
 
 ## PR description style
 

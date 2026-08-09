@@ -1,5 +1,7 @@
 # <TICKET-ID> Implementation
 
+Status: draft
+
 ## Current branch
 
 ```text
