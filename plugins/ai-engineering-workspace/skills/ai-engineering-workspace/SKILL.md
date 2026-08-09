@@ -30,10 +30,16 @@ Each skill works on its own — install once, use only what the project needs:
 | this skill | Scaffolding the workspace, or routing between the above | — |
 
 **Workspace detection**: a directory containing `ecosystem.md` and
-`tickets/` is a ticket workspace. When one exists (current dir or a notes
-repo the user points to), the other skills read/write ticket files there.
-When none exists, they degrade to standalone mode — never block on missing
-workspace files.
+`tickets/` is a ticket workspace — call this directory `WORKSPACE_ROOT`.
+It is frequently NOT the current working directory (e.g. a dedicated
+notes repo while the agent's cwd is an implementation repo). When one
+exists (current dir, or a notes repo the user points to), the other
+skills read/write ticket files there, always via an explicit
+`WORKSPACE_ROOT`-relative path (`$WORKSPACE_ROOT/ecosystem.md`,
+`$WORKSPACE_ROOT/tickets/<ID>/...`, `$WORKSPACE_ROOT/scripts/new-ticket.sh`)
+— never a bare relative path that would silently resolve against the
+ambient cwd instead. When none exists, they degrade to standalone mode —
+never block on missing workspace files.
 
 `complete-ticket` is stricter than the other suite skills: final completion
 requires ticket evidence, while standalone mode is draft-only.
@@ -81,10 +87,11 @@ text behind for sections you have answers to. Show the generated
 `ecosystem.md` and `conventions.md` for confirmation; they are the two
 files every other skill reads first.
 
-New tickets: `./scripts/new-ticket.sh <TICKET-ID> "short title"` creates
-`context.md` only; run `/ai-engineering-workspace:ticket-understand
-<TICKET-ID>` next — the rest of a ticket's files are created lazily as
-each phase command needs them.
+New tickets: `$WORKSPACE_ROOT/scripts/new-ticket.sh <TICKET-ID> "short
+title"` creates `context.md` only — not a bare `./scripts/new-ticket.sh`,
+which would run whatever script sits under the ambient cwd instead. Run
+`/ai-engineering-workspace:ticket-understand <TICKET-ID>` next — the rest
+of a ticket's files are created lazily as each phase command needs them.
 
 ## Golden rules (all suite skills inherit these)
 
