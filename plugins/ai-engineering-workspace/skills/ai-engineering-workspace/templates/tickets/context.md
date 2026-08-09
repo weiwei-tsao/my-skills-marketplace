@@ -1,5 +1,7 @@
 # <TICKET-ID> Context
 
+Status: draft
+
 ## Goal
 
 <!-- What should be true when this ticket is done? -->

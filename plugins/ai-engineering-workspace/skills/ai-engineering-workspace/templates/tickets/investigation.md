@@ -1,5 +1,7 @@
 # <TICKET-ID> Investigation
 
+Status: draft
+
 ## Reproduction steps
 
 1. 
