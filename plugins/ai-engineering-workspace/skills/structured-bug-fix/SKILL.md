@@ -19,6 +19,9 @@ ticket's `context.md` / `handoff.md`. Otherwise ask only for what's missing:
 
 Don't ask for information already provided.
 
+Before tracing the flow, output a one-line restatement: "My understanding
+of the bug is: ...". Wait for the user to confirm before starting Phase 2.
+
 ## Phase 2 — Trace the flow
 
 Follow the data through every layer — do not stop at the first suspicious
