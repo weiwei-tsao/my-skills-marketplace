@@ -44,7 +44,17 @@ isn't one, stop and ask before generating PR notes.
      the `git-commit` skill to execute a commit on your behalf — this
      applies whether or not that skill is installed. The user commits
      and pushes the implementation repo manually.
-3. Ticket workspace / notes files (`context.md`, `investigation.md`,
+3. Save a handoff — invoke the `handoff` skill's save flow, targeting
+   `$WORKSPACE_ROOT/tickets/$ARGUMENTS/handoff.md` explicitly. Do not let
+   the handoff skill's own file-location detection decide the path here:
+   that detection is cwd-relative, and if the agent's cwd is still the
+   implementation repo from Phase 3, it would resolve against the wrong
+   repo and could write `.handoff/HANDOFF.md` into the implementation
+   repo instead of the workspace. A ticket isn't finished until the next
+   session could continue it cold. Do this before step 4 — `handoff.md`
+   must exist before the notes repo is committed, or step 4 will commit
+   every workflow artifact except it.
+4. Ticket workspace / notes files (`context.md`, `investigation.md`,
    `implementation.md`, `test.md`, `pr.md`, `timeline.md`, `handoff.md`,
    all under `$WORKSPACE_ROOT/tickets/$ARGUMENTS/`):
    - If `WORKSPACE_ROOT` is the same git repository as the implementation
@@ -56,11 +66,3 @@ isn't one, stop and ask before generating PR notes.
      allows it, commit the workflow file changes (and push them too,
      only if that field also allows push) without asking. If the field is
      unset or says no, leave them uncommitted and say so in the summary.
-4. Save a handoff — invoke the `handoff` skill's save flow, targeting
-   `$WORKSPACE_ROOT/tickets/$ARGUMENTS/handoff.md` explicitly. Do not let
-   the handoff skill's own file-location detection decide the path here:
-   that detection is cwd-relative, and if the agent's cwd is still the
-   implementation repo from Phase 3, it would resolve against the wrong
-   repo and could write `.handoff/HANDOFF.md` into the implementation
-   repo instead of the workspace. A ticket isn't finished until the next
-   session could continue it cold.
