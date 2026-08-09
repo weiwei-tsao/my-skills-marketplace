@@ -23,7 +23,7 @@ Each skill works on its own — install once, use only what the project needs:
 
 | Skill | Use when | Standalone (no workspace) |
 |---|---|---|
-| `ticket-workflow` | Working a ticket end to end: investigate -> implement -> finish | Applies the phase discipline without ticket files |
+| `ticket-workflow` | Working a ticket end to end via `/ticket-understand` -> `/ticket-investigate` -> `/ticket-implement` -> `/ticket-finish` | Applies the phase discipline without ticket files |
 | `structured-bug-fix` | Diagnosing a bug, especially cross-repo | Works in any repo; presents diagnosis before editing |
 | `handoff` | Saving state before ending a session, or resuming one | Uses `.handoff/HANDOFF.md` at repo root |
 | `complete-ticket` | Turning a finished or intentionally drafted ticket into private context plus public-safe reusable knowledge | Draft mode only without workspace files |
@@ -69,6 +69,12 @@ Then scaffold from this skill's `templates/` directory:
   tickets/_template/    ← templates/tickets/*  (copy as-is)
   scripts/new-ticket.sh ← templates/scripts/new-ticket.sh (chmod +x)
 ```
+
+Upgrading an existing workspace to a newer plugin version: re-copy
+`templates/tickets/*` and `templates/scripts/new-ticket.sh` over the
+workspace's `tickets/_template/` and `scripts/new-ticket.sh` so it picks up
+template changes (e.g. the `Status:` field) — the scaffold step above only
+runs once, at workspace creation.
 
 Fill the templates with the interview answers — don't leave placeholder
 text behind for sections you have answers to. Show the generated

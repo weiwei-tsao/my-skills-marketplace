@@ -23,8 +23,9 @@ code.
 2. Identify the most likely owner repo/module.
 3. Separate facts (evidence-backed), hypotheses (unconfirmed), decisions.
 4. Record findings, evidence, open questions, and next steps into
-   `investigation.md` (create it from the template if it doesn't exist
-   yet; its `Status:` line starts as `draft`).
+   `investigation.md` (create it from `tickets/_template/investigation.md`
+   if it doesn't exist yet, replacing `<TICKET-ID>` with $ARGUMENTS; its
+   `Status:` line starts as `draft`).
 
 Do not edit any code in this phase.
 

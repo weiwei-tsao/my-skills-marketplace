@@ -8,8 +8,11 @@ You are finishing ticket $ARGUMENTS. This is Phase 4 of 4: Finish.
 
 1. Generate PR title, PR description, test notes, and a short status
    update (follow `conventions.md`'s style, or repo precedent if unset).
-   Save into `pr.md` (create it from the template if it doesn't exist
-   yet).
+   Save into `pr.md` (create it from `tickets/_template/pr.md` if it
+   doesn't exist yet, replacing `<TICKET-ID>` with $ARGUMENTS). Record the
+   status update into `timeline.md` too (create it from
+   `tickets/_template/timeline.md` if it doesn't exist yet, replacing
+   `<TICKET-ID>` with $ARGUMENTS).
 2. Commit — never automatic, and never push:
    - If the `git-commit` skill is installed, invoke it. It already runs
      checks, drafts the message, shows it to the user, and waits for

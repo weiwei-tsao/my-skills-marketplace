@@ -30,6 +30,8 @@ You are starting ticket $ARGUMENTS. This is Phase 1 of 4: Understand.
 6. Once the user confirms, update `context.md`'s `Status:` line to
    `confirmed` (workspace mode only — standalone mode has no file to
    update; the user's confirmation in this conversation is the only
-   record).
+   record). If `context.md` predates this field and has no `Status:` line
+   at all, add one directly under the H1 title reading `Status: confirmed`
+   instead of trying to find a line to replace.
 
 Tell the user to run `/ticket-investigate $ARGUMENTS`.

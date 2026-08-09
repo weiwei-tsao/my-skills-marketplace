@@ -33,6 +33,8 @@ Rules:
   (typecheck/lint/test/build); skip any entry marked `N/A` or left unset.
   Report results honestly, including failures.
 - Record what changed and how it was tested into `implementation.md` and
-  `test.md` (create them from the template if they don't exist yet).
+  `test.md` (create them from `tickets/_template/implementation.md` and
+  `tickets/_template/test.md` if they don't exist yet, replacing
+  `<TICKET-ID>` with $ARGUMENTS in each).
 
 Once checks pass, tell the user to run `/ticket-finish $ARGUMENTS`.
