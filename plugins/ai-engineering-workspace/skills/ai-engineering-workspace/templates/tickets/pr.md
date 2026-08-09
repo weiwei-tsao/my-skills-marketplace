@@ -19,11 +19,12 @@ fix(<TICKET-ID>): short description
 - 
 ```
 
-## Commit message
+## Commit
 
-```text
-fix(<TICKET-ID>): short description
-```
+Handled by the `git-commit` skill when `/ticket-finish` runs (or
+`conventions.md`'s "Commit / PR title style" if that skill isn't
+installed). Never committed without the user confirming the exact message
+first.
 
 ## Status update — ready for verification
 
