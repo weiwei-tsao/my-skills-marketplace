@@ -47,11 +47,16 @@ already known from context or the repo itself):
    ("who owns what kind of fix").
 2. **Flow** — how does a request/data travel across the codebase(s)?
    (entry point → routing → data fetch → shared code → upstream/source)
-3. **Ticket IDs** — format, e.g. `ABC-123`. Used in branch names and commits.
+3. **Ticket IDs** — format, e.g. `ABC-123`. Used in branch names and
+   commits. Also: how do you fetch a ticket's raw content and comments —
+   a command or MCP tool (e.g. `gh issue view <ID> --comments`)? →
+   recorded as `conventions.md`'s "Ticket source".
 4. **Stages** — environments before production (staging/UAT?) and who
    accepts (PM/editor/dev)?
 5. **Conventions** — branch/commit/PR format; where updates are posted
-   (Slack/Teams/issue comments) and the preferred tone.
+   (Slack/Teams/issue comments) and the preferred tone. Also: typecheck/
+   lint/test/build commands (mark any that don't apply as N/A) →
+   recorded as `conventions.md`'s "Verification commands".
 6. **Location** — dedicated notes repo, or a `workspace/` (or `.tickets/`)
    folder inside the main repo?
 
@@ -70,7 +75,9 @@ text behind for sections you have answers to. Show the generated
 `ecosystem.md` and `conventions.md` for confirmation; they are the two
 files every other skill reads first.
 
-New tickets: `./scripts/new-ticket.sh <TICKET-ID> "short title"`.
+New tickets: `./scripts/new-ticket.sh <TICKET-ID> "short title"` creates
+`context.md` only; run `/ticket-understand <TICKET-ID>` next — the rest of
+a ticket's files are created lazily as each phase command needs them.
 
 ## Golden rules (all suite skills inherit these)
 
@@ -79,3 +86,5 @@ New tickets: `./scripts/new-ticket.sh <TICKET-ID> "short title"`.
 - Smallest safe change; no unrelated formatting or broad refactors.
 - Separate facts (evidence-backed), hypotheses (guesses), and decisions.
 - Never end a session without a useful handoff.
+- Never run `git commit` without showing the user the exact message and
+  getting explicit confirmation first. Never run `git push`.
