@@ -41,6 +41,8 @@ Do not edit any code in this phase.
 Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. Wait for confirmation. Once confirmed, update
 `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md`'s `Status:` line to
-`confirmed` (workspace mode).
+`confirmed` (workspace mode). If `investigation.md` predates this field
+and has no `Status:` line at all, add one directly under the H1 title
+reading `Status: confirmed` instead of trying to find a line to replace.
 
 Tell the user to run `/ai-engineering-workspace:ticket-implement $ARGUMENTS`.

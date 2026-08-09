@@ -56,8 +56,10 @@ Rules:
 Gate: if every verification command that ran passed (or all were `N/A`
 or unset), update
 `$WORKSPACE_ROOT/tickets/$ARGUMENTS/implementation.md`'s `Status:` line
-to `complete`, then tell the user to run
-`/ai-engineering-workspace:ticket-finish $ARGUMENTS`. If any verification
-command failed, do not update `Status:` — report the failure and stop;
-do not suggest running `/ticket-finish` until it's fixed and
-re-verified.
+to `complete` (if `implementation.md` predates this field and has no
+`Status:` line at all, add one directly under the H1 title reading
+`Status: complete` instead of trying to find a line to replace), then
+tell the user to run `/ai-engineering-workspace:ticket-finish $ARGUMENTS`.
+If any verification command failed, do not update `Status:` — report the
+failure and stop; do not suggest running `/ticket-finish` until it's
+fixed and re-verified.
