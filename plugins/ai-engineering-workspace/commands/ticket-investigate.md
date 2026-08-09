@@ -1,0 +1,48 @@
+---
+description: "Phase 2 of ticket-workflow: read-only code investigation. Requires ticket understanding already confirmed."
+argument-hint: <TICKET-ID>
+disable-model-invocation: true
+---
+
+You are investigating ticket $ARGUMENTS. This is Phase 2 of 4: Investigate
+(read-only).
+
+Workspace root: use the `WORKSPACE_ROOT` established in
+`/ai-engineering-workspace:ticket-understand` earlier in this
+conversation. If it isn't clear from context, re-detect it the same way
+(current dir, or ask the user) — never assume it equals the current shell
+cwd.
+
+Precondition (workspace mode):
+`$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md` must contain
+`Status: confirmed`. If it doesn't (missing file, `Status: draft`, or any
+other value), STOP and tell the user to run
+`/ai-engineering-workspace:ticket-understand $ARGUMENTS`
+first — do not use judgment about whether the content "looks" confirmed;
+check the literal `Status:` value only.
+
+Precondition (standalone mode): no file to check. Require an explicit
+confirmation of the ticket understanding earlier in this conversation; if
+there isn't one, stop and restate the ask for confirmation before tracing
+code.
+
+1. Read `$WORKSPACE_ROOT/ecosystem.md`'s flow map if present; otherwise
+   trace from the entry point by reading the actual code.
+2. Identify the most likely owner repo/module.
+3. Separate facts (evidence-backed), hypotheses (unconfirmed), decisions.
+4. Record findings, evidence, open questions, and next steps into
+   `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md` (create it from
+   `$WORKSPACE_ROOT/tickets/_template/investigation.md` if it doesn't
+   exist yet, replacing `<TICKET-ID>` with $ARGUMENTS; its `Status:` line
+   starts as `draft`).
+
+Do not edit any code in this phase.
+
+Gate: summarize confirmed facts, likely root cause, owner, and the next
+safest action. Wait for confirmation. Once confirmed, update
+`$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md`'s `Status:` line to
+`confirmed` (workspace mode). If `investigation.md` predates this field
+and has no `Status:` line at all, add one directly under the H1 title
+reading `Status: confirmed` instead of trying to find a line to replace.
+
+Tell the user to run `/ai-engineering-workspace:ticket-implement $ARGUMENTS`.

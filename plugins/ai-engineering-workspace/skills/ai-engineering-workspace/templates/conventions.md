@@ -17,6 +17,15 @@ notes, and status updates.
 
 Format: `<PREFIX>-<number>`
 
+## Ticket source
+
+<!-- Command or tool used to fetch a ticket's raw content and comments,
+     e.g. `gh issue view <ID> --comments`, or a Jira/Linear MCP tool name.
+     Used by /ai-engineering-workspace:ticket-understand so it doesn't have
+     to ask every time. -->
+
+Command: <fill in>
+
 ## Branch naming
 
 ```text
@@ -32,6 +41,44 @@ fix(<TICKET-ID>): short description
 ```
 
 Keep the description under ~10 words when possible.
+
+## Notes repo automation
+
+<!-- Only relevant when the ticket workspace lives in its own separate git
+     repo, not a workspace/ folder inside the implementation repo. Controls
+     whether /ai-engineering-workspace:ticket-finish may commit and push
+     workflow tracking files (context.md, investigation.md, pr.md, etc.)
+     without asking each time. The implementation repo's code is never
+     auto-committed or auto-pushed regardless of this setting — that rule
+     doesn't have an opt-out. -->
+
+Auto-commit workflow files: <yes / no — default: no>
+Auto-push workflow files: <yes / no — default: no>
+
+## Verification commands
+
+<!-- Typecheck / lint / test / build commands to run before considering an
+     implementation done. Referenced by /ai-engineering-workspace:ticket-implement — set once here
+     instead of re-deriving per ticket. Mark any that don't apply to this
+     project as N/A rather than leaving them unset. These are the default
+     commands; see "Per-repo overrides" below for multi-repo tickets. -->
+
+- Typecheck: `<command or N/A>`
+- Lint: `<command or N/A>`
+- Test: `<command or N/A>`
+- Build: `<command or N/A>`
+
+### Per-repo overrides (multi-repo tickets)
+
+<!-- Optional. Only needed when different repos in this workspace use
+     different toolchains — e.g. a Go API repo and a Next.js frontend repo
+     can't share one Test command. If a repo isn't listed here, the
+     default commands above apply to it. Leave this table empty for
+     single-repo/single-toolchain workspaces. -->
+
+| Repo | Typecheck | Lint | Test | Build |
+|---|---|---|---|---|
+|  |  |  |  |  |
 
 ## PR description style
 

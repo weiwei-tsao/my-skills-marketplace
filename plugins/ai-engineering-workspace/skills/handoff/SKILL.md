@@ -11,8 +11,16 @@ value comes from the file **replacing** the old session's history — it must
 stay far smaller than the history it replaces (~1500–2500 tokens).
 
 **File location**:
-- Workspace mode (a `tickets/<TICKET-ID>/` folder exists): `tickets/<TICKET-ID>/handoff.md`.
-- Standalone: `.handoff/HANDOFF.md` at repo root (or `.handoff/<TICKET-ID>.md` if several tickets are active).
+- If the caller invoking this skill supplies an explicit target path
+  (e.g. a ticket-workflow phase command that already knows
+  `$WORKSPACE_ROOT/tickets/<TICKET-ID>/handoff.md`), use that path
+  exactly and skip the detection below — the caller's knowledge of where
+  the workspace actually lives is more reliable than a fresh cwd check.
+- Otherwise, detect it yourself: workspace mode (a `tickets/<TICKET-ID>/`
+  folder exists relative to the current directory): `tickets/<TICKET-ID>/handoff.md`.
+- Standalone (no caller-supplied target and no workspace detected):
+  `.handoff/HANDOFF.md` at repo root (or `.handoff/<TICKET-ID>.md` if
+  several tickets are active).
 
 ## Core principle: information decays at different rates
 

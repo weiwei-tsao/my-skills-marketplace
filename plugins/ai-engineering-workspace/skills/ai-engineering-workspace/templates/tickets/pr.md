@@ -19,11 +19,12 @@ fix(<TICKET-ID>): short description
 - 
 ```
 
-## Commit message
+## Commit
 
-```text
-fix(<TICKET-ID>): short description
-```
+Not committed by `/ai-engineering-workspace:ticket-finish` — it only
+reports the changed files and a suggested commit message (following
+`conventions.md`'s "Commit / PR title style"). Commit and push the
+implementation repo yourself.
 
 ## Status update — ready for verification
 
