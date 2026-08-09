@@ -17,6 +17,14 @@ notes, and status updates.
 
 Format: `<PREFIX>-<number>`
 
+## Ticket source
+
+<!-- Command or tool used to fetch a ticket's raw content and comments,
+     e.g. `gh issue view <ID> --comments`, or a Jira/Linear MCP tool name.
+     Used by /ticket-understand so it doesn't have to ask every time. -->
+
+Command: <fill in>
+
 ## Branch naming
 
 ```text
@@ -32,6 +40,18 @@ fix(<TICKET-ID>): short description
 ```
 
 Keep the description under ~10 words when possible.
+
+## Verification commands
+
+<!-- Typecheck / lint / test / build commands to run before considering an
+     implementation done. Referenced by /ticket-implement — set once here
+     instead of re-deriving per ticket. Mark any that don't apply to this
+     project as N/A rather than leaving them unset. -->
+
+- Typecheck: `<command or N/A>`
+- Lint: `<command or N/A>`
+- Test: `<command or N/A>`
+- Build: `<command or N/A>`
 
 ## PR description style
 
