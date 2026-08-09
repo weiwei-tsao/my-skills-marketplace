@@ -56,5 +56,11 @@ isn't one, stop and ask before generating PR notes.
      allows it, commit the workflow file changes (and push them too,
      only if that field also allows push) without asking. If the field is
      unset or says no, leave them uncommitted and say so in the summary.
-4. Save a handoff — invoke the `handoff` skill's save flow. A ticket isn't
-   finished until the next session could continue it cold.
+4. Save a handoff — invoke the `handoff` skill's save flow, targeting
+   `$WORKSPACE_ROOT/tickets/$ARGUMENTS/handoff.md` explicitly. Do not let
+   the handoff skill's own file-location detection decide the path here:
+   that detection is cwd-relative, and if the agent's cwd is still the
+   implementation repo from Phase 3, it would resolve against the wrong
+   repo and could write `.handoff/HANDOFF.md` into the implementation
+   repo instead of the workspace. A ticket isn't finished until the next
+   session could continue it cold.
