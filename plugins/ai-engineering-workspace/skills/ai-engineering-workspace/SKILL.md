@@ -23,7 +23,7 @@ Each skill works on its own — install once, use only what the project needs:
 
 | Skill | Use when | Standalone (no workspace) |
 |---|---|---|
-| `ticket-workflow` | Working a ticket end to end via `/ticket-understand` -> `/ticket-investigate` -> `/ticket-implement` -> `/ticket-finish` | Applies the phase discipline without ticket files |
+| `ticket-workflow` | Working a ticket end to end via `/ai-engineering-workspace:ticket-understand` -> `/ai-engineering-workspace:ticket-investigate` -> `/ai-engineering-workspace:ticket-implement` -> `/ai-engineering-workspace:ticket-finish` | Applies the phase discipline without ticket files |
 | `structured-bug-fix` | Diagnosing a bug, especially cross-repo | Works in any repo; presents diagnosis before editing |
 | `handoff` | Saving state before ending a session, or resuming one | Uses `.handoff/HANDOFF.md` at repo root |
 | `complete-ticket` | Turning a finished or intentionally drafted ticket into private context plus public-safe reusable knowledge | Draft mode only without workspace files |
@@ -82,8 +82,9 @@ text behind for sections you have answers to. Show the generated
 files every other skill reads first.
 
 New tickets: `./scripts/new-ticket.sh <TICKET-ID> "short title"` creates
-`context.md` only; run `/ticket-understand <TICKET-ID>` next — the rest of
-a ticket's files are created lazily as each phase command needs them.
+`context.md` only; run `/ai-engineering-workspace:ticket-understand
+<TICKET-ID>` next — the rest of a ticket's files are created lazily as
+each phase command needs them.
 
 ## Golden rules (all suite skills inherit these)
 

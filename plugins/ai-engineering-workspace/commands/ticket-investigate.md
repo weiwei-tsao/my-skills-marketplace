@@ -9,7 +9,8 @@ You are investigating ticket $ARGUMENTS. This is Phase 2 of 4: Investigate
 
 Precondition (workspace mode): `context.md` must contain
 `Status: confirmed`. If it doesn't (missing file, `Status: draft`, or any
-other value), STOP and tell the user to run `/ticket-understand $ARGUMENTS`
+other value), STOP and tell the user to run
+`/ai-engineering-workspace:ticket-understand $ARGUMENTS`
 first — do not use judgment about whether the content "looks" confirmed;
 check the literal `Status:` value only.
 
@@ -33,4 +34,4 @@ Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. Wait for confirmation. Once confirmed, update
 `investigation.md`'s `Status:` line to `confirmed` (workspace mode).
 
-Tell the user to run `/ticket-implement $ARGUMENTS`.
+Tell the user to run `/ai-engineering-workspace:ticket-implement $ARGUMENTS`.

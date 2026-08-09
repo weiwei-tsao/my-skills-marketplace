@@ -34,4 +34,4 @@ You are starting ticket $ARGUMENTS. This is Phase 1 of 4: Understand.
    at all, add one directly under the H1 title reading `Status: confirmed`
    instead of trying to find a line to replace.
 
-Tell the user to run `/ticket-investigate $ARGUMENTS`.
+Tell the user to run `/ai-engineering-workspace:ticket-investigate $ARGUMENTS`.

@@ -77,8 +77,8 @@ Created ticket workspace:
 $ticket_dir
 
 Next step:
-Run /ticket-understand $ticket_id to fetch the ticket and confirm
-understanding before any code is touched.
+Run /ai-engineering-workspace:ticket-understand $ticket_id to fetch the
+ticket and confirm understanding before any code is touched.
 MSG
 }
 

@@ -9,8 +9,9 @@ You are implementing ticket $ARGUMENTS. This is Phase 3 of 4: Implement
 
 Precondition (workspace mode): `investigation.md` must contain
 `Status: confirmed`. If it doesn't (missing file, `Status: draft`, or any
-other value), STOP and tell the user to run `/ticket-investigate
-$ARGUMENTS` first — check the literal `Status:` value only, not whether
+other value), STOP and tell the user to run
+`/ai-engineering-workspace:ticket-investigate $ARGUMENTS` first — check the
+literal `Status:` value only, not whether
 the content looks complete.
 
 Precondition (standalone mode): require an explicit confirmation of root
@@ -37,4 +38,4 @@ Rules:
   `tickets/_template/test.md` if they don't exist yet, replacing
   `<TICKET-ID>` with $ARGUMENTS in each).
 
-Once checks pass, tell the user to run `/ticket-finish $ARGUMENTS`.
+Once checks pass, tell the user to run `/ai-engineering-workspace:ticket-finish $ARGUMENTS`.
