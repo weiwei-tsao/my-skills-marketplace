@@ -1,5 +1,5 @@
 ---
-description: "Phase 4 of ticket-workflow: PR notes, a user-confirmed commit, and handoff."
+description: "Phase 4 of ticket-workflow: PR notes, an implementation-repo commit report, and handoff."
 argument-hint: <TICKET-ID>
 disable-model-invocation: true
 ---
@@ -13,16 +13,26 @@ You are finishing ticket $ARGUMENTS. This is Phase 4 of 4: Finish.
    status update into `timeline.md` too (create it from
    `tickets/_template/timeline.md` if it doesn't exist yet, replacing
    `<TICKET-ID>` with $ARGUMENTS).
-2. Commit — never automatic, and never push:
-   - If the `git-commit` skill is installed, invoke it. It already runs
-     checks, drafts the message, shows it to the user, and waits for
-     explicit confirmation before committing — do not restate
-     commit-message rules here, and do not skip its confirmation step.
-   - Otherwise, draft a commit message using `conventions.md`'s "Commit /
-     PR title style", show it to the user, and wait for explicit
-     confirmation before running `git commit`.
-   - Either way: do not run `git commit` without the user having seen and
-     confirmed the exact message first, and do not run `git push` as part
-     of this command under any circumstance.
-3. Save a handoff — invoke the `handoff` skill's save flow. A ticket isn't
+2. Implementation repo — report only, never commit or push:
+   - Identify the implementation repo(s) touched during Phase 3
+     (Implement).
+   - For each: report the repo path, the changed files (`git status` /
+     `git diff --stat`), and a suggested commit message following
+     `conventions.md`'s "Commit / PR title style".
+   - Do not run `git commit` or `git push` yourself, and do not invoke
+     the `git-commit` skill to execute a commit on your behalf — this
+     applies whether or not that skill is installed. The user commits
+     and pushes the implementation repo manually.
+3. Ticket workspace / notes files (`context.md`, `investigation.md`,
+   `implementation.md`, `test.md`, `pr.md`, `timeline.md`, `handoff.md`):
+   - If the workspace root is the same git repository as the
+     implementation repo from step 2, treat these files under the same
+     manual-only rule as step 2 — do not commit them either, since
+     they'd get bundled with that repo's pending code changes.
+   - If the workspace root is a separate git repository, and
+     `conventions.md`'s "Notes repo automation" field allows it, commit
+     the workflow file changes (and push them too, only if that field
+     also allows push) without asking. If the field is unset or says no,
+     leave them uncommitted and say so in the summary.
+4. Save a handoff — invoke the `handoff` skill's save flow. A ticket isn't
    finished until the next session could continue it cold.

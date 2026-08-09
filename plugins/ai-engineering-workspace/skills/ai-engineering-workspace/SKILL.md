@@ -93,5 +93,10 @@ each phase command needs them.
 - Smallest safe change; no unrelated formatting or broad refactors.
 - Separate facts (evidence-backed), hypotheses (guesses), and decisions.
 - Never end a session without a useful handoff.
-- Never run `git commit` without showing the user the exact message and
-  getting explicit confirmation first. Never run `git push`.
+- Implementation repo: never run `git commit` or `git push` — report the
+  repo, changed files, and a suggested commit message; the user commits
+  and pushes it manually.
+- Ticket workspace / notes repo (only when it's a separate repo from the
+  implementation code): may commit, and push, workflow tracking files
+  without asking, but only if `conventions.md`'s "Notes repo automation"
+  field allows it.

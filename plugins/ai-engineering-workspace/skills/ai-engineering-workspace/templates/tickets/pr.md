@@ -21,11 +21,10 @@ fix(<TICKET-ID>): short description
 
 ## Commit
 
-Handled by the `git-commit` skill when
-`/ai-engineering-workspace:ticket-finish` runs (or
-`conventions.md`'s "Commit / PR title style" if that skill isn't
-installed). Never committed without the user confirming the exact message
-first.
+Not committed by `/ai-engineering-workspace:ticket-finish` — it only
+reports the changed files and a suggested commit message (following
+`conventions.md`'s "Commit / PR title style"). Commit and push the
+implementation repo yourself.
 
 ## Status update — ready for verification
 

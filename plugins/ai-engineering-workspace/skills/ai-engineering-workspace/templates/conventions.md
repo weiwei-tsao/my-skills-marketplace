@@ -42,6 +42,19 @@ fix(<TICKET-ID>): short description
 
 Keep the description under ~10 words when possible.
 
+## Notes repo automation
+
+<!-- Only relevant when the ticket workspace lives in its own separate git
+     repo, not a workspace/ folder inside the implementation repo. Controls
+     whether /ai-engineering-workspace:ticket-finish may commit and push
+     workflow tracking files (context.md, investigation.md, pr.md, etc.)
+     without asking each time. The implementation repo's code is never
+     auto-committed or auto-pushed regardless of this setting — that rule
+     doesn't have an opt-out. -->
+
+Auto-commit workflow files: <yes / no — default: no>
+Auto-push workflow files: <yes / no — default: no>
+
 ## Verification commands
 
 <!-- Typecheck / lint / test / build commands to run before considering an

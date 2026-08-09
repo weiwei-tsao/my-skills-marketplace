@@ -15,7 +15,7 @@ self-chain ahead.
 | 1. Understand | `/ai-engineering-workspace:ticket-understand <ID>` | Fetch the ticket + comments, confirm the ask, before any code is touched |
 | 2. Investigate | `/ai-engineering-workspace:ticket-investigate <ID>` | Read-only: trace flow, confirm root cause + owner |
 | 3. Implement | `/ai-engineering-workspace:ticket-implement <ID>` | Minimal change, only after investigation is confirmed |
-| 4. Finish | `/ai-engineering-workspace:ticket-finish <ID>` | PR notes, commit (user-confirmed, via `git-commit` skill if installed), handoff |
+| 4. Finish | `/ai-engineering-workspace:ticket-finish <ID>` | PR notes, implementation-repo commit report (never executed), handoff |
 
 **Use the commands for a hard phase boundary.** If the user asks to "work
 on ticket X" conversationally instead of invoking a command, walk them
