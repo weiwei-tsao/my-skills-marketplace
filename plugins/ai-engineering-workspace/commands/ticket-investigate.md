@@ -26,8 +26,12 @@ confirmation of the ticket understanding earlier in this conversation; if
 there isn't one, stop and restate the ask for confirmation before tracing
 code.
 
-1. Read `$WORKSPACE_ROOT/ecosystem.md`'s flow map if present; otherwise
-   trace from the entry point by reading the actual code.
+1. If this is a bug/regression, apply the `structured-bug-fix` skill's
+   Phase 2 method (root-cause checklist, then sequential flow trace; fan
+   out to parallel agents only when `ecosystem.md` shows genuinely
+   independent repos worth triaging first). Otherwise, read
+   `$WORKSPACE_ROOT/ecosystem.md`'s flow map if present; otherwise trace
+   from the entry point by reading the actual code.
 2. Identify the most likely owner repo/module.
 3. Separate facts (evidence-backed), hypotheses (unconfirmed), decisions.
 4. Record findings, evidence, open questions, and next steps into

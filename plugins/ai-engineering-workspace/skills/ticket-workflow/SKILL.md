@@ -48,3 +48,14 @@ records in your responses (or a scratch file if the user wants
 persistence), and infer conventions from the repo (recent commits, PR
 history). There's no `Status:` file to check in this mode — an explicit
 confirmation earlier in the conversation satisfies the gate instead.
+
+## Keeping records in sync without over-documenting
+
+Records don't need continuous upkeep — sync happens at the phase gates
+that already exist, not on every turn. If Implement (Phase 3) turns up a
+fact that contradicts something `investigation.md` already marked
+`confirmed`, append a dated `## Correction (<date>)` note to
+`investigation.md` instead of rewriting it — the same append-only
+discipline the `handoff` skill uses for dead-ends. Never run a standalone
+"update the docs" pass outside a gate transition; if nothing changed since
+the last gate, there's nothing to sync.

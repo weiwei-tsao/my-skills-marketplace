@@ -99,6 +99,10 @@ of a ticket's files are created lazily as each phase command needs them.
 - Always check current repo, branch, `git status`, and diff before editing.
 - Smallest safe change; no unrelated formatting or broad refactors.
 - Separate facts (evidence-backed), hypotheses (guesses), and decisions.
+- Base diagnoses and recommendations on code/doc evidence only — never
+  shape a conclusion to match the user's expressed expectation or tone. If
+  their framing conflicts with what the evidence shows, say so plainly,
+  citing the evidence, rather than agreeing first and correcting later.
 - Never end a session without a useful handoff.
 - Implementation repo: never run `git commit` or `git push` — report the
   repo, changed files, and a suggested commit message; the user commits

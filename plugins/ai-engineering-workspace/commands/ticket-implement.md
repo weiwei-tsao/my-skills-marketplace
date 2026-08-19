@@ -38,6 +38,10 @@ Rules:
 - Don't touch multiple repos/modules unless the investigation justifies
   it.
 - Preserve existing behavior unless the ticket requires changing it.
+- If a fact turns up here that contradicts something
+  `investigation.md` already marked `confirmed`, append a dated
+  `## Correction (<date>)` note to `investigation.md` — don't rewrite the
+  confirmed sections.
 - Run verification commands in the confirmed implementation owner
   repository — not `WORKSPACE_ROOT` or ambient cwd. If
   `$WORKSPACE_ROOT/conventions.md`'s "Per-repo overrides" table has a row

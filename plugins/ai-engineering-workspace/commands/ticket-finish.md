@@ -38,8 +38,12 @@ isn't one, stop and ask before generating PR notes.
      (Implement). This is a different directory from `WORKSPACE_ROOT`
      whenever the ticket workspace is a dedicated notes repo.
    - For each: report the repo path, the changed files (`git status` /
-     `git diff --stat`), and a suggested commit message following
-     `$WORKSPACE_ROOT/conventions.md`'s "Commit / PR title style".
+     `git diff --stat`), and a suggested commit message. Draft it using
+     the `git-commit` skill's Conventional Commits format rules
+     (`type(scope): description`, ≤12 words, imperative mood) if that
+     skill is available, falling back to
+     `$WORKSPACE_ROOT/conventions.md`'s "Commit / PR title style"
+     otherwise — this only borrows its message-format rules.
    - Do not run `git commit` or `git push` yourself, and do not invoke
      the `git-commit` skill to execute a commit on your behalf — this
      applies whether or not that skill is installed. The user commits
@@ -63,6 +67,9 @@ isn't one, stop and ask before generating PR notes.
      that repo's pending code changes.
    - If `WORKSPACE_ROOT` is a separate git repository, and
      `$WORKSPACE_ROOT/conventions.md`'s "Notes repo automation" field
-     allows it, commit the workflow file changes (and push them too,
-     only if that field also allows push) without asking. If the field is
-     unset or says no, leave them uncommitted and say so in the summary.
+     allows it, commit the workflow file changes (and push them too, only
+     if that field also allows push) without asking, drafting that
+     commit's message with the same rule as step 2 (the `git-commit`
+     skill's format if available, else `conventions.md`'s style). If the
+     field is unset or says no, leave them uncommitted and say so in the
+     summary.

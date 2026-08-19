@@ -36,6 +36,11 @@ chore/<TICKET-ID>-short-description
 
 ## Commit / PR title style
 
+<!-- If the `git-commit` skill is installed, its Conventional Commits rules
+     (`type(scope): description`, ≤12 words, imperative mood) are the
+     format of record for drafted commit messages — this template is only
+     the fallback for when it isn't. -->
+
 ```text
 fix(<TICKET-ID>): short description
 ```

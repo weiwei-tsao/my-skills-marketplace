@@ -24,6 +24,13 @@ of the bug is: ...". Wait for the user to confirm before starting Phase 2.
 
 ## Phase 2 — Trace the flow
 
+Before tracing, run through the checklist that actually surfaces root
+causes: read the full error message/stack trace (don't skip past it),
+confirm the bug reproduces consistently (if it doesn't, gather more data —
+don't guess), and check what changed recently in the suspected area (git
+log/diff, new dependencies, config). Jumping straight from "this file looks
+suspicious" to a conclusion is how symptom fixes happen.
+
 Follow the data through every layer — do not stop at the first suspicious
 file:
 
@@ -41,6 +48,14 @@ Use `ecosystem.md`'s flow map if present; otherwise build the chain by
 reading the actual code. Verify each hop — never assume. Record findings as
 you go (→ `investigation.md` in workspace mode), keeping facts, hypotheses,
 and decisions separate.
+
+**Multiple repos in play**: this chain is causal, so trace it sequentially
+in one thread — never split one suspected chain across parallel agents.
+Fan out one agent per repo only when `ecosystem.md` shows the ticket
+plausibly touches genuinely independent repos/surfaces (no shared state,
+either could turn out to own the fix) and you need to triage which one
+before committing to a deep trace; converge back to sequential tracing the
+moment the owning repo is identified.
 
 ## Phase 3 — Present diagnosis, wait for confirmation
 
