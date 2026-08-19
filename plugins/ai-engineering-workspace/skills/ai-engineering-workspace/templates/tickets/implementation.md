@@ -40,6 +40,13 @@ Branch:
 - [ ] No broad refactor
 - [ ] Ownership confirmed
 - [ ] Cross-module impact considered
+- [ ] Current repo path confirmed before editing
+- [ ] Branch confirmed before editing
+- [ ] Existing user/unrelated diff preserved
+- [ ] Verification commands passed or were explicitly N/A
+- [ ] Changed files listed in this ticket record
+- [ ] Known risks and rollback notes recorded
+- [ ] No Finish recommended while any verification command failed
 
 ## Risks
 

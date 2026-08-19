@@ -23,7 +23,7 @@ Each skill works on its own — install once, use only what the project needs:
 
 | Skill | Use when | Standalone (no workspace) |
 |---|---|---|
-| `ticket-workflow` | Working a ticket end to end via `/ai-engineering-workspace:ticket-understand` -> `/ai-engineering-workspace:ticket-investigate` -> `/ai-engineering-workspace:ticket-implement` -> `/ai-engineering-workspace:ticket-finish` | Applies the phase discipline without ticket files |
+| `ticket-workflow` | Working a ticket end to end via `/ai-engineering-workspace:ask`, `/ai-engineering-workspace:setup`, `/ai-engineering-workspace:ticket-understand` -> `/ai-engineering-workspace:ticket-investigate` -> `/ai-engineering-workspace:ticket-implement` -> `/ai-engineering-workspace:ticket-finish` | Applies the phase discipline without ticket files |
 | `structured-bug-fix` | Diagnosing a bug, especially cross-repo | Works in any repo; presents diagnosis before editing |
 | `handoff` | Saving state before ending a session, or resuming one | Uses `.handoff/HANDOFF.md` at repo root |
 | `complete-ticket` | Turning a finished or intentionally drafted ticket into private context plus public-safe reusable knowledge | Draft mode only without workspace files |
@@ -46,8 +46,9 @@ requires ticket evidence, while standalone mode is draft-only.
 
 ## Scaffolding a workspace
 
-When the user wants to set up the workspace, interview first (skip anything
-already known from context or the repo itself):
+When the user wants to set up or upgrade the workspace, prefer
+`/ai-engineering-workspace:setup`. When operating conversationally instead,
+interview first (skip anything already known from context or the repo itself):
 
 1. **Scope** — single repo or multiple? List repos with one-line ownership
    ("who owns what kind of fix").
@@ -79,8 +80,10 @@ Then scaffold from this skill's `templates/` directory:
 Upgrading an existing workspace to a newer plugin version: re-copy
 `templates/tickets/*` and `templates/scripts/new-ticket.sh` over the
 workspace's `tickets/_template/` and `scripts/new-ticket.sh` so it picks up
-template changes (e.g. the `Status:` field) — the scaffold step above only
-runs once, at workspace creation.
+template changes (e.g. the `Status:` field) — first compare the workspace files
+against this skill's templates and ask before overwriting any changed template.
+Never overwrite `ecosystem.md`, `conventions.md`, or existing ticket evidence
+files during an upgrade.
 
 Fill the templates with the interview answers — don't leave placeholder
 text behind for sections you have answers to. Show the generated
