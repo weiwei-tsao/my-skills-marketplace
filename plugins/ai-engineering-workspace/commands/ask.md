@@ -14,7 +14,11 @@ Hard boundary:
   next command for the user to run.
 
 1. Detect `WORKSPACE_ROOT`: a directory containing `ecosystem.md` and
-   `tickets/` (current dir, or a notes repo the user points to).
+   `tickets/`. Check, in order: the current dir; if the current dir's path
+   matches `.../tickets/<TICKET-ID>/` (two levels down from a candidate
+   root), its grandparent; or a notes repo the user points to. This
+   two-level check exists only to make step 2's "invoked from inside the
+   ticket's own directory" case work — do not walk any other ancestor.
    If none is found, say workspace mode is unavailable and recommend
    `/ai-engineering-workspace:ticket-understand <TICKET-ID>` in standalone mode
    once the user provides a ticket ID and raw ticket content.
