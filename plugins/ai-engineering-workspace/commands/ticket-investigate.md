@@ -42,11 +42,24 @@ code.
 
 Do not edit any code in this phase.
 
+5. Before presenting the gate summary, run the draft findings through the
+   independent verification process defined in `ticket-workflow`'s
+   SKILL.md ("Independent verification at gates"). Give the fresh
+   verifier the investigation draft (facts, root cause, owner) plus full
+   read access to the repo — not just the files you cited — since its job
+   is to find evidence that undermines the claims, not just check your
+   citations. On HARD_FAIL, fix or downgrade the flagged claim and
+   re-verify once with a new fresh verifier instance; if it still fails,
+   stop, report the exact unresolved claim, and do not present a gate
+   summary. On PASS or SOFT_FLAGS, proceed to the gate below and include
+   any flags in the summary.
+
 Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. Wait for confirmation. Once confirmed, update
 `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md`'s `Status:` line to
 `confirmed` (workspace mode). If `investigation.md` predates this field
 and has no `Status:` line at all, add one directly under the H1 title
 reading `Status: confirmed` instead of trying to find a line to replace.
+Append a `Verified:` line per the shared verification section.
 
 Tell the user to run `/ai-engineering-workspace:ticket-implement $ARGUMENTS`.

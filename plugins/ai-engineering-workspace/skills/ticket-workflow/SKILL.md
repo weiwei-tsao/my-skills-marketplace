@@ -62,6 +62,58 @@ discipline the `handoff` skill uses for dead-ends. Never run a standalone
 "update the docs" pass outside a gate transition; if nothing changed since
 the last gate, there's nothing to sync.
 
+## Independent verification at gates (v1 scope: Understand / Investigate / structured-bug-fix Phase 3)
+
+**Design principles:**
+> The verifier does not prove the draft is correct; it tries to find sufficient reason not to confirm it.
+> PASS means "no blocking verification issue was found." It never means "the ticket is confirmed."
+
+**Responsibility model:** Author (main agent, investigating) → fresh adversarial verifier (verdict only, never writes files or `Status:`) → human (sole authority to flip `Status:` to `confirmed`/`complete`). A verifier PASS is necessary but never sufficient to advance Status — that flip only ever happens after the human's explicit confirmation, exactly as elsewhere in this workflow.
+
+**What counts as a material factual claim:**
+> A material factual claim is one whose falsity would materially change the gate decision, root-cause assessment, implementation scope, or completion judgment.
+
+Only material claims need anchors (`file:line` or equivalent). Reasoning, interpretation, and hypothesis don't need anchors — they only fail verification if presented as fact without being labeled as such.
+
+**HARD_FAIL has two independent sources — both must be checked, neither is optional:**
+1. The claim lacks sufficient positive, traceable evidence. Absence of contradictory evidence is not sufficient for PASS.
+2. The repo contains material evidence that contradicts the claim — found by independently inspecting nearby/relevant code, not just the anchors the draft supplied. Give the verifier full read access to the repo, not just the cited ranges.
+
+**SOFT_FLAGS** (surfaced with the gate summary, never blocking): an unaddressed alternate explanation; scope introduced in a restatement that the source material didn't state; a conclusion reachable with fewer intermediate assumptions (fact A → guess B → assumption C → explanation D → conclusion E, when A → E would suffice).
+
+**Flow:**
+
+```text
+Author -> draft
+   |
+Fresh verifier #1
+   +-- PASS / SOFT_FLAGS -> gate summary -> human decides
+   +-- HARD_FAIL -> author repairs or downgrades the claim
+                       |
+                   Fresh verifier #2 (a new instance -- never verifier #1 again,
+                   so it isn't anchored on its own first hypothesis)
+                       +-- PASS / SOFT_FLAGS -> gate summary -> human decides
+                       +-- HARD_FAIL -> STOP, report the exact unresolved claim,
+                                        do not present a gate summary
+```
+
+Dispatch each verifier as a fresh agent with no shared context from the authoring
+session — it must not be told the conclusion is expected to be correct.
+
+**Recording** (one line on the ticket's `Status:`-bearing file, no new files):
+`Verified: <date> — PASS`, `Verified: <date> — PASS — flags: <short list>`, or
+`Verified: <date> — BLOCKED: claim 2 (root cause is X) lacks supporting code
+evidence`. Keep the specific unresolved claim in the line — a bare `HARD_FAIL`
+tells a future session nothing.
+
+**Scope freeze for v1**: only `ticket-understand.md`, `ticket-investigate.md`,
+and `structured-bug-fix.md` Phase 3 call this. All three answer "do we
+understand this well enough for a human to confirm the next phase" — one
+verification contract. Implement/Finish correctness is a different contract
+(tests, diff review, acceptance criteria) and stays out of scope until this
+version has run on real tickets and the SOFT_FLAGS noise / HARD_FAIL
+false-positive rates are known.
+
 ## Common rationalizations
 
 | Rationalization | Correct response |
@@ -71,6 +123,8 @@ the last gate, there's nothing to sync.
 | "I can continue into the next phase while I have momentum." | Stop at the gate and tell the user the next command to run. |
 | "Verification failed, but the failure looks unrelated." | Do not mark implementation complete and do not suggest Finish. Report the failure and stop. |
 | "The notes repo and implementation repo are basically the same workflow." | Treat them separately. Implementation repos are never auto-committed or pushed. |
+| "The verifier passed, so I can mark `Status:` confirmed myself." | PASS only means no blocking issue was found. The human still has to explicitly confirm before `Status:` changes. |
+| "I couldn't find evidence against the claim, so it passes." | Absence of contradicting evidence is not evidence for the claim. It still needs positive, traceable support. |
 
 ## Red flags
 
@@ -80,6 +134,9 @@ the last gate, there's nothing to sync.
 - Recommending Finish before `implementation.md` has `Status: complete`.
 - Rewriting confirmed investigation history instead of appending a correction.
 - Losing track of `WORKSPACE_ROOT` when it differs from the implementation repo.
+- Treating a verifier's PASS as equivalent to the human's confirmation.
+- Re-running a HARD_FAIL through the same verifier instance instead of a fresh one.
+- Letting a verifier write to a ticket file or flip a `Status:` value itself.
 
 ## Exit criteria
 

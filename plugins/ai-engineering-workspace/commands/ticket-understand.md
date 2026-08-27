@@ -33,16 +33,30 @@ You are starting ticket $ARGUMENTS. This is Phase 1 of 4: Understand.
 3. Record the raw ask and comments into
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md` (workspace mode). The
    template's `Status:` line starts as `draft` — leave it as `draft`.
-4. Output a restatement covering: goal, user-visible problem, expected vs.
+4. Draft a restatement covering: goal, user-visible problem, expected vs.
    current behavior, explicit in/out of scope, open questions.
-5. STOP. Do not read or search any code. Do not create or write
-   `investigation.md`. Wait for the user to confirm the restatement.
-6. Once the user confirms, update
+5. Before showing the restatement, run it through the independent
+   verification process defined in `ticket-workflow`'s SKILL.md
+   ("Independent verification at gates"). Give the fresh verifier the raw
+   ticket text and the draft restatement; its job here is checking for
+   scope the restatement invented beyond the raw ticket, or a stated
+   requirement the restatement dropped, treated as material factual
+   claims. On HARD_FAIL, fix the restatement and re-verify once with a new
+   fresh verifier instance; if it still fails, stop and report the exact
+   unresolved claim instead of presenting a restatement. On PASS or
+   SOFT_FLAGS, proceed to step 6 and include any flags in what you show
+   the user.
+6. Output the restatement. STOP. Do not read or search any code. Do not
+   create or write `investigation.md`. Wait for the user to confirm the
+   restatement.
+7. Once the user confirms, update
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`'s `Status:` line to
    `confirmed` (workspace mode only — standalone mode has no file to
    update; the user's confirmation in this conversation is the only
    record). If `context.md` predates this field and has no `Status:` line
    at all, add one directly under the H1 title reading `Status: confirmed`
-   instead of trying to find a line to replace.
+   instead of trying to find a line to replace. Append a `Verified:` line
+   per the shared verification section (PASS, PASS with flags, or the
+   BLOCKED note if step 5 stopped here instead).
 
 Tell the user to run `/ai-engineering-workspace:ticket-investigate $ARGUMENTS`.
