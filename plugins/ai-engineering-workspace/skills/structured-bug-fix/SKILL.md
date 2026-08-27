@@ -89,3 +89,30 @@ not just the most obvious one. No unrelated refactors.
 Run the repo's checks (typecheck, lint, tests); report results honestly.
 Update `implementation.md`, `test.md`, `pr.md` in workspace mode, and leave
 a handoff (use the `handoff` skill). Never leave a session without one.
+
+## Common rationalizations
+
+| Rationalization | Correct response |
+|---|---|
+| "The suspicious file is obvious, so tracing the full flow is waste." | Trace until the owner is confirmed; symptom location is not ownership. |
+| "I can patch the UI and come back to root cause later." | Present diagnosis first, then edit only after confirmation. |
+| "The user expects this repo to own it." | Follow evidence. If evidence contradicts the user's framing, say so plainly. |
+| "Parallel agents will make the investigation faster." | Use parallel triage only for genuinely independent repos; trace a causal chain sequentially. |
+| "I found one fix, so I can skip checked-not-responsible notes." | Record what was ruled out so the next session does not repeat dead ends. |
+
+## Red flags
+
+- Starting from a suspected implementation file instead of the symptom and flow.
+- Treating a hypothesis as a fact without an anchor.
+- Editing before presenting root cause, evidence, owner, and files to change.
+- Stopping at the first plausible layer in a multi-layer request/data path.
+- Leaving no handoff after a partial diagnosis or failed verification.
+
+## Exit criteria
+
+- The bug is restated and confirmed before code investigation starts.
+- Root cause, evidence, owner, checked-not-responsible layers, and files to
+  change are presented before editing.
+- The implementation changes only the diagnosed owner files.
+- Verification results and remaining risks are recorded honestly.
+- A handoff exists with next steps that a new session can follow cold.

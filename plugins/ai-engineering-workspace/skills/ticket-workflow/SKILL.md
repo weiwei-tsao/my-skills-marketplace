@@ -12,6 +12,8 @@ self-chain ahead.
 
 | Phase | Command | Purpose |
 |---|---|---|
+| Router | `/ai-engineering-workspace:ask [ID]` | Read-only: inspect literal `Status:` fields and recommend the next command |
+| Setup | `/ai-engineering-workspace:setup [path]` | Create or upgrade the ticket workspace and templates |
 | 1. Understand | `/ai-engineering-workspace:ticket-understand <ID>` | Fetch the ticket + comments, confirm the ask, before any code is touched |
 | 2. Investigate | `/ai-engineering-workspace:ticket-investigate <ID>` | Read-only: trace flow, confirm root cause + owner |
 | 3. Implement | `/ai-engineering-workspace:ticket-implement <ID>` | Minimal change, only after investigation is confirmed; verification must pass before Finish is allowed |
@@ -59,3 +61,34 @@ fact that contradicts something `investigation.md` already marked
 discipline the `handoff` skill uses for dead-ends. Never run a standalone
 "update the docs" pass outside a gate transition; if nothing changed since
 the last gate, there's nothing to sync.
+
+## Common rationalizations
+
+| Rationalization | Correct response |
+|---|---|
+| "The change is small, so I can skip Understand or Investigate." | Small changes still need the same gate; use `/ai-engineering-workspace:ask` if unsure where the ticket is. |
+| "`context.md` or `investigation.md` looks complete enough." | Check only the literal `Status:` value. `draft` or missing means stop. |
+| "I can continue into the next phase while I have momentum." | Stop at the gate and tell the user the next command to run. |
+| "Verification failed, but the failure looks unrelated." | Do not mark implementation complete and do not suggest Finish. Report the failure and stop. |
+| "The notes repo and implementation repo are basically the same workflow." | Treat them separately. Implementation repos are never auto-committed or pushed. |
+
+## Red flags
+
+- Reading code during Understand.
+- Editing code during Investigate.
+- Running Implement before `investigation.md` has `Status: confirmed`.
+- Recommending Finish before `implementation.md` has `Status: complete`.
+- Rewriting confirmed investigation history instead of appending a correction.
+- Losing track of `WORKSPACE_ROOT` when it differs from the implementation repo.
+
+## Exit criteria
+
+- Understand exits only after the ask is restated and `context.md` is confirmed
+  in workspace mode.
+- Investigate exits only after facts, hypotheses, owner, and next safe action
+  are summarized and `investigation.md` is confirmed in workspace mode.
+- Implement exits only after the minimal change is made, configured
+  verification has passed or is explicitly `N/A`, and `implementation.md` is
+  marked `complete`.
+- Finish exits only after PR notes, status update, implementation-repo commit
+  report, and handoff are present.
