@@ -1,0 +1,7 @@
+{
+  "name": "xhs-topic-digest",
+  "version": "0.1.0",
+  "description": "Turns a xiaohongshu (小红书) keyword search into a UGC content digest — consensus, disagreements, recommendations, and warnings drawn from post bodies and comments, not an engagement-metrics analysis.",
+  "author": { "name": "weiwei-tsao" },
+  "license": "MIT"
+}

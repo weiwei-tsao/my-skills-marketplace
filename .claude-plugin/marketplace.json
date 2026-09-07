@@ -61,6 +61,15 @@
       "author": { "name": "weiwei-tsao" },
       "category": "writing",
       "keywords": ["blog", "notes", "writing", "笔记", "写作"]
+    },
+    {
+      "name": "xhs-topic-digest",
+      "source": "./plugins/xhs-topic-digest",
+      "version": "0.1.0",
+      "description": "Turns a xiaohongshu (小红书) keyword search into a UGC content digest — consensus, disagreements, recommendations, and warnings drawn from post bodies and comments, not an engagement-metrics analysis.",
+      "author": { "name": "weiwei-tsao" },
+      "category": "research",
+      "keywords": ["xiaohongshu", "小红书", "ugc", "content-digest", "research", "social-media"]
     }
   ]
 }
