@@ -51,13 +51,15 @@ Do not edit any code in this phase.
    can also check whether the draft contradicts anything already
    confirmed there. Its job is to find evidence that undermines the
    claims, not just check your citations. On HARD_FAIL — including a
-   contradiction with `context.md` — fix or downgrade the flagged claim
-   (for a `context.md` contradiction, append a dated
-   `## Correction (<date>)` note to `context.md` instead of rewriting it)
-   and re-verify once with a new fresh verifier instance; if it still
-   fails, stop, report the exact unresolved claim, and do not present a
-   gate summary. On PASS or SOFT_FLAGS, proceed to the gate below and
-   include any flags in the summary.
+   contradiction with `context.md` — first determine which claim the
+   evidence actually invalidates: if it's the investigation draft's
+   claim, just fix or downgrade the draft; only if `context.md`'s claim
+   is the one that no longer holds, fix the draft accordingly and append
+   a dated `## Correction (<date>)` note to `context.md` instead of
+   rewriting it. Re-verify once with a new fresh verifier instance; if it
+   still fails, stop, report the exact unresolved claim, and do not
+   present a gate summary. On PASS or SOFT_FLAGS, proceed to the gate
+   below and include any flags in the summary.
 
 Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. Wait for confirmation. Once confirmed, update
