@@ -45,12 +45,16 @@ Do not edit any code in this phase.
 5. Before presenting the gate summary, run the draft findings through the
    independent verification process defined in `ticket-workflow`'s
    SKILL.md ("Independent verification at gates"). Give the fresh
-   verifier the investigation draft (facts, root cause, owner), full
-   read access to the repo — not just the files you cited — and, in
-   workspace mode, `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`, so it
-   can also check whether the draft contradicts anything already
-   confirmed there. Its job is to find evidence that undermines the
-   claims, not just check your citations. On HARD_FAIL — including a
+   verifier the complete investigation draft — not just facts, root
+   cause, and owner, since next steps and other scope-relevant
+   conclusions are material too, and a next step that quietly expands
+   scope beyond `context.md`'s confirmed boundaries is exactly the
+   contradiction source 3 must catch. Also give it full read access to
+   the repo — not just the files you cited — and, in workspace mode,
+   `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`, so it can also check
+   whether the draft contradicts anything already confirmed there. Its
+   job is to find evidence that undermines the claims, not just check
+   your citations. On HARD_FAIL — including a
    contradiction with `context.md` — first determine which claim the
    evidence actually invalidates: if it's the investigation draft's
    claim, just fix or downgrade the draft; only if `context.md`'s claim
