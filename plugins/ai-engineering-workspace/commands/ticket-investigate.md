@@ -45,14 +45,19 @@ Do not edit any code in this phase.
 5. Before presenting the gate summary, run the draft findings through the
    independent verification process defined in `ticket-workflow`'s
    SKILL.md ("Independent verification at gates"). Give the fresh
-   verifier the investigation draft (facts, root cause, owner) plus full
-   read access to the repo — not just the files you cited — since its job
-   is to find evidence that undermines the claims, not just check your
-   citations. On HARD_FAIL, fix or downgrade the flagged claim and
-   re-verify once with a new fresh verifier instance; if it still fails,
-   stop, report the exact unresolved claim, and do not present a gate
-   summary. On PASS or SOFT_FLAGS, proceed to the gate below and include
-   any flags in the summary.
+   verifier the investigation draft (facts, root cause, owner), full
+   read access to the repo — not just the files you cited — and, in
+   workspace mode, `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`, so it
+   can also check whether the draft contradicts anything already
+   confirmed there. Its job is to find evidence that undermines the
+   claims, not just check your citations. On HARD_FAIL — including a
+   contradiction with `context.md` — fix or downgrade the flagged claim
+   (for a `context.md` contradiction, append a dated
+   `## Correction (<date>)` note to `context.md` instead of rewriting it)
+   and re-verify once with a new fresh verifier instance; if it still
+   fails, stop, report the exact unresolved claim, and do not present a
+   gate summary. On PASS or SOFT_FLAGS, proceed to the gate below and
+   include any flags in the summary.
 
 Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. Wait for confirmation. Once confirmed, update

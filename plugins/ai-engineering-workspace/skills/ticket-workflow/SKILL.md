@@ -75,9 +75,10 @@ the last gate, there's nothing to sync.
 
 Only material claims need anchors (`file:line` or equivalent). Reasoning, interpretation, and hypothesis don't need anchors — they only fail verification if presented as fact without being labeled as such.
 
-**HARD_FAIL has two independent sources — both must be checked, neither is optional:**
+**HARD_FAIL has three independent sources — all must be checked, none is optional:**
 1. The claim lacks sufficient positive, traceable evidence. Absence of contradictory evidence is not sufficient for PASS.
 2. The repo contains material evidence that contradicts the claim — found by independently inspecting nearby/relevant code, not just the anchors the draft supplied. Give the verifier full read access to the repo, not just the cited ranges.
+3. The draft contradicts or invalidates something already `confirmed`/`complete` in an earlier-phase ticket document — only checked where the calling command hands the verifier that earlier document (v1: `context.md` at the Investigate gate only, see scope note below). Remediation is the append-only `## Correction (<date>)` note from "Keeping records in sync without over-documenting" above, never a rewrite.
 
 **SOFT_FLAGS** (surfaced with the gate summary, never blocking): an unaddressed alternate explanation; scope introduced in a restatement that the source material didn't state; a conclusion reachable with fewer intermediate assumptions (fact A → guess B → assumption C → explanation D → conclusion E, when A → E would suffice).
 
@@ -114,6 +115,15 @@ verification contract. Implement/Finish correctness is a different contract
 version has run on real tickets and the SOFT_FLAGS noise / HARD_FAIL
 false-positive rates are known.
 
+**Cross-document contradiction check (v1 scope: Investigate gate only,
+against `context.md`)**: HARD_FAIL source 3 above only fires where the
+calling command explicitly hands the verifier an earlier confirmed
+document. v1 wires this at Investigate only. Understand has no earlier
+confirmed document to check against. structured-bug-fix Phase 3 and
+Implement are not wired yet — extend only after this pilot has run on real
+tickets, same discipline as the scope freeze above, not as a bundled
+change.
+
 ## Common rationalizations
 
 | Rationalization | Correct response |
@@ -137,6 +147,7 @@ false-positive rates are known.
 - Treating a verifier's PASS as equivalent to the human's confirmation.
 - Re-running a HARD_FAIL through the same verifier instance instead of a fresh one.
 - Letting a verifier write to a ticket file or flip a `Status:` value itself.
+- Confirming an investigation draft without giving the verifier `context.md` to check for contradictions.
 
 ## Exit criteria
 
