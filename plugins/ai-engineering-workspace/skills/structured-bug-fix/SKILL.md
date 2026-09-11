@@ -77,6 +77,15 @@ necessity: reproduce with every condition at its triggering value, then
 flip exactly one back to non-triggering at a time, holding the rest fixed.
 A flip that kills the bug confirms that condition's necessity; a flip that
 doesn't is itself a finding — that condition wasn't actually required.
+Reproduction is diagnostic, not license to mutate: against live or shared
+state (production, a shared staging environment, a shared third-party
+sandbox account), read-only observation of what already happened is fine,
+but manufacturing a trigger condition through a state-changing action
+there needs explicit human sign-off and an established safe procedure —
+see `ticket-workflow`'s "Never manufacture failure against live or shared
+state." A bug that only reproduces in such an environment gets diagnosed
+from what already happened there, not from deliberately triggering it
+again.
 
 **Multiple repos in play**: this chain is causal, so trace it sequentially
 in one thread — never split one suspected chain across parallel agents.
@@ -154,6 +163,7 @@ a handoff (use the `handoff` skill). Never leave a session without one.
 | "Parallel agents will make the investigation faster." | Use parallel triage only for genuinely independent repos; trace a causal chain sequentially. |
 | "I found one fix, so I can skip checked-not-responsible notes." | Record what was ruled out so the next session does not repeat dead ends. |
 | "The bug reproduces under specific conditions, so once I've found the one that correlates, listing the rest is unnecessary." | Enumerate every conjunct anyway — an unlisted one is an untested variable. A non-reproduction only isolates a condition when the other known conditions in that scenario are held at their triggering values. |
+| "This bug only reproduces in production, so I need to trigger it there to confirm the diagnosis." | Diagnose from what already happened there (read-only). Manufacturing the condition through a state-changing action needs explicit human sign-off first. |
 
 ## Red flags
 
@@ -164,6 +174,8 @@ a handoff (use the `handoff` skill). Never leave a session without one.
 - Leaving no handoff after a partial diagnosis or failed verification.
 - Diagnosing an intermittent bug from one correlated variable without ruling
   out other variables that also varied between the same observations.
+- Manufacturing a trigger condition against production or other shared
+  state instead of diagnosing from what already happened there.
 
 ## Exit criteria
 
