@@ -52,7 +52,9 @@ Do not edit any code in this phase.
    contradiction source 3 must catch. Also give it full read access to
    the repo — not just the files you cited — and, in workspace mode,
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`, so it can also check
-   whether the draft contradicts anything already confirmed there. Its
+   whether the draft contradicts anything already confirmed there —
+   reading any `## Correction` section in `context.md` as overriding the
+   claim it corrects, not as separate content alongside it. Its
    job is to find evidence that undermines the claims, not just check
    your citations. On HARD_FAIL — including a
    contradiction with `context.md` — first determine which claim the
