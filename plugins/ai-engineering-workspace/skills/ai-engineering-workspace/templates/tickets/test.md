@@ -30,7 +30,11 @@
      triggering value — not a neutral/empty value that runs the code path
      without exercising the condition. A test that "saves twice" with an
      empty payload both times is not testing "second save with stale
-     data"; it's a structural no-op. -->
+     data"; it's a structural no-op. To show a condition is NECESSARY,
+     flip only that condition to non-triggering while holding every other
+     known condition in the scenario at its triggering value — flipping
+     more than one at once means a non-reproduction can't tell you which
+     condition mattered. -->
 
 | Scenario | Condition | Test that drives it to the triggering value | Confirmed |
 |---|---|---|---|

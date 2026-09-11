@@ -64,10 +64,19 @@ the same symptom under this same scenario?" A variable you never isolated
 as plausible a cause as the one you did isolate. Attributing an intermittent
 bug to the one variable you happened to track, without ruling out the
 others that also varied between observations, is an unaddressed alternate
-explanation, not a diagnosis — and a negative test that doesn't hold every
-condition in a scenario at its triggering value *simultaneously* has no
-information value against that scenario; a "pass" from it just means the
-scenario was never actually activated.
+explanation, not a diagnosis.
+
+This also governs how to read a negative test: it only rules out one
+condition when every *other* known condition in the scenario is held at
+its triggering value and only that one condition is flipped. If more than
+one condition changes between the reproducing case and the non-reproducing
+case, the non-reproduction can't tell you which change mattered — that
+comparison has no information value, regardless of how many conditions
+were individually driven to a triggering value at some point. To test
+necessity: reproduce with every condition at its triggering value, then
+flip exactly one back to non-triggering at a time, holding the rest fixed.
+A flip that kills the bug confirms that condition's necessity; a flip that
+doesn't is itself a finding — that condition wasn't actually required.
 
 **Multiple repos in play**: this chain is causal, so trace it sequentially
 in one thread — never split one suspected chain across parallel agents.
@@ -83,8 +92,9 @@ Before presenting the diagnosis, run it through the independent
 verification process defined in `ticket-workflow`'s SKILL.md ("Independent
 verification at gates"). Give the fresh verifier the draft root cause,
 evidence, owner, **and the checked-not-responsible list** — an exclusion is
-a material claim too, per `ticket-workflow`'s higher evidence bar for
-exclusions — plus full read access to the repo, not just the cited files,
+a material claim too, and a broad one by default, per `ticket-workflow`'s
+scope-scaled evidence rule — plus full read access to the repo, not just
+the cited files,
 so it can check both that each material claim has positive traceable
 support and that no other part of the codebase contradicts it. This
 includes any exclusion reached informally while chasing something else,
