@@ -155,8 +155,16 @@ Passing on known-good input only proves the check doesn't false-positive —
 that's the easy half. A check earns trust only after it has also been run
 against known-bad input (a fabricated failure: an empty bucket a `GROUP
 BY` should surface, one deliberately corrupted row, a stubbed failure) and
-actually failed. A check that has never been observed to fail hasn't been
-tested — it's been watched nodding along.
+actually failed. Fabricate that bad input in an isolated fixture or
+sandbox only — never by mutating live or shared data, which stays
+off-limits regardless of phase (Investigate is read-only outright; other
+phases still don't get to damage shared state to test a query). When no
+safe fixture exists, substitute a non-mutating counterexample analysis:
+trace the check's logic by hand against a hypothetical bad case (would
+this row be included, excluded, or silently absent?) instead of
+manufacturing one. A check that has never been observed to fail, or
+reasoned through this way, hasn't been tested — it's been watched nodding
+along.
 
 ## Common rationalizations
 
