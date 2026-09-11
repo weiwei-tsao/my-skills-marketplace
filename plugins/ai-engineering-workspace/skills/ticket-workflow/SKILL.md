@@ -84,8 +84,10 @@ as current — the exact failure this convention exists to prevent.
 
 Only material claims need anchors (`file:line` or equivalent). Reasoning, interpretation, and hypothesis don't need anchors — they only fail verification if presented as fact without being labeled as such.
 
+**Exclusion claims are material claims, and carry a higher bar than inclusion claims.** "X is not the cause" / "ruled out" / "checked, not responsible" / "immune" are exclusion claims. Proving something *is* the cause needs one sufficient piece of evidence; proving it *can't* be needs the alternate mechanisms addressed — a different code path, a caching/config layer, deployment or environment drift, a package nobody opened. An exclusion backed by a single evidence line (e.g., one file's last-modified timestamp) is under-evidenced by construction, even if that line is accurate. Route exclusion claims through the same gate as the root cause — including one reached informally mid-investigation, outside the formal diagnosis write-up, if it will be stated to the user as a reason to proceed (e.g., "you can hand this off now"). A claim doesn't get to skip verification for having been discovered off to the side instead of in the template.
+
 **HARD_FAIL has three independent sources — all must be checked, none is optional:**
-1. The claim lacks sufficient positive, traceable evidence. Absence of contradictory evidence is not sufficient for PASS.
+1. The claim lacks sufficient positive, traceable evidence. Absence of contradictory evidence is not sufficient for PASS. For an exclusion claim, evidence sufficient to rule out the one mechanism checked is not sufficient to rule out the module/repo/theory as a whole — the verifier must confirm other plausible mechanisms were also addressed, not just the one path the author happened to look at.
 2. The repo contains material evidence that contradicts the claim — found by independently inspecting nearby/relevant code, not just the anchors the draft supplied. Give the verifier full read access to the repo, not just the cited ranges.
 3. The draft contradicts something already `confirmed`/`complete` in an earlier-phase ticket document — only checked where the calling command hands the verifier that earlier document (v1: `context.md` at the Investigate gate only, see scope note below). Read that document per the superseding-`## Correction` rule above first: a claim its own `## Correction` section already overturned is not the document's current position, so a draft that agrees with the correction (and disagrees only with the stale original) is not a contradiction. Once read that way, a contradiction says two claims disagree, not which one is wrong. If the draft's claim is the one that's unsupported or incorrect, fix or downgrade the draft (source 1) and leave the earlier document alone. Only append the earlier document's append-only `## Correction (<date>)` note (never a rewrite) when the new evidence shows the earlier document's current claim, not the draft's, no longer holds.
 
@@ -144,6 +146,8 @@ change.
 | "The notes repo and implementation repo are basically the same workflow." | Treat them separately. Implementation repos are never auto-committed or pushed. |
 | "The verifier passed, so I can mark `Status:` confirmed myself." | PASS only means no blocking issue was found. The human still has to explicitly confirm before `Status:` changes. |
 | "I couldn't find evidence against the claim, so it passes." | Absence of contradicting evidence is not evidence for the claim. It still needs positive, traceable support. |
+| "This is just ruling something out, not asserting the root cause, so it doesn't need the same verification." | Exclusion claims need *more* evidence than inclusion claims, not less — route them through the same gate. |
+| "I found this while investigating something else, so it's a side observation, not part of the diagnosis." | If it will be stated as a reason to proceed, it's a material claim regardless of where it was discovered. |
 
 ## Red flags
 
@@ -157,6 +161,7 @@ change.
 - Re-running a HARD_FAIL through the same verifier instance instead of a fresh one.
 - Letting a verifier write to a ticket file or flip a `Status:` value itself.
 - Confirming an investigation draft without giving the verifier `context.md` to check for contradictions.
+- Stating an exclusion ("X is ruled out", "not responsible") to the user as settled without routing it through verification, especially one backed by a single evidence line or discovered outside the formal diagnosis draft.
 
 ## Exit criteria
 

@@ -75,13 +75,19 @@ moment the owning repo is identified.
 Before presenting the diagnosis, run it through the independent
 verification process defined in `ticket-workflow`'s SKILL.md ("Independent
 verification at gates"). Give the fresh verifier the draft root cause,
-evidence, and owner, plus full read access to the repo — not just the
-cited files — so it can check both that each material claim has positive
-traceable support and that no other part of the codebase contradicts it.
-On HARD_FAIL, fix or downgrade the flagged claim and re-verify once with a
-new fresh verifier instance; if it still fails, stop, report the exact
-unresolved claim, and do not present a diagnosis. On PASS or SOFT_FLAGS,
-include any flags in the diagnosis below.
+evidence, owner, **and the checked-not-responsible list** — an exclusion is
+a material claim too, per `ticket-workflow`'s higher evidence bar for
+exclusions — plus full read access to the repo, not just the cited files,
+so it can check both that each material claim has positive traceable
+support and that no other part of the codebase contradicts it. This
+includes any exclusion reached informally while chasing something else,
+not only the ones already written into the diagnosis draft — if you're
+about to tell the user a repo/module/theory is ruled out, add it to
+checked-not-responsible and verify it before saying so. On HARD_FAIL, fix
+or downgrade the flagged claim and re-verify once with a new fresh verifier
+instance; if it still fails, stop, report the exact unresolved claim, and
+do not present a diagnosis. On PASS or SOFT_FLAGS, include any flags in the
+diagnosis below.
 
 Before writing a single line of code, present:
 
