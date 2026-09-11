@@ -16,16 +16,32 @@
 |---|---|---|---|
 |  |  | [ ] |  |
 
-## Trigger-condition coverage
+## Trigger-scenario coverage
 
-<!-- Only if investigation.md has a Trigger conditions section. For each
-     condition, confirm a test actually drives it to its triggering value —
-     not a neutral/empty value that runs the code path without exercising
-     the condition. A test that "saves twice" with an empty payload both
-     times is not testing "second save with stale data"; it's a
-     structural no-op. -->
+<!-- Only if investigation.md has a Trigger conditions section. Both tables
+     are required — per-condition rows can each pass independently without
+     ever combining the conditions, which proves nothing about the
+     scenario (e.g. one test with only condition A active, another with
+     only B active, neither reproducing an A-&&-B bug). -->
 
-| Trigger condition | Test that drives it to the triggering value | Confirmed |
+### Per-condition (boundary checks)
+
+<!-- For each condition, confirm a test actually drives it to its
+     triggering value — not a neutral/empty value that runs the code path
+     without exercising the condition. A test that "saves twice" with an
+     empty payload both times is not testing "second save with stale
+     data"; it's a structural no-op. -->
+
+| Scenario | Condition | Test that drives it to the triggering value | Confirmed |
+|---|---|---|---|
+|  |  |  | [ ] |
+
+### Full scenario (all conditions simultaneously)
+
+<!-- One test per scenario that activates every condition in that scenario
+     at once — the only test that can actually reproduce the bug. -->
+
+| Scenario | Test that activates the complete conjunction | Confirmed |
 |---|---|---|
 |  |  | [ ] |
 

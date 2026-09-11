@@ -49,18 +49,25 @@ reading the actual code. Verify each hop — never assume. Record findings as
 you go (→ `investigation.md` in workspace mode), keeping facts, hypotheses,
 and decisions separate.
 
-**Conjunctive trigger conditions**: if the bug only reproduces under specific
-circumstances, the trigger condition is a conjunction of several things that
-must all hold — not one variable. List every conjunct explicitly (→
-`investigation.md`'s Trigger conditions section), then for each one ask: "if
-this didn't hold, would I still see the same symptom?" A variable you never
-isolated (save count, timing between actions, which UI path was used...) is
-exactly as plausible a cause as the one you did isolate. Attributing an
-intermittent bug to the one variable you happened to track, without ruling
-out the others that also varied between observations, is an unaddressed
-alternate explanation, not a diagnosis — and a negative test that doesn't
-hold every conjunct at its triggering value has no information value; a
-"pass" from it just means one conjunct was never activated.
+**Trigger scenarios are conjunctions — and a bug can have more than one**: if
+the bug only reproduces under specific circumstances, model the trigger as
+one or more *scenarios*; within each scenario, every listed condition must
+hold — not one variable. Don't collapse everything observed into a single
+conjunction: a symptom can have independent sufficient paths (e.g.
+`(browser A && cached state) || malformed payload`), and forcing them into
+one big AND misrecords the other path's inputs as "immune," which
+misdirects diagnosis and drops valid regression cases. List every condition
+in each scenario explicitly (→ `investigation.md`'s Trigger conditions
+section), then for each one ask: "if this didn't hold, would I still see
+the same symptom under this same scenario?" A variable you never isolated
+(save count, timing between actions, which UI path was used...) is exactly
+as plausible a cause as the one you did isolate. Attributing an intermittent
+bug to the one variable you happened to track, without ruling out the
+others that also varied between observations, is an unaddressed alternate
+explanation, not a diagnosis — and a negative test that doesn't hold every
+condition in a scenario at its triggering value *simultaneously* has no
+information value against that scenario; a "pass" from it just means the
+scenario was never actually activated.
 
 **Multiple repos in play**: this chain is causal, so trace it sequentially
 in one thread — never split one suspected chain across parallel agents.
@@ -96,9 +103,10 @@ Before writing a single line of code, present:
 
 **Root cause**: <one sentence>
 
-**Trigger conditions (all must hold)**: <omit this field if the bug reproduces unconditionally>
-1. <condition>
-2. <condition>
+**Trigger scenario(s)** <omit this field if the bug reproduces unconditionally; list more than one scenario if there are independent sufficient paths>:
+- Scenario 1 (all must hold together):
+  1. <condition>
+  2. <condition>
 
 **Evidence**:
 - <file:line> — <what it shows>
