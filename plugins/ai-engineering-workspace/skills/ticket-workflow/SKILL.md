@@ -135,6 +135,21 @@ Implement are not wired yet — extend only after this pilot has run on real
 tickets, same discipline as the scope freeze above, not as a bundled
 change.
 
+## Never manufacture failure against live or shared state
+
+Applies wherever this workflow reproduces a bug, tests a trigger
+condition, or verifies a check — not just the known-bad-input rule below.
+Never manufacture a failure, trigger condition, or negative test by
+mutating production or other live/shared state (rows in a shared
+database, a shared staging environment, a shared third-party sandbox
+account, a queue other workflows read from). Reproduce or fabricate
+destructively only inside an isolated, disposable environment whose state
+isn't shared with other users or workflows. Against live/shared systems,
+read-only observation is always allowed — diagnosing a production-only bug
+often requires exactly that — but any state-changing action there to
+manufacture a condition needs explicit human direction and an established
+safe procedure, not the agent's own judgment that it's necessary.
+
 ## Decorative checks
 
 Applies to any check written into this workflow — a gate verifier's
@@ -153,12 +168,12 @@ all — it converts "we don't know" into a false "we verified."
 
 Passing on known-good input only proves the check doesn't false-positive —
 that's the easy half. Where the check can be exercised safely in an
-isolated fixture or sandbox, run it against known-bad input (an empty
-bucket a `GROUP BY` should surface, one deliberately corrupted fixture, a
-stubbed failure) and confirm it actually fails — never by mutating live or
-shared data, which stays off-limits regardless of phase (Investigate is
-read-only outright; other phases still don't get to damage shared state to
-test a query). For a check against live or otherwise non-fabricable state,
+isolated fixture or disposable sandbox whose state isn't shared with other
+users or workflows, run it against known-bad input (an empty bucket a
+`GROUP BY` should surface, one deliberately corrupted fixture, a stubbed
+failure) and confirm it actually fails (see "Never manufacture failure
+against live or shared state" above — this is that rule applied to
+checks). For a check against live or otherwise non-fabricable state,
 state concretely what observable result would constitute the bad case
 (would this row be included, excluded, or silently absent?) and why the
 check would produce a different result for it — reasoned through by hand,
