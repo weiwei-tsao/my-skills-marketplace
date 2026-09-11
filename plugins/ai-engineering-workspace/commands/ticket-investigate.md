@@ -45,14 +45,27 @@ Do not edit any code in this phase.
 5. Before presenting the gate summary, run the draft findings through the
    independent verification process defined in `ticket-workflow`'s
    SKILL.md ("Independent verification at gates"). Give the fresh
-   verifier the investigation draft (facts, root cause, owner) plus full
-   read access to the repo — not just the files you cited — since its job
-   is to find evidence that undermines the claims, not just check your
-   citations. On HARD_FAIL, fix or downgrade the flagged claim and
-   re-verify once with a new fresh verifier instance; if it still fails,
-   stop, report the exact unresolved claim, and do not present a gate
-   summary. On PASS or SOFT_FLAGS, proceed to the gate below and include
-   any flags in the summary.
+   verifier the complete investigation draft — not just facts, root
+   cause, and owner, since next steps and other scope-relevant
+   conclusions are material too, and a next step that quietly expands
+   scope beyond `context.md`'s confirmed boundaries is exactly the
+   contradiction source 3 must catch. Also give it full read access to
+   the repo — not just the files you cited — and, in workspace mode,
+   `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`, so it can also check
+   whether the draft contradicts anything already confirmed there —
+   reading any `## Correction` section in `context.md` as overriding the
+   claim it corrects, not as separate content alongside it. Its
+   job is to find evidence that undermines the claims, not just check
+   your citations. On HARD_FAIL — including a
+   contradiction with `context.md` — first determine which claim the
+   evidence actually invalidates: if it's the investigation draft's
+   claim, just fix or downgrade the draft; only if `context.md`'s claim
+   is the one that no longer holds, fix the draft accordingly and append
+   a dated `## Correction (<date>)` note to `context.md` instead of
+   rewriting it. Re-verify once with a new fresh verifier instance; if it
+   still fails, stop, report the exact unresolved claim, and do not
+   present a gate summary. On PASS or SOFT_FLAGS, proceed to the gate
+   below and include any flags in the summary.
 
 Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. Wait for confirmation. Once confirmed, update
