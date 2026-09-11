@@ -42,6 +42,22 @@ Entry
 
 <!-- Fill only when confirmed or highly likely. -->
 
+## Trigger conditions (if intermittent / conditional)
+
+<!-- Model as one or more SCENARIOS. Within a scenario, every condition must
+     ALL hold for the bug to reproduce — a scenario is a conjunction, not
+     one variable. A bug can have more than one independent sufficient
+     scenario (e.g. browser+cache OR malformed payload); don't force them
+     into a single conjunction, or the other scenario's inputs get recorded
+     as "immune" by mistake. For each condition, ask: if this one didn't
+     hold, would the symptom still occur under this same scenario? An item
+     you can't answer that for is an untested variable, not a ruled-out one.
+     Delete this section if the bug reproduces unconditionally. -->
+
+### Scenario 1
+
+1. 
+
 ## Owner repo / module
 
 <!-- Which one should own the fix and why? -->

@@ -102,6 +102,11 @@ Build a compact evidence package before writing artifacts. Separate:
 - Decisions: confirmed choices or product/engineering decisions.
 - Final outcome.
 - Root cause or final decision.
+- Trigger conditions, if the bug is conditional/intermittent: the full
+  trigger scenario set from `investigation.md` (a bug can have more than
+  one independent scenario), and which configurations are immune within
+  each. Carry this forward exactly — dropping it is how a reader later
+  "verifies" the fix in an immune configuration and gets a false pass.
 - Owner repo/module.
 - Request or data flow.
 - Repos, services, surfaces, and modules involved.
@@ -179,9 +184,13 @@ lesson.
 relationship card. It is optimized for future recall. It must not mirror the
 ticket-local evidence narrative. Include the mental model, repos/surfaces,
 ownership boundary, request or data flow, when to consult the note again, and
-links back to ticket evidence. Omit step-by-step investigation history, rejected
-debugging paths, raw command output, and PR/process details unless they directly
-explain a system relationship.
+links back to ticket evidence. If the bug was conditional/intermittent,
+"when to consult the note again" must state the trigger scenarios — which
+scenarios reproduce it and which configurations are immune within each —
+not just the mechanism; a reader who tests in an immune configuration and
+gets a false pass has nothing else in the card to warn them. Omit step-by-step investigation history,
+rejected debugging paths, raw command output, and PR/process details unless they
+directly explain a system relationship.
 
 `knowledge/private/repo-relationships-index.md` is a short cumulative index. It
 helps locate the detailed relationship card; it is not the detailed note.
@@ -305,6 +314,8 @@ Then generate public-safe artifacts:
 ## Request Or Data Flow
 
 ## Ownership Boundaries
+
+## Trigger Conditions / Affected vs Immune
 
 ## Hidden Couplings Or Surprising Dependencies
 

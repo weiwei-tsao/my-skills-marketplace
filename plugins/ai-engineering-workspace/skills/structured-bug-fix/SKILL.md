@@ -49,6 +49,35 @@ reading the actual code. Verify each hop — never assume. Record findings as
 you go (→ `investigation.md` in workspace mode), keeping facts, hypotheses,
 and decisions separate.
 
+**Trigger scenarios are conjunctions — and a bug can have more than one**: if
+the bug only reproduces under specific circumstances, model the trigger as
+one or more *scenarios*; within each scenario, every listed condition must
+hold — not one variable. Don't collapse everything observed into a single
+conjunction: a symptom can have independent sufficient paths (e.g.
+`(browser A && cached state) || malformed payload`), and forcing them into
+one big AND misrecords the other path's inputs as "immune," which
+misdirects diagnosis and drops valid regression cases. List every condition
+in each scenario explicitly (→ `investigation.md`'s Trigger conditions
+section), then for each one ask: "if this didn't hold, would I still see
+the same symptom under this same scenario?" A variable you never isolated
+(save count, timing between actions, which UI path was used...) is exactly
+as plausible a cause as the one you did isolate. Attributing an intermittent
+bug to the one variable you happened to track, without ruling out the
+others that also varied between observations, is an unaddressed alternate
+explanation, not a diagnosis.
+
+This also governs how to read a negative test: it only rules out one
+condition when every *other* known condition in the scenario is held at
+its triggering value and only that one condition is flipped. If more than
+one condition changes between the reproducing case and the non-reproducing
+case, the non-reproduction can't tell you which change mattered — that
+comparison has no information value, regardless of how many conditions
+were individually driven to a triggering value at some point. To test
+necessity: reproduce with every condition at its triggering value, then
+flip exactly one back to non-triggering at a time, holding the rest fixed.
+A flip that kills the bug confirms that condition's necessity; a flip that
+doesn't is itself a finding — that condition wasn't actually required.
+
 **Multiple repos in play**: this chain is causal, so trace it sequentially
 in one thread — never split one suspected chain across parallel agents.
 Fan out one agent per repo only when `ecosystem.md` shows the ticket
@@ -62,13 +91,20 @@ moment the owning repo is identified.
 Before presenting the diagnosis, run it through the independent
 verification process defined in `ticket-workflow`'s SKILL.md ("Independent
 verification at gates"). Give the fresh verifier the draft root cause,
-evidence, and owner, plus full read access to the repo — not just the
-cited files — so it can check both that each material claim has positive
-traceable support and that no other part of the codebase contradicts it.
-On HARD_FAIL, fix or downgrade the flagged claim and re-verify once with a
-new fresh verifier instance; if it still fails, stop, report the exact
-unresolved claim, and do not present a diagnosis. On PASS or SOFT_FLAGS,
-include any flags in the diagnosis below.
+evidence, owner, **and the checked-not-responsible list** — an exclusion is
+a material claim too, and a broad one by default, per `ticket-workflow`'s
+scope-scaled evidence rule — plus full read access to the repo, not just
+the cited files,
+so it can check both that each material claim has positive traceable
+support and that no other part of the codebase contradicts it. This
+includes any exclusion reached informally while chasing something else,
+not only the ones already written into the diagnosis draft — if you're
+about to tell the user a repo/module/theory is ruled out, add it to
+checked-not-responsible and verify it before saying so. On HARD_FAIL, fix
+or downgrade the flagged claim and re-verify once with a new fresh verifier
+instance; if it still fails, stop, report the exact unresolved claim, and
+do not present a diagnosis. On PASS or SOFT_FLAGS, include any flags in the
+diagnosis below.
 
 Before writing a single line of code, present:
 
@@ -76,6 +112,11 @@ Before writing a single line of code, present:
 ## Diagnosis
 
 **Root cause**: <one sentence>
+
+**Trigger scenario(s)** <omit this field if the bug reproduces unconditionally; list more than one scenario if there are independent sufficient paths>:
+- Scenario 1 (all must hold together):
+  1. <condition>
+  2. <condition>
 
 **Evidence**:
 - <file:line> — <what it shows>
@@ -112,6 +153,7 @@ a handoff (use the `handoff` skill). Never leave a session without one.
 | "The user expects this repo to own it." | Follow evidence. If evidence contradicts the user's framing, say so plainly. |
 | "Parallel agents will make the investigation faster." | Use parallel triage only for genuinely independent repos; trace a causal chain sequentially. |
 | "I found one fix, so I can skip checked-not-responsible notes." | Record what was ruled out so the next session does not repeat dead ends. |
+| "The bug reproduces under specific conditions, so once I've found the one that correlates, listing the rest is unnecessary." | Enumerate every conjunct anyway — an unlisted one is an untested variable. A non-reproduction only isolates a condition when the other known conditions in that scenario are held at their triggering values. |
 
 ## Red flags
 
@@ -120,6 +162,8 @@ a handoff (use the `handoff` skill). Never leave a session without one.
 - Editing before presenting root cause, evidence, owner, and files to change.
 - Stopping at the first plausible layer in a multi-layer request/data path.
 - Leaving no handoff after a partial diagnosis or failed verification.
+- Diagnosing an intermittent bug from one correlated variable without ruling
+  out other variables that also varied between the same observations.
 
 ## Exit criteria
 
