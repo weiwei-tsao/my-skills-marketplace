@@ -42,6 +42,16 @@ Entry
 
 <!-- Fill only when confirmed or highly likely. -->
 
+## Trigger conditions (if intermittent / conditional)
+
+<!-- List every condition that must ALL hold for the bug to reproduce — a
+     trigger condition is a conjunction, not one variable. For each item,
+     ask: if this one didn't hold, would the symptom still occur? An item
+     you can't answer that for is an untested variable, not a ruled-out one.
+     Delete this section if the bug reproduces unconditionally. -->
+
+1. 
+
 ## Owner repo / module
 
 <!-- Which one should own the fix and why? -->

@@ -49,6 +49,19 @@ reading the actual code. Verify each hop — never assume. Record findings as
 you go (→ `investigation.md` in workspace mode), keeping facts, hypotheses,
 and decisions separate.
 
+**Conjunctive trigger conditions**: if the bug only reproduces under specific
+circumstances, the trigger condition is a conjunction of several things that
+must all hold — not one variable. List every conjunct explicitly (→
+`investigation.md`'s Trigger conditions section), then for each one ask: "if
+this didn't hold, would I still see the same symptom?" A variable you never
+isolated (save count, timing between actions, which UI path was used...) is
+exactly as plausible a cause as the one you did isolate. Attributing an
+intermittent bug to the one variable you happened to track, without ruling
+out the others that also varied between observations, is an unaddressed
+alternate explanation, not a diagnosis — and a negative test that doesn't
+hold every conjunct at its triggering value has no information value; a
+"pass" from it just means one conjunct was never activated.
+
 **Multiple repos in play**: this chain is causal, so trace it sequentially
 in one thread — never split one suspected chain across parallel agents.
 Fan out one agent per repo only when `ecosystem.md` shows the ticket
@@ -76,6 +89,10 @@ Before writing a single line of code, present:
 ## Diagnosis
 
 **Root cause**: <one sentence>
+
+**Trigger conditions (all must hold)**: <omit this field if the bug reproduces unconditionally>
+1. <condition>
+2. <condition>
 
 **Evidence**:
 - <file:line> — <what it shows>
@@ -112,6 +129,7 @@ a handoff (use the `handoff` skill). Never leave a session without one.
 | "The user expects this repo to own it." | Follow evidence. If evidence contradicts the user's framing, say so plainly. |
 | "Parallel agents will make the investigation faster." | Use parallel triage only for genuinely independent repos; trace a causal chain sequentially. |
 | "I found one fix, so I can skip checked-not-responsible notes." | Record what was ruled out so the next session does not repeat dead ends. |
+| "The bug reproduces under specific conditions, so once I've found the one that correlates, listing the rest is unnecessary." | Enumerate every conjunct anyway — an unlisted one is an untested variable, and any test/observation that doesn't hold it at its triggering value carries no information about the bug. |
 
 ## Red flags
 
@@ -120,6 +138,8 @@ a handoff (use the `handoff` skill). Never leave a session without one.
 - Editing before presenting root cause, evidence, owner, and files to change.
 - Stopping at the first plausible layer in a multi-layer request/data path.
 - Leaving no handoff after a partial diagnosis or failed verification.
+- Diagnosing an intermittent bug from one correlated variable without ruling
+  out other variables that also varied between the same observations.
 
 ## Exit criteria
 

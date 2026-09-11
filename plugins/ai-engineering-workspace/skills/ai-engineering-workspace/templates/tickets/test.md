@@ -16,6 +16,19 @@
 |---|---|---|---|
 |  |  | [ ] |  |
 
+## Trigger-condition coverage
+
+<!-- Only if investigation.md has a Trigger conditions section. For each
+     condition, confirm a test actually drives it to its triggering value —
+     not a neutral/empty value that runs the code path without exercising
+     the condition. A test that "saves twice" with an empty payload both
+     times is not testing "second save with stale data"; it's a
+     structural no-op. -->
+
+| Trigger condition | Test that drives it to the triggering value | Confirmed |
+|---|---|---|
+|  |  | [ ] |
+
 ## Regression checks
 
 - [ ] Existing behavior still works
