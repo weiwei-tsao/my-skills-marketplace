@@ -152,19 +152,19 @@ action (a write, a delete, a send with no undo) is worse than no check at
 all — it converts "we don't know" into a false "we verified."
 
 Passing on known-good input only proves the check doesn't false-positive —
-that's the easy half. A check earns trust only after it has also been run
-against known-bad input (a fabricated failure: an empty bucket a `GROUP
-BY` should surface, one deliberately corrupted row, a stubbed failure) and
-actually failed. Fabricate that bad input in an isolated fixture or
-sandbox only — never by mutating live or shared data, which stays
-off-limits regardless of phase (Investigate is read-only outright; other
-phases still don't get to damage shared state to test a query). When no
-safe fixture exists, substitute a non-mutating counterexample analysis:
-trace the check's logic by hand against a hypothetical bad case (would
-this row be included, excluded, or silently absent?) instead of
-manufacturing one. A check that has never been observed to fail, or
-reasoned through this way, hasn't been tested — it's been watched nodding
-along.
+that's the easy half. Where the check can be exercised safely in an
+isolated fixture or sandbox, run it against known-bad input (an empty
+bucket a `GROUP BY` should surface, one deliberately corrupted fixture, a
+stubbed failure) and confirm it actually fails — never by mutating live or
+shared data, which stays off-limits regardless of phase (Investigate is
+read-only outright; other phases still don't get to damage shared state to
+test a query). For a check against live or otherwise non-fabricable state,
+state concretely what observable result would constitute the bad case
+(would this row be included, excluded, or silently absent?) and why the
+check would produce a different result for it — reasoned through by hand,
+not manufactured. A check whose failure path has neither been observed nor
+demonstrated this way is not yet strong verification — it's been watched
+nodding along.
 
 ## Common rationalizations
 
@@ -180,7 +180,7 @@ along.
 | "This is just ruling something out, not asserting the root cause, so it doesn't need the same verification." | A broad claim's evidence burden doesn't shrink because it's phrased as a negative — route it through the same gate regardless of phrasing. |
 | "I found this while investigating something else, so it's a side observation, not part of the diagnosis." | If it will be stated as a reason to proceed, it's a material claim regardless of where it was discovered. |
 | "This check passed, so the thing it verifies is fine." | Ask what the check would show if the condition it's supposed to catch actually happened. If the answer is "the same thing," the check is decorative regardless of how official it looks. |
-| "This check has always passed, so it must be reliable." | A check never observed to fail on known-bad/fabricated-failure input hasn't been tested — it's been watched nodding along. |
+| "This check has always passed, so it must be reliable." | Its failure path needs to have been observed on known-bad input, or — where fabrication isn't safe — concretely reasoned through. Neither yet? Not strong verification, just watched nodding along. |
 
 ## Red flags
 
@@ -196,7 +196,7 @@ along.
 - Confirming an investigation draft without giving the verifier `context.md` to check for contradictions.
 - Stating an exclusion ("X is ruled out", "not responsible") to the user as settled without routing it through verification, especially one backed by a single evidence line or discovered outside the formal diagnosis draft.
 - Trusting a check that would show the same result whether the condition it checks is true or false — especially one guarding an irreversible write/delete/send.
-- Treating a check as proven because it passed on known-good data, without ever having seen it fail on known-bad data.
+- Treating a check as proven because it passed on known-good data, without ever having seen it fail on known-bad data or, where that isn't safely fabricable, reasoned through why it would.
 
 ## Exit criteria
 
