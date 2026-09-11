@@ -153,7 +153,7 @@ a handoff (use the `handoff` skill). Never leave a session without one.
 | "The user expects this repo to own it." | Follow evidence. If evidence contradicts the user's framing, say so plainly. |
 | "Parallel agents will make the investigation faster." | Use parallel triage only for genuinely independent repos; trace a causal chain sequentially. |
 | "I found one fix, so I can skip checked-not-responsible notes." | Record what was ruled out so the next session does not repeat dead ends. |
-| "The bug reproduces under specific conditions, so once I've found the one that correlates, listing the rest is unnecessary." | Enumerate every conjunct anyway — an unlisted one is an untested variable, and any test/observation that doesn't hold it at its triggering value carries no information about the bug. |
+| "The bug reproduces under specific conditions, so once I've found the one that correlates, listing the rest is unnecessary." | Enumerate every conjunct anyway — an unlisted one is an untested variable. A non-reproduction only isolates a condition when the other known conditions in that scenario are held at their triggering values. |
 
 ## Red flags
 

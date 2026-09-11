@@ -103,8 +103,9 @@ Build a compact evidence package before writing artifacts. Separate:
 - Final outcome.
 - Root cause or final decision.
 - Trigger conditions, if the bug is conditional/intermittent: the full
-  conjunction from `investigation.md`, and which conditions make the system
-  immune. Carry this forward exactly — dropping it is how a reader later
+  trigger scenario set from `investigation.md` (a bug can have more than
+  one independent scenario), and which configurations are immune within
+  each. Carry this forward exactly — dropping it is how a reader later
   "verifies" the fix in an immune configuration and gets a false pass.
 - Owner repo/module.
 - Request or data flow.
@@ -184,10 +185,10 @@ relationship card. It is optimized for future recall. It must not mirror the
 ticket-local evidence narrative. Include the mental model, repos/surfaces,
 ownership boundary, request or data flow, when to consult the note again, and
 links back to ticket evidence. If the bug was conditional/intermittent,
-"when to consult the note again" must state the trigger conditions — which
-configurations reproduce it and which are immune — not just the mechanism;
-a reader who tests in an immune configuration and gets a false pass has
-nothing else in the card to warn them. Omit step-by-step investigation history,
+"when to consult the note again" must state the trigger scenarios — which
+scenarios reproduce it and which configurations are immune within each —
+not just the mechanism; a reader who tests in an immune configuration and
+gets a false pass has nothing else in the card to warn them. Omit step-by-step investigation history,
 rejected debugging paths, raw command output, and PR/process details unless they
 directly explain a system relationship.
 
