@@ -38,7 +38,7 @@
     {
       "name": "ai-engineering-workspace",
       "source": "./plugins/ai-engineering-workspace",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "description": "Generic AI-engineering ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction.",
       "author": { "name": "weiwei-tsao" },
       "category": "workflow",
