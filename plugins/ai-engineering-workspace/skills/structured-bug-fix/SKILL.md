@@ -77,9 +77,9 @@ necessity: reproduce with every condition at its triggering value, then
 flip exactly one back to non-triggering at a time, holding the rest fixed.
 A flip that kills the bug confirms that condition's necessity; a flip that
 doesn't is itself a finding — that condition wasn't actually required.
-Reproduction is diagnostic, not license to mutate or dig past your
-authorization: against live or shared state (production, a shared staging
-environment, a shared third-party sandbox account), follow
+Reproduction is diagnostic, not license to mutate: against live or shared
+state (production, a shared staging environment, a shared third-party
+sandbox account), follow
 `ticket-workflow`'s "Never manufacture failure against live or shared
 state" for what's allowed. By default, a bug that only reproduces in such
 an environment gets diagnosed from what already happened there, not from
