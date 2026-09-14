@@ -71,12 +71,16 @@ confirming a check fails on known-bad input (`ticket-workflow`'s
 Decorative checks) is not one of these verification commands — an
 expected failure there is a successful demonstration, not a gate failure;
 record it as evidence in `implementation.md`/`test.md` and don't let that
-expected failure's exit code affect this gate. If the negative control
-does *not* fail — the check accepts the known-bad input — that's not a
-neutral result: it's exactly the defect Decorative checks exists to
-catch. Treat it as a blocking verification failure like any other, do not
-mark `Status: complete`, and report which check turned out to be
-decorative. Prefer fabricating the known-bad input in a throwaway copy or
+expected failure's exit code affect this gate. "Failure" here means the
+check's own rejection or diagnostic for the fabricated condition — a
+nonzero exit from an unrelated cause (a parser error before validation
+even runs, a missing dependency in the scratch worktree) is not a
+demonstration either way; fix the setup and rerun rather than counting it
+as evidence. If the negative control does *not* produce that expected
+rejection — the check accepts the known-bad input — that's not a neutral
+result: it's exactly the defect Decorative checks exists to catch. Treat
+it as a blocking verification failure like any other, do not mark
+`Status: complete`, and report which check turned out to be decorative. Prefer fabricating the known-bad input in a throwaway copy or
 scratch worktree over editing a tracked fixture in place. Only when no
 throwaway option exists, editing the tracked fixture in place is
 permitted as a fallback — but only together with restoring the original
