@@ -159,11 +159,17 @@ safe procedure, not the agent's own judgment that it's necessary.
 Applies to any check written into this workflow — a gate verifier's
 evidence, a diagnostic query in Investigate, an audit in
 structured-bug-fix, a verification command in Implement. For each one,
-ask: "if the condition this check is supposed to catch actually happened,
-what would the check show?" If the honest answer is "the same thing it
-shows now," the check is decorative — it carries zero information no
-matter how official it looks, and restating it in your own words (not just
-re-reading the sentence someone else wrote) is usually what forces this
+ask: "would this check's output differ between the case where the
+condition it's supposed to catch is absent and the case where it's
+present?" This is a comparison across two states, not a single
+hypothetical readback of the check's current output — if the data you're
+looking at already has the defect present and the check correctly shows
+that, the check isn't decorative; matching a reality that's already bad is
+not the failure mode. If the honest answer to the two-state comparison is
+"no — it would show the same thing either way," the check is decorative —
+it carries zero information no matter how official it looks, and
+restating it in your own words (not just re-reading the sentence someone
+else wrote) is usually what forces this
 out; a check can survive several rounds of review unquestioned precisely
 because everyone re-read the same description instead of asking what it
 delivers. A decorative check sitting directly in front of an irreversible
@@ -198,7 +204,7 @@ nodding along.
 | "I couldn't find evidence against the claim, so it passes." | Absence of contradicting evidence is not evidence for the claim. It still needs positive, traceable support. |
 | "This is just ruling something out, not asserting the root cause, so it doesn't need the same verification." | A broad claim's evidence burden doesn't shrink because it's phrased as a negative — route it through the same gate regardless of phrasing. |
 | "I found this while investigating something else, so it's a side observation, not part of the diagnosis." | If it will be stated as a reason to proceed, it's a material claim regardless of where it was discovered. |
-| "This check passed, so the thing it verifies is fine." | Ask what the check would show if the condition it's supposed to catch actually happened. If the answer is "the same thing," the check is decorative regardless of how official it looks. |
+| "This check passed, so the thing it verifies is fine." | Compare the check's output with the condition absent versus present. If it wouldn't differ, the check is decorative regardless of how official it looks. |
 | "This check has always passed, so it must be reliable." | Its failure path needs to have been observed on known-bad input, or — where fabrication isn't safe — concretely reasoned through. Neither yet? Not strong verification, just watched nodding along. |
 
 ## Red flags
