@@ -77,16 +77,15 @@ necessity: reproduce with every condition at its triggering value, then
 flip exactly one back to non-triggering at a time, holding the rest fixed.
 A flip that kills the bug confirms that condition's necessity; a flip that
 doesn't is itself a finding — that condition wasn't actually required.
-Reproduction is diagnostic, not license to mutate: against live or shared
-state (production, a shared staging environment, a shared third-party
-sandbox account), read-only observation of what already happened is fine,
-but manufacturing a trigger condition through a state-changing action
-there needs explicit human sign-off and an established safe procedure —
-see `ticket-workflow`'s "Never manufacture failure against live or shared
-state." By default, a bug that only reproduces in such an environment gets
-diagnosed from what already happened there, not from deliberately
-triggering it again — the sign-off/safe-procedure path above is the only
-exception.
+Reproduction is diagnostic, not license to mutate or dig past your
+authorization: against live or shared state (production, a shared staging
+environment, a shared third-party sandbox account), follow
+`ticket-workflow`'s "Never manufacture failure against live or shared
+state" for what's allowed. By default, a bug that only reproduces in such
+an environment gets diagnosed from what already happened there, not from
+deliberately triggering it again — the sign-off/safe-procedure exception
+in that shared rule is the only way around this, not a separate one
+defined here.
 
 **Multiple repos in play**: this chain is causal, so trace it sequentially
 in one thread — never split one suspected chain across parallel agents.

@@ -71,4 +71,8 @@ confirming a check fails on known-bad input (`ticket-workflow`'s
 Decorative checks) is not one of these verification commands — its
 expected failure is a successful demonstration, not a gate failure.
 Record it as evidence in `implementation.md`/`test.md` and don't let its
-exit code affect this gate.
+exit code affect this gate. Fabricate the known-bad input in a throwaway
+copy or scratch worktree, never by editing a tracked fixture in place; if
+that's not possible, restore the original content and rerun the full
+verification-command set afterward — a deliberately broken fixture must
+never remain in the working tree when `Status:` is marked `complete`.

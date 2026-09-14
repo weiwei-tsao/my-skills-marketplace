@@ -145,8 +145,12 @@ database, a shared staging environment, a shared third-party sandbox
 account, a queue other workflows read from). Reproduce or fabricate
 destructively only inside an isolated, disposable environment whose state
 isn't shared with other users or workflows. Against live/shared systems,
-read-only observation is always allowed — diagnosing a production-only bug
-often requires exactly that — but any state-changing action there to
+read-only observation is allowed only within access the agent is already
+authorized for, using an established safe read procedure — diagnosing a
+production-only bug often requires exactly that, but reading data outside
+that authorization (customer PII, secrets, a system outside the ticket's
+scope) needs the same explicit human authorization as a mutation does;
+exposure is a real harm even without a write. Any state-changing action to
 manufacture a condition needs explicit human direction and an established
 safe procedure, not the agent's own judgment that it's necessary.
 
