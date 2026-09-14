@@ -83,9 +83,10 @@ sandbox account), read-only observation of what already happened is fine,
 but manufacturing a trigger condition through a state-changing action
 there needs explicit human sign-off and an established safe procedure —
 see `ticket-workflow`'s "Never manufacture failure against live or shared
-state." A bug that only reproduces in such an environment gets diagnosed
-from what already happened there, not from deliberately triggering it
-again.
+state." By default, a bug that only reproduces in such an environment gets
+diagnosed from what already happened there, not from deliberately
+triggering it again — the sign-off/safe-procedure path above is the only
+exception.
 
 **Multiple repos in play**: this chain is causal, so trace it sequentially
 in one thread — never split one suspected chain across parallel agents.
