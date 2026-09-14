@@ -66,4 +66,9 @@ to `complete` (if `implementation.md` predates this field and has no
 tell the user to run `/ai-engineering-workspace:ticket-finish $ARGUMENTS`.
 If any verification command failed, do not update `Status:` — report the
 failure and stop; do not suggest running `/ticket-finish` until it's
-fixed and re-verified.
+fixed and re-verified. Exception: a deliberate negative-control run
+confirming a check fails on known-bad input (`ticket-workflow`'s
+Decorative checks) is not one of these verification commands — its
+expected failure is a successful demonstration, not a gate failure.
+Record it as evidence in `implementation.md`/`test.md` and don't let its
+exit code affect this gate.
