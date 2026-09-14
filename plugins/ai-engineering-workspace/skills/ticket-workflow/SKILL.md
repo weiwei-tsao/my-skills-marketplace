@@ -135,6 +135,60 @@ Implement are not wired yet — extend only after this pilot has run on real
 tickets, same discipline as the scope freeze above, not as a bundled
 change.
 
+## Never manufacture failure against live or shared state
+
+Applies wherever this workflow reproduces a bug, tests a trigger
+condition, or verifies a check — not just the known-bad-input rule below.
+Manufacturing a failure, trigger condition, or negative test by mutating
+production or other live/shared state (rows in a shared database, a
+shared staging environment, a shared third-party sandbox account, a queue
+other workflows read from) needs explicit human direction and an
+established safe procedure — this is not the agent's own judgment call to
+make, no matter how necessary it seems. Fabricating destructively inside
+an isolated, disposable environment whose state isn't shared with other
+users or workflows doesn't need that sign-off — use one there instead of
+touching live/shared state whenever a safe isolated option exists.
+Against live/shared systems, use read-only observation rather than
+manufacturing the condition — who's authorized to read what is a
+separate question this workflow doesn't define.
+
+## Decorative checks
+
+Applies to any check written into this workflow — a gate verifier's
+evidence, a diagnostic query in Investigate, an audit in
+structured-bug-fix, a verification command in Implement. For each one,
+ask: "would this check's output differ between the case where the
+condition it's supposed to catch is absent and the case where it's
+present?" This is a comparison across two states, not a single
+hypothetical readback of the check's current output — if the data you're
+looking at already has the defect present and the check correctly shows
+that, the check isn't decorative; matching a reality that's already bad is
+not the failure mode. If the honest answer to the two-state comparison is
+"no — it would show the same thing either way," the check is decorative —
+it carries zero information no matter how official it looks, and
+restating it in your own words (not just re-reading the sentence someone
+else wrote) is usually what forces this
+out; a check can survive several rounds of review unquestioned precisely
+because everyone re-read the same description instead of asking what it
+delivers. A decorative check sitting directly in front of an irreversible
+action (a write, a delete, a send with no undo) is worse than no check at
+all — it converts "we don't know" into a false "we verified."
+
+Passing on known-good input only proves the check doesn't false-positive —
+that's the easy half. Where the check can be exercised safely in an
+isolated fixture or disposable sandbox whose state isn't shared with other
+users or workflows, run it against known-bad input (an empty bucket a
+`GROUP BY` should surface, one deliberately corrupted fixture, a stubbed
+failure) and confirm it actually fails (see "Never manufacture failure
+against live or shared state" above — this is that rule applied to
+checks). For a check against live or otherwise non-fabricable state,
+state concretely what observable result would constitute the bad case
+(would this row be included, excluded, or silently absent?) and why the
+check would produce a different result for it — reasoned through by hand,
+not manufactured. A check whose failure path has neither been observed nor
+demonstrated this way is not yet strong verification — it's been watched
+nodding along.
+
 ## Common rationalizations
 
 | Rationalization | Correct response |
@@ -148,6 +202,8 @@ change.
 | "I couldn't find evidence against the claim, so it passes." | Absence of contradicting evidence is not evidence for the claim. It still needs positive, traceable support. |
 | "This is just ruling something out, not asserting the root cause, so it doesn't need the same verification." | A broad claim's evidence burden doesn't shrink because it's phrased as a negative — route it through the same gate regardless of phrasing. |
 | "I found this while investigating something else, so it's a side observation, not part of the diagnosis." | If it will be stated as a reason to proceed, it's a material claim regardless of where it was discovered. |
+| "This check passed, so the thing it verifies is fine." | Compare the check's output with the condition absent versus present. If it wouldn't differ, the check is decorative regardless of how official it looks. |
+| "This check has always passed, so it must be reliable." | Its failure path needs to have been observed on known-bad input, or — where fabrication isn't safe — concretely reasoned through. Neither yet? Not strong verification, just watched nodding along. |
 
 ## Red flags
 
@@ -162,6 +218,8 @@ change.
 - Letting a verifier write to a ticket file or flip a `Status:` value itself.
 - Confirming an investigation draft without giving the verifier `context.md` to check for contradictions.
 - Stating an exclusion ("X is ruled out", "not responsible") to the user as settled without routing it through verification, especially one backed by a single evidence line or discovered outside the formal diagnosis draft.
+- Trusting a check that would show the same result whether the condition it checks is true or false — especially one guarding an irreversible write/delete/send.
+- Treating a check as proven because it passed on known-good data, without ever having seen it fail on known-bad data or, where that isn't safely fabricable, reasoned through why it would.
 
 ## Exit criteria
 
