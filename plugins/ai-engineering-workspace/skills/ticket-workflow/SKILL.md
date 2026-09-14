@@ -139,20 +139,22 @@ change.
 
 Applies wherever this workflow reproduces a bug, tests a trigger
 condition, or verifies a check — not just the known-bad-input rule below.
-Never manufacture a failure, trigger condition, or negative test by
-mutating production or other live/shared state (rows in a shared
-database, a shared staging environment, a shared third-party sandbox
-account, a queue other workflows read from). Reproduce or fabricate
-destructively only inside an isolated, disposable environment whose state
-isn't shared with other users or workflows. Against live/shared systems,
-read-only observation is allowed only within access the agent is already
-authorized for, using an established safe read procedure — diagnosing a
-production-only bug often requires exactly that, but reading data outside
-that authorization (customer PII, secrets, a system outside the ticket's
-scope) needs the same explicit human authorization as a mutation does;
-exposure is a real harm even without a write. Any state-changing action to
-manufacture a condition needs explicit human direction and an established
-safe procedure, not the agent's own judgment that it's necessary.
+Manufacturing a failure, trigger condition, or negative test by mutating
+production or other live/shared state (rows in a shared database, a
+shared staging environment, a shared third-party sandbox account, a queue
+other workflows read from) needs explicit human direction and an
+established safe procedure — this is not the agent's own judgment call to
+make, no matter how necessary it seems. Fabricating destructively inside
+an isolated, disposable environment whose state isn't shared with other
+users or workflows doesn't need that sign-off — use one there instead of
+touching live/shared state whenever a safe isolated option exists. Against
+live/shared systems, read-only observation is allowed only within access
+the agent is already authorized for, using an established safe read
+procedure — diagnosing a production-only bug often requires exactly that,
+but reading data outside that authorization (customer PII, secrets, a
+system outside the ticket's scope) needs the same explicit human
+authorization as a mutation does; exposure is a real harm even without a
+write.
 
 ## Decorative checks
 
