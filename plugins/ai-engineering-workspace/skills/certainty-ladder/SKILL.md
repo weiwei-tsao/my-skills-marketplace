@@ -128,9 +128,9 @@ The further down the ladder, the more expensive and less repeatable a check gets
 
 **The bug:** A search match's `<mark>` tag was rendered exactly where expected — present, correctly positioned, semantically right. But its container used `overflow: hidden; text-overflow: ellipsis`, so the highlighted text sat past the visible clip point. No user ever saw the highlight.
 
-**Why it surfaced at Layer 3:** Layer 1 only checked the highlighting function's output string — correct, and irrelevant to layout. Layer 2 asserted `<mark>` exists in the DOM — also correct, also irrelevant, because no one had yet written a geometry check for "is this element inside its clipped ancestor's visible area." No oracle existed for that question, so only looking at a rendered browser caught the gap.
+**Why it surfaced at Layer 3:** Layer 1 only checked the highlighting function's output string — correct, and irrelevant to layout. Layer 2 asserted `<mark>` exists in the DOM — also correct, also irrelevant, because no machine-checkable oracle had been defined for that question yet: "is this element inside its clipped ancestor's visible area." Only looking at a rendered browser caught the gap.
 
-**After the fact:** once named, "the highlighted match's bounding box intersects its container's visible, non-clipped region" is a stable, machine-checkable assertion — it belongs at Layer 2 going forward. Layer 3 did its job by finding a defect class with no oracle yet; it isn't Layer 3's job to keep re-checking it by hand once one exists (see the last Anti-Pattern above).
+**After the fact:** once named, "the highlighted match's bounding box intersects its container's visible, non-clipped region" is a stable, machine-checkable assertion — it belongs at Layer 2 going forward. Layer 3 did its job by exposing a defect class that had no encoded oracle yet; it isn't Layer 3's job to keep re-checking it by hand once one exists (see the last Anti-Pattern above).
 
 | Metric | Count |
 |---|---|
