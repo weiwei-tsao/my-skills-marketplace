@@ -176,7 +176,8 @@ a handoff (use the `handoff` skill). Never leave a session without one.
 - Diagnosing an intermittent bug from one correlated variable without ruling
   out other variables that also varied between the same observations.
 - Manufacturing a trigger condition against production or other shared
-  state instead of diagnosing from what already happened there.
+  state instead of diagnosing from what already happened there, without
+  the sign-off/safe-procedure exception above.
 
 ## Exit criteria
 
