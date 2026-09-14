@@ -68,10 +68,15 @@ If any verification command failed, do not update `Status:` — report the
 failure and stop; do not suggest running `/ticket-finish` until it's
 fixed and re-verified. Exception: a deliberate negative-control run
 confirming a check fails on known-bad input (`ticket-workflow`'s
-Decorative checks) is not one of these verification commands — its
-expected failure is a successful demonstration, not a gate failure.
-Record it as evidence in `implementation.md`/`test.md` and don't let its
-exit code affect this gate. Fabricate the known-bad input in a throwaway
+Decorative checks) is not one of these verification commands — an
+expected failure there is a successful demonstration, not a gate failure;
+record it as evidence in `implementation.md`/`test.md` and don't let that
+expected failure's exit code affect this gate. If the negative control
+does *not* fail — the check accepts the known-bad input — that's not a
+neutral result: it's exactly the defect Decorative checks exists to
+catch. Treat it as a blocking verification failure like any other, do not
+mark `Status: complete`, and report which check turned out to be
+decorative. Fabricate the known-bad input in a throwaway
 copy or scratch worktree, never by editing a tracked fixture in place; if
 that's not possible, restore the original content and rerun the full
 verification-command set afterward — a deliberately broken fixture must
