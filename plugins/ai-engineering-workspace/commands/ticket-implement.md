@@ -80,10 +80,9 @@ as evidence. If the negative control does *not* produce that expected
 rejection — the check accepts the known-bad input — that's not a neutral
 result: it's exactly the defect Decorative checks exists to catch. Treat
 it as a blocking verification failure like any other, do not mark
-`Status: complete`, and report which check turned out to be decorative. Prefer fabricating the known-bad input in a throwaway copy or
-scratch worktree over editing a tracked fixture in place. Only when no
-throwaway option exists, editing the tracked fixture in place is
-permitted as a fallback — but only together with restoring the original
-content and rerunning the full verification-command set afterward: a
-deliberately broken fixture must never remain in the working tree when
-`Status:` is marked `complete`.
+`Status: complete`, and report which check turned out to be decorative.
+Run negative controls on isolated/disposable test data. Do not leave
+deliberately corrupted fixtures or other negative-control state in the
+working tree when `Status:` is marked `complete` — how to isolate the
+test data (a scratch copy, a temp worktree, a generated fixture) is up to
+the repo's own test conventions.

@@ -147,14 +147,10 @@ established safe procedure — this is not the agent's own judgment call to
 make, no matter how necessary it seems. Fabricating destructively inside
 an isolated, disposable environment whose state isn't shared with other
 users or workflows doesn't need that sign-off — use one there instead of
-touching live/shared state whenever a safe isolated option exists. Against
-live/shared systems, read-only observation is allowed only within access
-the agent is already authorized for, using an established safe read
-procedure — diagnosing a production-only bug often requires exactly that,
-but reading data outside that authorization (customer PII, secrets, a
-system outside the ticket's scope) needs the same explicit human
-authorization as a mutation does; exposure is a real harm even without a
-write.
+touching live/shared state whenever a safe isolated option exists.
+Against live/shared systems, use read-only observation rather than
+manufacturing the condition — who's authorized to read what is a
+separate question this workflow doesn't define.
 
 ## Decorative checks
 
