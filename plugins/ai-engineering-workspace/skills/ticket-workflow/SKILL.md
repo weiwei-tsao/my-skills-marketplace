@@ -265,8 +265,10 @@ ask.
    side by side, each with the design it leads to, including a reading that
    differs from the one you or the decision-maker started with.
 3. Put the question to the decision-maker at the gate: which reading
-   applies, and does the conclusion stand or does the statement win? Until
-   they answer, the conclusion is a proposal, not a finding.
+   applies, and should the conclusion stand, change, or be replaced? (It is
+   not a contest: the conclusion may also satisfy the requirement behind the
+   statement once that is read correctly.) Until they answer, the conclusion
+   is a proposal, not a finding.
 
 Order matters: before the gate, the draft only has to carry the conflict as
 an explicit unresolved question (that is what verification checks);
@@ -277,7 +279,10 @@ verification. A draft that carries the question is not a failure.
 doubtful statement needs its author (a ticket creator, a commenter), and
 you shouldn't ask before you have looked: at Understand, only record the
 ambiguity. Suggest asking only when all three hold:
-1. The statement is a design direction, not a fact you can verify.
+1. The statement expresses intent, a requirement, or a design direction,
+   rather than a fact you can verify. A requirement can be ambiguous too
+   ("each property should have one language value" may mean one canonical
+   value, or only one value for the front-end metadata).
 2. It has two or more reasonable readings that lead to different designs.
    If the readings converge on the same design, don't ask.
 3. Code and docs can't settle it, and choosing wrong is costly — the
