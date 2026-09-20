@@ -106,7 +106,12 @@ as conflicting with, a stakeholder's stated intent or design direction in
 the ticket, quote it, say what it conflicts with and the possible readings,
 and ask the user which applies before treating that conclusion as settled.
 (A statement of fact that verified evidence contradicts is just corrected,
-citing the evidence.)
+citing the evidence.) Lay the readings out side by side, each with the
+design it leads to. If they lead to different designs, code and docs can't
+settle it, and a wrong choice is costly, also suggest asking the statement's
+author and draft one line for the user to send (see `ticket-workflow`'s
+"Conflicts with stakeholder intent or design direction go to the
+decision-maker"); it is a soft prompt, and you never send it yourself.
 
 If the next action is a design decision:
 - Present the candidates and what was tried to invalidate each (or that
