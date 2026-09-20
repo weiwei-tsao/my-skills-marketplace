@@ -213,10 +213,22 @@ behavior — that is diagnosis, however large the diff.
    never by a verifier PASS. Stop, present the candidates and the
    falsification results, say plainly that this is a decision and not a
    diagnosis, and wait. The person with authority over that boundary decides;
-   name who that likely is if the ticket or repo makes it clear, but don't
-   assume a channel — where such decisions go is the team's own convention.
+   name who that likely is if the ticket or repo makes it clear. Raise it
+   for team visibility before it is decided: if `conventions.md`'s "Design
+   decisions" field names a channel, draft the question for the user to
+   post there — the candidates, what was tried to invalidate each, what is
+   still unverified, your recommendation if you have one, and any
+   conflicting stakeholder statement quoted verbatim. The draft is for
+   visibility, not because someone else must approve; the decision owner
+   may well be the user. If the field is missing, ask the user once where
+   such questions go and suggest saving the answer to `conventions.md`. This
+   is a soft prompt: the user decides whether to post and whether to wait
+   for replies. **Never post, comment, message or push anything yourself.**
+   Every outward-facing action — a chat message, a Jira or issue comment, a
+   push to a remote — is sent by the user; you only draft.
 5. Record the choice under Decisions in `investigation.md`: who chose, when,
-   among which candidates. That entry is the only place the choice is
+   among which candidates, and where it was raised (a link, or "not
+   posted"). That entry is the only place the choice is
    recorded as a decision. `context.md` is the requirements record, not a
    decision log: don't write a design choice into it, whether as a rewritten
    Open question or an appended update — it would read later as a
@@ -404,6 +416,7 @@ nodding along.
 - Treating a single empty query as a finding.
 - A verifier reconfirming a negative claim with the author's own query on the author's own surface.
 - Honoring a dead-end that records no search boundary.
+- Posting, commenting, messaging or pushing anything on the user's behalf — a design-question draft, a Jira or issue comment, a push to a remote. You draft; the user sends.
 - Filing a design choice under Hypotheses and marking it resolved.
 - Writing a design choice into `context.md` — as an answered Open question or an appended update — instead of a Decisions entry.
 - Concluding that a candidate is unsuitable when a stakeholder statement in the ticket favours it, without quoting the statement and asking the decision-maker.

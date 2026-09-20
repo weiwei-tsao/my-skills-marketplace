@@ -24,7 +24,8 @@ ticket phase and must not edit implementation repositories.
    "Scaffolding a workspace" section of the `ai-engineering-workspace` skill:
    scope, repo ownership, request/data flow, ticket ID format and ticket source
    command, stages/acceptance, branch/commit/PR conventions, verification
-   commands, notes repo automation, and workspace location.
+   commands, notes repo automation, where design or architecture questions
+   are raised for team visibility (or none), and workspace location.
 4. Scaffold from the templates:
    - `ecosystem.md`
    - `conventions.md`

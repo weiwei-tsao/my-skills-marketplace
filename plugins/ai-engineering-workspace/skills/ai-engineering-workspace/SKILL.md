@@ -63,7 +63,11 @@ interview first (skip anything already known from context or the repo itself):
 5. **Conventions** — branch/commit/PR format; where updates are posted
    (Slack/Teams/issue comments) and the preferred tone. Also: typecheck/
    lint/test/build commands (mark any that don't apply as N/A) →
-   recorded as `conventions.md`'s "Verification commands".
+   recorded as `conventions.md`'s "Verification commands". Also: where are
+   design or architecture questions raised for team visibility before they
+   are decided (an engineering channel or thread, or none)? → recorded as
+   `conventions.md`'s "Design decisions". The AI only drafts these; the user
+   sends.
 6. **Location** — dedicated notes repo, or a `workspace/` (or `.tickets/`)
    folder inside the main repo?
 

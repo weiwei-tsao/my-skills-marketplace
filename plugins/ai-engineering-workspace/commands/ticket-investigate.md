@@ -99,13 +99,23 @@ Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. If any finding or candidate conflicts with, or could be read
 as conflicting with, a stakeholder statement in the ticket, quote it, say
 what it conflicts with and the possible readings, and ask the user which
-applies before treating that conclusion as settled. If the next action is a design decision, present the
-candidates and what was tried to invalidate each (or that it's untested), ask the user
-to choose if they own that decision, or to bring back the choice from
-whoever does, and record it under Decisions (who chose, when, among which
-candidates) — do not set `Status: confirmed` while one is unresolved,
-since `/ticket-implement` only checks that literal value. Wait for
-confirmation. Once confirmed, update
+applies before treating that conclusion as settled.
+
+If the next action is a design decision:
+- Present the candidates and what was tried to invalidate each (or that
+  it's untested).
+- Ask the user to choose if they own that decision, or to bring back the
+  choice from whoever does, and record it under Decisions (who chose, when,
+  among which candidates, where it was raised).
+- Also draft the question for the user to post in the channel
+  `conventions.md`'s "Design decisions" field names (if the field is
+  missing, ask once where such questions go and suggest saving it). This is
+  a soft prompt for team visibility, not an approval step, and you never
+  post, comment, message or push it yourself.
+- Do not set `Status: confirmed` while one is unresolved, since
+  `/ticket-implement` only checks that literal value.
+
+Wait for confirmation. Once confirmed, update
 `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md`'s `Status:` line to
 `confirmed` (workspace mode). If `investigation.md` predates this field
 and has no `Status:` line at all, add one directly under the H1 title

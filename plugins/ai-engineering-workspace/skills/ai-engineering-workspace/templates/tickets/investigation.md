@@ -44,8 +44,9 @@ Status: draft
 
 ## Decisions
 
-<!-- Human-confirmed choices only: who chose, when, among which candidates.
-     Not a place for conclusions the investigation reached on its own. -->
+<!-- Human-confirmed choices only: who chose, when, among which candidates,
+     and where it was raised (a link, or "not posted"). Not a place for
+     conclusions the investigation reached on its own. -->
 
 - 
 
