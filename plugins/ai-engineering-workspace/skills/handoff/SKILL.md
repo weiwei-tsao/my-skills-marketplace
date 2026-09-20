@@ -27,7 +27,7 @@ stay far smaller than the history it replaces (~1500–2500 tokens).
 | Section | Decay | Rule on resume |
 |---|---|---|
 | Code facts | Fast | **Verify before trusting** — code may have moved |
-| Decisions | Slow | Trust unless the requirement changed — a design decision only if a human's choice is recorded |
+| Decisions | Slow | Trust unless the requirement changed — a design decision only if its owner's choice is recorded |
 | Progress | Per-session | The cursor — update every save |
 | Dead-ends | Append-only | Never delete. The "don't retry" list — but only entries that record their search boundary; one without is a lead to re-check |
 

@@ -25,10 +25,11 @@ Status: draft
 <!-- Proposed designs, including ones you lean against. Anything that would
      add, change, or duplicate the owner of a value (ticket-workflow,
      "Design decisions are not findings") goes here, never under Decisions.
-     List at least two; one must be the existing mechanism for the same
-     concept, if there is one. For the one you lean toward, record what you
-     looked for that would have invalidated it. Delete this section if the
-     ticket involves no design choice. -->
+     List at least two plausible ones; one must be the existing mechanism
+     for the same concept, if there is one. If no second plausible candidate
+     exists, say why rather than inventing one. For the one you lean toward,
+     record what you looked for that would have invalidated it. Delete this
+     section if the ticket involves no design choice. -->
 
 | Candidate | Why it could work | What I tried to invalidate it | Result |
 |---|---|---|---|

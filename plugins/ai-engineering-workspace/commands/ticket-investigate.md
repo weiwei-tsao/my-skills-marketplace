@@ -77,16 +77,18 @@ Do not edit any code in this phase.
    If the draft contains negative claims (including "Checked but not
    responsible" entries), tell the verifier to apply "Negative claims must
    expose their search boundary" — coverage independence: try to overturn
-   each one with a differently formulated query and a surface class the
-   draft didn't list, not reconfirm it with the author's own query. If it
-   contains a Candidates table or a Decisions entry, tell it to check the
+   each one with a materially different query or method and a plausible
+   surface class the draft didn't search (its "not searched" list is fair
+   game), not reconfirm it with the author's own query. If it contains a
+   Candidates table or a Decisions entry, tell it to check the
    design-decision HARD_FAIL source: no design choice under Decisions
-   without a recorded human choice.
+   without a recorded choice by the decision owner.
 
 Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. If the next action is a design decision, present the
 candidates and what was tried to invalidate the leading one, ask the user
-to choose, and record the choice under Decisions (who, when, among which
+to choose if they own that decision, or to bring back the choice from
+whoever does, and record it under Decisions (who chose, when, among which
 candidates) — do not set `Status: confirmed` while one is unresolved,
 since `/ticket-implement` only checks that literal value. Wait for
 confirmation. Once confirmed, update
