@@ -105,7 +105,14 @@ a material claim too, and a broad one by default, per `ticket-workflow`'s
 scope-scaled evidence rule — plus full read access to the repo, not just
 the cited files,
 so it can check both that each material claim has positive traceable
-support and that no other part of the codebase contradicts it. This
+support and that no other part of the codebase contradicts it. Each
+exclusion states the surfaces searched and not searched, and the verifier
+tries to overturn it per `ticket-workflow`'s "Negative claims must expose
+their search boundary" rather than re-running the author's search. If the
+fix itself requires choosing between plausible system shapes (see
+`ticket-workflow`'s "Design decisions are not findings"), that part isn't a
+diagnosis: present it as candidates for the decision owner to choose, not as
+a single entry under "Files that need changes". This
 includes any exclusion reached informally while chasing something else,
 not only the ones already written into the diagnosis draft — if you're
 about to tell the user a repo/module/theory is ruled out, add it to
@@ -131,7 +138,7 @@ Before writing a single line of code, present:
 - <file:line> — <what it shows>
 
 **Owner**: <repo/module> — <why it owns the fix>
-**Checked, not responsible**: <repos/layers ruled out>
+**Checked, not responsible**: <repos/layers ruled out — searched: <surface + query>; not searched: <surfaces>>
 
 **Files that need changes**:
 1. `path/file` — <what and why>

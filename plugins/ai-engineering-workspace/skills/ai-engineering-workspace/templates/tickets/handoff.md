@@ -31,7 +31,11 @@ PR:
 
 - 
 
-## Dead-ends (append-only — do not retry these)
+## Dead-ends (append-only — do not retry entries that state their search boundary)
+
+<!-- Each entry: what was ruled out, surfaces searched (+ query), surfaces
+     not searched. No boundary? Mark it "(unbounded)" — a lead to re-check,
+     not a closed door. -->
 
 - 
 

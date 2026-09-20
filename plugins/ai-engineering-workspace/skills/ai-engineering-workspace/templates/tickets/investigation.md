@@ -8,19 +8,45 @@ Status: draft
 
 ## Facts
 
-<!-- Evidence-backed observations only. -->
+<!-- Evidence-backed observations only. A negative finding ("not found",
+     "not used") is not a bare fact — record it under "Checked but not
+     responsible" with its search boundary. -->
 
 - 
 
 ## Hypotheses
 
-<!-- Guesses that still need confirmation. -->
+<!-- Guesses that still need confirmation. Not design options — those go
+     under Candidates, and are never "resolved" by choosing one. -->
 
 - 
 
+## Candidates
+
+<!-- Proposed designs, including ones you lean against. Anything that would
+     choose between plausible future system shapes — who should own or be
+     authoritative for something (ticket-workflow, "Design decisions are not
+     findings") — goes here, never under Decisions.
+     List at least two plausible ones; one must be the existing mechanism
+     for the same concept, if there is one. If no second plausible candidate
+     exists, say why rather than inventing one. For every plausible candidate
+     (always for one already proposed by an earlier session, the ticket, or a
+     reviewer), record what you looked for that would have invalidated it, or
+     write "untested" and why — having no preference doesn't waive this.
+     A cost or blocker counts against a candidate only if verified; otherwise
+     write "unverified" and what it would take to check, and check it before
+     it influences the choice.
+     Delete this section if the ticket involves no design choice. -->
+
+| Candidate | Why it could work | What I tried to invalidate it | Result |
+|---|---|---|---|
+|  |  |  |  |
+
 ## Decisions
 
-<!-- Confirmed decisions made during investigation. -->
+<!-- Human-confirmed choices only: who chose, when, among which candidates,
+     and where it was raised (a link, or "not posted"). Not a place for
+     conclusions the investigation reached on its own. -->
 
 - 
 
@@ -64,11 +90,26 @@ Entry
 
 ## Checked but not responsible
 
+<!-- Every entry is a negative claim (ticket-workflow, "Negative claims must
+     expose their search boundary"). State what was searched and how (query,
+     command, file), and what was plausibly relevant but not searched. An
+     entry without a boundary is a lead to re-check, not a closed door. -->
+
+| Ruled out | Searched (surface + query) | Not searched |
+|---|---|---|
+|  |  |  |
+
 ## Evidence
 
 <!-- Short snippets, commands, screenshot paths, URLs. Link instead of dumping large content. -->
 
 ## Open questions
+
+<!-- Includes any finding or candidate that conflicts with, or could be read
+     as conflicting with, a stakeholder's stated intent or design direction
+     in the ticket: quote it, give the possible readings, and ask the
+     decision-maker. A statement of fact that verified evidence contradicts
+     is corrected instead, citing the evidence. -->
 
 - 
 

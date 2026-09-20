@@ -33,7 +33,19 @@ code.
    `$WORKSPACE_ROOT/ecosystem.md`'s flow map if present; otherwise trace
    from the entry point by reading the actual code.
 2. Identify the most likely owner repo/module.
-3. Separate facts (evidence-backed), hypotheses (unconfirmed), decisions.
+3. Separate facts (evidence-backed), hypotheses (unconfirmed), candidates
+   (proposed designs), and decisions (owner-confirmed only). Investigation
+   can start diagnostic and cross into design partway through: when a
+   question shifts from "what is true now?" to "what should the system
+   become?" — the trigger in `ticket-workflow`'s "Design decisions are not
+   findings", checked here, when writing next steps, and at the gate — list
+   candidates for that question, including the existing owner, with what
+   you tried to invalidate each plausible one ("untested" and why is a valid
+   entry; no preference doesn't waive it; a cost or blocker you haven't
+   verified is written "unverified", not counted); don't pick one. The rest
+   of the diagnosis continues as usual. Record every negative finding ("not
+   found", "ruled out") with its search boundary, per "Negative claims must
+   expose their search boundary".
 4. Record findings, evidence, open questions, and next steps into
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md` (create it from
    `$WORKSPACE_ROOT/tickets/_template/investigation.md` if it doesn't
@@ -67,8 +79,55 @@ Do not edit any code in this phase.
    present a gate summary. On PASS or SOFT_FLAGS, proceed to the gate
    below and include any flags in the summary.
 
+   If the draft contains negative claims (including "Checked but not
+   responsible" entries), tell the verifier to apply "Negative claims must
+   expose their search boundary" — coverage independence: try to overturn
+   each one with a materially different query or method and a plausible
+   surface class the draft didn't search (its "not searched" list is fair
+   game), not reconfirm it with the author's own query. If it contains a
+   Candidates table or a Decisions entry, tell it to check the
+   design-decision HARD_FAIL source: no design choice under Decisions
+   without a recorded choice by the decision owner, and none recorded in
+   `context.md` (as an answered Open question or an appended update)
+   without a matching Decisions entry. Also tell it to check the
+   stakeholder-intent HARD_FAIL source: any finding or candidate that
+   conflicts with, or could be read as conflicting with, an intent,
+   requirement or design direction stated in a comment or review remark
+   recorded in `context.md` must be carried in the draft as an explicit
+   unresolved question for the gate, not resolved by the draft's own reading.
+   Check that the question exists; don't require it to have been put to the
+   decision-maker yet, since that happens at the gate. (A statement of fact
+   that verified evidence contradicts is corrected instead, citing the
+   evidence.)
+
 Gate: summarize confirmed facts, likely root cause, owner, and the next
-safest action. Wait for confirmation. Once confirmed, update
+safest action. If any finding or candidate conflicts with, or could be read
+as conflicting with, a stakeholder's stated intent or design direction in
+the ticket, quote it, say what it conflicts with and the possible readings,
+and ask the user which applies before treating that conclusion as settled.
+(A statement of fact that verified evidence contradicts is just corrected,
+citing the evidence.) Lay the readings out side by side, each with the
+design it leads to. If they lead to different designs, code and docs can't
+settle it, and a wrong choice is costly, also suggest asking the statement's
+author and draft one line for the user to send (see `ticket-workflow`'s
+"Conflicts with stakeholder intent or design direction go to the
+decision-maker"); it is a soft prompt, and you never send it yourself.
+
+If the next action is a design decision:
+- Present the candidates and what was tried to invalidate each (or that
+  it's untested).
+- Ask the user to choose if they own that decision, or to bring back the
+  choice from whoever does, and record it under Decisions (who chose, when,
+  among which candidates, where it was raised).
+- Also draft the question for the user to post in the channel
+  `conventions.md`'s "Design decisions" field names (if the field is
+  missing, ask once where such questions go and suggest saving it). This is
+  a soft prompt for team visibility, not an approval step, and you never
+  post, comment on or message it yourself.
+- Do not set `Status: confirmed` while one is unresolved, since
+  `/ticket-implement` only checks that literal value.
+
+Wait for confirmation. Once confirmed, update
 `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md`'s `Status:` line to
 `confirmed` (workspace mode). If `investigation.md` predates this field
 and has no `Status:` line at all, add one directly under the H1 title

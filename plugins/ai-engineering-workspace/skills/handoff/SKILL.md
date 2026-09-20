@@ -27,9 +27,9 @@ stay far smaller than the history it replaces (~1500–2500 tokens).
 | Section | Decay | Rule on resume |
 |---|---|---|
 | Code facts | Fast | **Verify before trusting** — code may have moved |
-| Decisions | Slow | Trust unless the requirement changed |
+| Decisions | Slow | Trust unless the requirement changed — a design decision only if its owner's choice is recorded |
 | Progress | Per-session | The cursor — update every save |
-| Dead-ends | Append-only | Never delete; this is the "don't retry" list |
+| Dead-ends | Append-only | Never delete. The "don't retry" list — but only entries that record their search boundary; one without is a lead to re-check |
 
 Every code fact MUST carry an anchor (`path/to/file :: symbol`) so it can be
 re-checked. No anchor → record it as inference, not fact. Unverifiable
@@ -42,6 +42,9 @@ claims launder uncertainty into false confidence.
    changed files, diff summary, tests run and results, environment/acceptance
    status, blockers, next steps, do-not-do notes.
 3. Anchor every code fact; mark anything unverified as "(inferred)".
+   Record every dead-end with the surfaces searched (and the query) and
+   the surfaces not searched — see `ticket-workflow`'s "Negative claims
+   must expose their search boundary". No boundary? Mark it "(unbounded)".
 4. Progress = done / in-progress / next. Keep "next" actionable enough for a
    cold session; prune superseded items.
 5. Reference artifacts (commit, PR, ADR, plan file) by path/ID — don't
@@ -66,11 +69,13 @@ In workspace mode also refresh `investigation.md`, `implementation.md`,
 5. Follow references (commits/PRs/ADRs) when the next step needs them;
    load any skills the file suggests.
 6. Continue from "next steps". Don't redo old investigation unless the
-   handoff is inconsistent or evidence is missing.
+   handoff is inconsistent or evidence is missing — an "(unbounded)"
+   dead-end is missing evidence.
 
 ## What NOT to do
 
 - Don't overwrite dead-ends or old decisions — append.
 - Don't record a code fact without an anchor.
 - Don't present inferred claims as confirmed.
+- Don't record a negative finding without its search boundary.
 - Don't let the file grow unbounded.

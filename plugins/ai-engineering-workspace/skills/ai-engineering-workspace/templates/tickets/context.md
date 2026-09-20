@@ -2,6 +2,11 @@
 
 Status: draft
 
+<!-- Requirements record, not a decision log. Don't write design choices
+     here (as a rewritten Open question or an appended update); they belong
+     in investigation.md under Decisions, with who chose and when. An Open
+     question that hinges on one should point at that entry. -->
+
 ## Goal
 
 <!-- What should be true when this ticket is done? -->
