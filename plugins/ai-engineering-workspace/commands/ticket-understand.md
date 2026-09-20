@@ -57,6 +57,8 @@ You are starting ticket $ARGUMENTS. This is Phase 1 of 4: Understand.
    at all, add one directly under the H1 title reading `Status: confirmed`
    instead of trying to find a line to replace. Append a `Verified:` line
    per the shared verification section (PASS, PASS with flags, or the
-   BLOCKED note if step 5 stopped here instead).
+   BLOCKED note if step 5 stopped here instead). In workspace mode, also
+   append a `timeline.md` row for this gate (see `ticket-workflow`'s
+   "Keeping records in sync without over-documenting").
 
 Tell the user to run `/ai-engineering-workspace:ticket-investigate $ARGUMENTS`.

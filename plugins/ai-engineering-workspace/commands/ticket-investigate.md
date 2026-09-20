@@ -122,4 +122,8 @@ and has no `Status:` line at all, add one directly under the H1 title
 reading `Status: confirmed` instead of trying to find a line to replace.
 Append a `Verified:` line per the shared verification section.
 
+In workspace mode, also append a `timeline.md` row for this gate, and one
+whenever a design question is raised or a design decision is recorded (see
+`ticket-workflow`'s "Keeping records in sync without over-documenting").
+
 Tell the user to run `/ai-engineering-workspace:ticket-implement $ARGUMENTS`.

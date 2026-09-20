@@ -62,6 +62,19 @@ discipline the `handoff` skill uses for dead-ends. Never run a standalone
 "update the docs" pass outside a gate transition; if nothing changed since
 the last gate, there's nothing to sync.
 
+**Timeline.** Dated events go in `timeline.md`, not into `context.md` or
+`investigation.md` as appended notes (a `## Correction` of a claim that was
+false is the one exception). At each gate that flips a `Status:` or appends
+a `Verified:` line, and whenever a design question is raised or a design
+decision is recorded, append one row to `timeline.md` (workspace mode;
+create it from `$WORKSPACE_ROOT/tickets/_template/timeline.md` if it doesn't
+exist yet): date, Source `workflow`, who confirmed or acted, the event, and
+a note (the `Verified:` verdict; the link or "not posted" for a design
+question; who chose, among which candidates, for a decision). One row per
+event, no other upkeep. Human-facing events you weren't told about (Jira
+status changes, acceptance, deploys) are added when the user gives them to
+you or at Finish.
+
 A `## Correction` note doesn't just coexist with the claim it corrects —
 it supersedes it. Anyone reading a confirmed ticket document afterward (a
 verifier, a resuming session, any later phase) must treat a later-dated
