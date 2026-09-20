@@ -108,7 +108,11 @@ so it can check both that each material claim has positive traceable
 support and that no other part of the codebase contradicts it. Each
 exclusion states the surfaces searched and not searched, and the verifier
 tries to overturn it per `ticket-workflow`'s "Negative claims must expose
-their search boundary" rather than re-running the author's search. This
+their search boundary" rather than re-running the author's search. If the
+fix itself requires choosing between plausible system shapes (see
+`ticket-workflow`'s "Design decisions are not findings"), that part isn't a
+diagnosis: present it as candidates for the decision owner to choose, not as
+a single entry under "Files that need changes". This
 includes any exclusion reached informally while chasing something else,
 not only the ones already written into the diagnosis draft — if you're
 about to tell the user a repo/module/theory is ruled out, add it to

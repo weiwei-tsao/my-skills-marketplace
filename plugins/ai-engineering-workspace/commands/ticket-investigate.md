@@ -34,13 +34,16 @@ code.
    from the entry point by reading the actual code.
 2. Identify the most likely owner repo/module.
 3. Separate facts (evidence-backed), hypotheses (unconfirmed), candidates
-   (proposed designs), and decisions (human-confirmed only). If the likely
-   next action would add, change, or duplicate the owner of a value — the
-   trigger in `ticket-workflow`'s "Design decisions are not findings" — list
-   candidates, including the existing owner, with what you tried to
-   invalidate the one you lean toward; don't pick one. Record every negative
-   finding ("not found", "ruled out") with its search boundary, per
-   "Negative claims must expose their search boundary".
+   (proposed designs), and decisions (owner-confirmed only). Investigation
+   can start diagnostic and cross into design partway through: when a
+   question shifts from "what is true now?" to "what should the system
+   become?" — the trigger in `ticket-workflow`'s "Design decisions are not
+   findings", checked here, when writing next steps, and at the gate — list
+   candidates for that question, including the existing owner, with what
+   you tried to invalidate the one you lean toward; don't pick one. The rest
+   of the diagnosis continues as usual. Record every negative finding ("not
+   found", "ruled out") with its search boundary, per "Negative claims must
+   expose their search boundary".
 4. Record findings, evidence, open questions, and next steps into
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md` (create it from
    `$WORKSPACE_ROOT/tickets/_template/investigation.md` if it doesn't

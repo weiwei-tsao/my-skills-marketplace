@@ -138,20 +138,42 @@ change.
 
 ## Design decisions are not findings
 
-The gates above answer "is this claim about the system true?" A design
-decision answers a different question — "should the system's ownership or
-source of truth change?" Evidence that a change is *feasible* (an existing
-transport, a mature config model, a clean diff) never establishes that it
-is *correct*. Don't route a design choice through the same gate as a root
-cause, and don't let a well-supported set of findings carry it there.
+This workflow grew out of bug diagnosis: establish what happened, find who
+owns the fix, implement. That fits *diagnostic* work, which asks "what is
+true now?" *Design* work asks "what should become true?" — a choice between
+plausible future system shapes — and needs different evidence: candidates
+and a decision owner instead of a root cause. They are different claim
+types, and a ticket can start diagnostic and cross into design partway
+through Investigate: the findings establish the current state, then the
+next question becomes "who should own this?" Investigate is responsible for
+noticing that crossing, not only for finding root causes. There is no
+separate design phase; the crossing changes how that question is handled,
+not which command runs.
 
-**Trigger** — a proposed next step is a design decision if it would add a
-canonical value or state, change which component owns one, duplicate a
-value that already has an owner somewhere, add an override on top of an
-existing one, or move an authority boundary. When unsure, ask: *does this
-introduce a second, independently mutable representation of a concept that
-may already have one?* If the answer might be yes, treat it as a design
-decision.
+The gates above answer "is this claim about the system true?" A design
+decision answers a different question. Evidence that a change is *feasible*
+(an existing transport, a mature config model, a clean diff) never
+establishes that it is *correct*. Don't route a design choice through the
+same gate as a root cause, and don't let a well-supported set of findings
+carry it there.
+
+**Trigger** — check it when writing next steps and the gate summary, and
+whenever a question of the form "should X own / live in / be authoritative
+for Y?" appears; crossing happens mid-investigation, so checking once at
+the start isn't enough. A next step is a design decision if it requires
+choosing between plausible future system shapes, especially if it would:
+- create or move a source of truth, or change which layer is authoritative
+  for a concern;
+- move responsibility across module, repo, or service boundaries;
+- introduce an abstraction or shared interface other code will depend on;
+- create precedence, fallback, override, or synchronization semantics;
+- duplicate state or behavior that already exists elsewhere.
+
+When unsure, ask: *does this introduce a second, independently mutable
+representation of a concept, or a second owner of a behavior, that may
+already have one?* If the answer might be yes, treat it as a design
+decision. Not a trigger: fixing a defect in the layer that already owns the
+behavior — that is diagnosis, however large the diff.
 
 **Handling:**
 1. Findings go under Facts. A proposed design goes under **Candidates**,
@@ -188,10 +210,20 @@ be verified, only believed.
 **Every negative claim recorded in a ticket document states** the surfaces
 searched (and how — the query, command, or file read) and the surfaces
 plausibly relevant but *not* searched. Surface classes to consider, not all
-will apply: repository source; dependencies (declared version vs. the
-version actually installed or checked out); runtime, mounted, or generated
-state that isn't in the repo; sibling repos and packages; external or
-remote configuration.
+will apply:
+- repository source;
+- resolved dependencies, including where the installed or pinned version
+  differs from the local checkout;
+- runtime or packaged state: container or image contents, mounted volumes,
+  generated files, installed artifacts;
+- sibling, upstream, or dependency repositories that aren't in the usual
+  repo map;
+- external or remote configuration.
+
+**The evidence boundary is not the normal repo boundary.** The repo map
+says where code is usually edited, not everywhere the relevant behavior can
+live. Inspect runtime and packaged state read-only (see "Never manufacture
+failure against live or shared state").
 
 **An empty result is re-run before it counts.** Re-run it once with a
 materially different formulation — drop punctuation or arguments, change

@@ -23,8 +23,9 @@ Status: draft
 ## Candidates
 
 <!-- Proposed designs, including ones you lean against. Anything that would
-     add, change, or duplicate the owner of a value (ticket-workflow,
-     "Design decisions are not findings") goes here, never under Decisions.
+     choose between plausible future system shapes — who should own or be
+     authoritative for something (ticket-workflow, "Design decisions are not
+     findings") — goes here, never under Decisions.
      List at least two plausible ones; one must be the existing mechanism
      for the same concept, if there is one. If no second plausible candidate
      exists, say why rather than inventing one. For the one you lean toward,
