@@ -121,8 +121,8 @@ Deployed to production. Please flag if anything looks off.
 
 <!-- Where design or architecture questions are raised for team visibility
      before they are decided (e.g. an engineering channel or thread), or
-     "none". The AI only drafts the question; it never posts, comments,
-     messages or pushes anything itself — the user sends. -->
+     "none". The AI only drafts the question; it never posts, comments or
+     messages it itself — the user sends. -->
 
 Channel: <where, or none>
 

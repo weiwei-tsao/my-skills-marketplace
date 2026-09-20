@@ -90,16 +90,20 @@ Do not edit any code in this phase.
    without a recorded choice by the decision owner, and none recorded in
    `context.md` (as an answered Open question or an appended update)
    without a matching Decisions entry. Also tell it to check the
-   stakeholder-statement HARD_FAIL source: any finding or candidate that
-   conflicts with, or could be read as conflicting with, a comment or review
-   remark recorded in `context.md` must be raised as a question, not
-   resolved by the draft's own reading.
+   stakeholder-intent HARD_FAIL source: any finding or candidate that
+   conflicts with, or could be read as conflicting with, an intent,
+   requirement or design direction stated in a comment or review remark
+   recorded in `context.md` must be raised as a question, not resolved by the
+   draft's own reading. (A statement of fact that verified evidence
+   contradicts is corrected instead, citing the evidence.)
 
 Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. If any finding or candidate conflicts with, or could be read
-as conflicting with, a stakeholder statement in the ticket, quote it, say
-what it conflicts with and the possible readings, and ask the user which
-applies before treating that conclusion as settled.
+as conflicting with, a stakeholder's stated intent or design direction in
+the ticket, quote it, say what it conflicts with and the possible readings,
+and ask the user which applies before treating that conclusion as settled.
+(A statement of fact that verified evidence contradicts is just corrected,
+citing the evidence.)
 
 If the next action is a design decision:
 - Present the candidates and what was tried to invalidate each (or that
@@ -111,7 +115,7 @@ If the next action is a design decision:
   `conventions.md`'s "Design decisions" field names (if the field is
   missing, ask once where such questions go and suggest saving it). This is
   a soft prompt for team visibility, not an approval step, and you never
-  post, comment, message or push it yourself.
+  post, comment on or message it yourself.
 - Do not set `Status: confirmed` while one is unresolved, since
   `/ticket-implement` only checks that literal value.
 
