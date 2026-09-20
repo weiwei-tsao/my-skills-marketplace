@@ -33,7 +33,14 @@ code.
    `$WORKSPACE_ROOT/ecosystem.md`'s flow map if present; otherwise trace
    from the entry point by reading the actual code.
 2. Identify the most likely owner repo/module.
-3. Separate facts (evidence-backed), hypotheses (unconfirmed), decisions.
+3. Separate facts (evidence-backed), hypotheses (unconfirmed), candidates
+   (proposed designs), and decisions (human-confirmed only). If the likely
+   next action would add, change, or duplicate the owner of a value — the
+   trigger in `ticket-workflow`'s "Design decisions are not findings" — list
+   candidates, including the existing owner, with what you tried to
+   invalidate the one you lean toward; don't pick one. Record every negative
+   finding ("not found", "ruled out") with its search boundary, per
+   "Negative claims must expose their search boundary".
 4. Record findings, evidence, open questions, and next steps into
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md` (create it from
    `$WORKSPACE_ROOT/tickets/_template/investigation.md` if it doesn't
@@ -67,8 +74,22 @@ Do not edit any code in this phase.
    present a gate summary. On PASS or SOFT_FLAGS, proceed to the gate
    below and include any flags in the summary.
 
+   If the draft contains negative claims (including "Checked but not
+   responsible" entries), tell the verifier to apply "Negative claims must
+   expose their search boundary" — coverage independence: try to overturn
+   each one with a differently formulated query and a surface class the
+   draft didn't list, not reconfirm it with the author's own query. If it
+   contains a Candidates table or a Decisions entry, tell it to check the
+   design-decision HARD_FAIL source: no design choice under Decisions
+   without a recorded human choice.
+
 Gate: summarize confirmed facts, likely root cause, owner, and the next
-safest action. Wait for confirmation. Once confirmed, update
+safest action. If the next action is a design decision, present the
+candidates and what was tried to invalidate the leading one, ask the user
+to choose, and record the choice under Decisions (who, when, among which
+candidates) — do not set `Status: confirmed` while one is unresolved,
+since `/ticket-implement` only checks that literal value. Wait for
+confirmation. Once confirmed, update
 `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md`'s `Status:` line to
 `confirmed` (workspace mode). If `investigation.md` predates this field
 and has no `Status:` line at all, add one directly under the H1 title

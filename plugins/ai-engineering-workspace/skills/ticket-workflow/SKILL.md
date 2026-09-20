@@ -86,10 +86,11 @@ Only material claims need anchors (`file:line` or equivalent). Reasoning, interp
 
 **A claim's evidence burden scales with its scope, not with whether it's phrased as inclusion or exclusion.** "This code path didn't execute" is a bounded claim — one trace settles it. "This repo is not responsible" and "this is the complete root cause" are both broad claims, and both need every plausible mechanism within that scope addressed, not just the one the author happened to check — a root-cause claim that only rules in the mechanism it found, without ruling out the alternates the same evidence is also consistent with, has the identical gap as an under-scoped exclusion. Exclusion claims ("X is not the cause" / "ruled out" / "checked, not responsible" / "immune") tend to be broad by default, which is why they're easy to under-evidence: a single evidence line (e.g., one file's last-modified timestamp) rules out the one mechanism it touches, not the module/repo/theory as a whole. Route any broad claim through the same gate as the root cause — including one reached informally mid-investigation, outside the formal diagnosis write-up, if it will be stated to the user as a reason to proceed (e.g., "you can hand this off now"). A claim doesn't get to skip verification for having been discovered off to the side instead of in the template.
 
-**HARD_FAIL has three independent sources — all must be checked, none is optional:**
-1. The claim lacks sufficient positive, traceable evidence. Absence of contradictory evidence is not sufficient for PASS. For a broad claim (an exclusion covering a whole module/repo/theory, or a root cause asserted as complete), evidence sufficient to address one mechanism is not sufficient for the full scope claimed — the verifier must confirm other plausible mechanisms within that scope were also addressed, not just the one path the author happened to look at.
+**HARD_FAIL has four independent sources — all must be checked, none is optional:**
+1. The claim lacks sufficient positive, traceable evidence. Absence of contradictory evidence is not sufficient for PASS. For a broad claim (an exclusion covering a whole module/repo/theory, or a root cause asserted as complete), evidence sufficient to address one mechanism is not sufficient for the full scope claimed — the verifier must confirm other plausible mechanisms within that scope were also addressed, not just the one path the author happened to look at. A negative claim with no stated search boundary lacks sufficient evidence by definition (see "Negative claims must expose their search boundary").
 2. The repo contains material evidence that contradicts the claim — found by independently inspecting nearby/relevant code, not just the anchors the draft supplied. Give the verifier full read access to the repo, not just the cited ranges.
 3. The draft contradicts something already `confirmed`/`complete` in an earlier-phase ticket document — only checked where the calling command hands the verifier that earlier document (v1: `context.md` at the Investigate gate only, see scope note below). Read that document per the superseding-`## Correction` rule above first: a claim its own `## Correction` section already overturned is not the document's current position, so a draft that agrees with the correction (and disagrees only with the stale original) is not a contradiction. Once read that way, a contradiction says two claims disagree, not which one is wrong. If the draft's claim is the one that's unsupported or incorrect, fix or downgrade the draft (source 1) and leave the earlier document alone. Only append the earlier document's append-only `## Correction (<date>)` note (never a rewrite) when the new evidence shows the earlier document's current claim, not the draft's, no longer holds.
+4. The draft treats a design choice (see "Design decisions are not findings") as settled: it sits under Decisions with no recorded human choice, or it presents one candidate without the alternatives or without a falsification attempt on the candidate it leans toward. A design decision is never confirmed by the draft's own findings.
 
 **SOFT_FLAGS** (surfaced with the gate summary, never blocking): an unaddressed alternate explanation; scope introduced in a restatement that the source material didn't state; a conclusion reachable with fewer intermediate assumptions (fact A → guess B → assumption C → explanation D → conclusion E, when A → E would suffice).
 
@@ -134,6 +135,83 @@ confirmed document to check against. structured-bug-fix Phase 3 and
 Implement are not wired yet — extend only after this pilot has run on real
 tickets, same discipline as the scope freeze above, not as a bundled
 change.
+
+## Design decisions are not findings
+
+The gates above answer "is this claim about the system true?" A design
+decision answers a different question — "should the system's ownership or
+source of truth change?" Evidence that a change is *feasible* (an existing
+transport, a mature config model, a clean diff) never establishes that it
+is *correct*. Don't route a design choice through the same gate as a root
+cause, and don't let a well-supported set of findings carry it there.
+
+**Trigger** — a proposed next step is a design decision if it would add a
+canonical value or state, change which component owns one, duplicate a
+value that already has an owner somewhere, add an override on top of an
+existing one, or move an authority boundary. When unsure, ask: *does this
+introduce a second, independently mutable representation of a concept that
+may already have one?* If the answer might be yes, treat it as a design
+decision.
+
+**Handling:**
+1. Findings go under Facts. A proposed design goes under **Candidates**,
+   never under Decisions.
+2. List at least two candidates. One must be the existing mechanism for the
+   same concept, if there is one — investigated as a first-class candidate,
+   not dismissed because it isn't reachable from the path currently being
+   inspected. "Not exposed here" is a finding about the transport, not about
+   suitability.
+3. For the candidate you lean toward, record what you looked for that would
+   have invalidated it, and what you found. A candidate supported only by
+   positive evidence hasn't been tested.
+4. A design decision is confirmed only by an explicit human choice among the
+   candidates — never by `Status: confirmed` on the investigation alone, and
+   never by a verifier PASS. Stop, present the candidates and the
+   falsification results, say plainly that this is a decision and not a
+   diagnosis, and wait. The person with authority over that boundary decides;
+   name who that likely is if the ticket or repo makes it clear, but don't
+   assume a channel — where such decisions go is the team's own convention.
+5. Record the choice under Decisions: who chose, when, among which
+   candidates.
+
+## Negative claims must expose their search boundary
+
+"Not found", "not used", "not exposed", "no consumer", "not active",
+"doesn't exist", and every exclusion ("ruled out", "checked, not
+responsible") are claims about the surfaces searched, not about the system.
+A negative claim's evidence *is* its search boundary — without one it can't
+be verified, only believed.
+
+**Every negative claim recorded in a ticket document states** the surfaces
+searched (and how — the query, command, or file read) and the surfaces
+plausibly relevant but *not* searched. Surface classes to consider, not all
+will apply: repository source; dependencies (declared version vs. the
+version actually installed or checked out); runtime, mounted, or generated
+state that isn't in the repo; sibling repos and packages; external or
+remote configuration.
+
+**An empty result is re-run before it counts.** Re-run it once with a
+materially different formulation — drop punctuation or arguments, change
+case, search the symbol instead of a call form, search from the other
+direction — before recording it. One formulation returning nothing is a
+decorative check (see below): it wouldn't have looked different if the
+thing existed under a different spelling.
+
+**A negative finding without a recorded search boundary doesn't get "don't
+retry" status.** Dead-ends and checked-not-responsible entries exist to save
+a later session from repeating work, which is only safe when the boundary is
+visible. An entry without one is a lead to re-check, not a closed door. This
+is a persistence problem, not only a search problem: a weak negative written
+down once and marked "don't retry" compounds across sessions instead of
+being corrected.
+
+**Coverage independence.** A fresh verifier is cognitively independent — not
+anchored on the author's reasoning — but one that repeats the author's query
+on the author's surface shares the author's blind spot, and its PASS means
+little. For a draft containing negative claims, the verifier's job is to try
+to overturn each one, not reconfirm it: run at least one differently
+formulated query and search at least one surface class the author did not
+list.
 
 ## Never manufacture failure against live or shared state
 
@@ -204,6 +282,11 @@ nodding along.
 | "I found this while investigating something else, so it's a side observation, not part of the diagnosis." | If it will be stated as a reason to proceed, it's a material claim regardless of where it was discovered. |
 | "This check passed, so the thing it verifies is fine." | Compare the check's output with the condition absent versus present. If it wouldn't differ, the check is decorative regardless of how official it looks. |
 | "This check has always passed, so it must be reliable." | Its failure path needs to have been observed on known-bad input, or — where fabrication isn't safe — concretely reasoned through. Neither yet? Not strong verification, just watched nodding along. |
+| "The existing mechanism makes this easy to implement, so the design is settled." | Ease of implementation is a feasibility finding. Whether it should own the value is a design decision: list candidates, including the existing owner, and try to invalidate the one you lean toward. |
+| "The existing owner isn't exposed on the path I'm inspecting, so it isn't a practical option." | "Not exposed here" describes the transport, not suitability. Investigate it as a candidate. |
+| "The search returned nothing, so nothing uses it." | One formulation on one surface. Re-run it differently and record what was and wasn't searched. |
+| "The verifier re-ran my search and got the same result, so the negative claim is verified." | Same query on the same surface shares the same blind spot. The verifier must try to overturn it with a different query and a surface the author didn't list. |
+| "It's in the dead-ends list, so I shouldn't re-check it." | Only if it records its search boundary. Without one it's a lead, not a closed door. |
 
 ## Red flags
 
@@ -220,13 +303,22 @@ nodding along.
 - Stating an exclusion ("X is ruled out", "not responsible") to the user as settled without routing it through verification, especially one backed by a single evidence line or discovered outside the formal diagnosis draft.
 - Trusting a check that would show the same result whether the condition it checks is true or false — especially one guarding an irreversible write/delete/send.
 - Treating a check as proven because it passed on known-good data, without ever having seen it fail on known-bad data or, where that isn't safely fabricable, reasoned through why it would.
+- Recording a design choice under Decisions on the strength of findings alone, or on the investigation's `Status: confirmed`.
+- Dismissing an existing mechanism because it isn't reachable from the path being inspected.
+- Recording a negative finding without the surfaces searched and not searched.
+- Treating a single empty query as a finding.
+- A verifier reconfirming a negative claim with the author's own query on the author's own surface.
+- Honoring a dead-end that records no search boundary.
 
 ## Exit criteria
 
 - Understand exits only after the ask is restated and `context.md` is confirmed
   in workspace mode.
 - Investigate exits only after facts, hypotheses, owner, and next safe action
-  are summarized and `investigation.md` is confirmed in workspace mode.
+  are summarized and `investigation.md` is confirmed in workspace mode. If
+  the next action is a design decision, it exits only after a human has
+  chosen among the candidates and that choice is recorded; the
+  `Status: confirmed` line is not set while one is unresolved.
 - Implement exits only after the minimal change is made, configured
   verification has passed or is explicitly `N/A`, and `implementation.md` is
   marked `complete`.
