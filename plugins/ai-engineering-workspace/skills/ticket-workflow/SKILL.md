@@ -274,7 +274,9 @@ ask.
 
 **Handling:**
 1. Quote the statement verbatim, with who said it and where.
-2. Say what it appears to conflict with, and which readings are possible.
+2. Say what it appears to conflict with, and which readings are possible —
+   side by side, each with the design it leads to, including a reading that
+   differs from the one you or the decision-maker started with.
 3. Put the question to the decision-maker at the gate: which reading
    applies, and does the conclusion stand or does the statement win? Until
    they answer, the conclusion is a proposal, not a finding.
@@ -283,6 +285,25 @@ Order matters: before the gate, the draft only has to carry the conflict as
 an explicit unresolved question (that is what verification checks);
 actually asking the decision-maker happens at the gate, after
 verification. A draft that carries the question is not a failure.
+
+**When to suggest asking the statement's author.** Not every ambiguous or
+doubtful statement needs its author (a ticket creator, a commenter), and
+you shouldn't ask before you have looked: at Understand, only record the
+ambiguity. Suggest asking only when all three hold:
+1. The statement is a design direction, not a fact you can verify.
+2. It has two or more reasonable readings that lead to different designs.
+   If the readings converge on the same design, don't ask.
+3. Code and docs can't settle it, and choosing wrong is costly — the
+   design-decision trigger (a new or changed source of truth, ownership, or
+   boundary).
+
+Don't suggest it for a symptom description, a verifiable claim of fact, a
+suggestion the decision-maker is free to depart from, or a cheap, reversible
+change. When all three hold, lay the readings out side by side at the gate
+and draft one line for the user to send: "You said X — do you mean (a) or
+(b)?" It is a soft prompt: the decision-maker may hold the same misreading,
+which is why the readings are laid out, and whether to ask is theirs. Never
+send it yourself.
 
 Watch especially for a conclusion that a candidate is "unsuitable",
 "impractical" or "not the right fit" when the statement favours that very
@@ -418,6 +439,7 @@ nodding along.
 | "This route removes an unresolved blocker from the critical path, so it's the better route." | Not needing an open question answered is a cost saving, not evidence of correctness. The question may be the real decision: keep it open and put it to the decision owner. |
 | "I'll note the answer to that open question in `context.md` so it's visible." | `context.md` is requirements. A design choice written there reads later as a requirement and hides who chose it. Record it under Decisions and point the open question at that entry. |
 | "It's only a hypothesis, but it's surely a real problem, so I'll count it against this candidate." | Unverified is unverified: mark it as such, don't score it, and check it. It is usually cheaper to verify than to reason around, and a problem nobody checked can turn out to be a small configuration task. |
+| "The comment's meaning is obvious to me, so there's nothing to compare." | The reading that feels obvious is the one least likely to be challenged. List the other reasonable reading and the design it leads to; if they diverge on something costly that code can't settle, suggest asking the author. |
 | "The comment is ambiguous, so my reading of it is fine." | Ambiguity is the reason to ask. Quote it, lay out the readings, and let the decision-maker say which applies before you state a conclusion that depends on one. |
 | "My finding says the candidate the comment favours is unsuitable, so the comment is simply outdated." | A preference or design direction isn't made outdated by your finding: that is a conflict to raise, not to resolve. Say the comment and the finding disagree, and ask. Only a statement of fact that verified evidence contradicts is just corrected, citing the evidence. |
 | "That constraint came from a meeting note, so it's a given." | A second-hand constraint that eliminates a candidate is a claim. Verify it — including on runtime and packaged state — or mark the candidate untested; don't use it to rule the candidate out. |
