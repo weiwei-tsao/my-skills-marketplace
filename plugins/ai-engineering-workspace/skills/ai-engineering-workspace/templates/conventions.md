@@ -131,7 +131,7 @@ Channel: <where, or none>
 <!-- Adjust to your pipeline. -->
 
 - Validate on <staging/UAT env> before production.
-- Record acceptance (who, when) in `timeline.md` and `test.md`.
+- Record acceptance (who, when) as a `timeline.md` row and in `test.md`.
 - If a deploy carries other people's accepted work, mention only what is
   relevant; don't claim ownership of their work.
 

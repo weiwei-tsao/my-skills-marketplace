@@ -71,9 +71,16 @@ create it from `$WORKSPACE_ROOT/tickets/_template/timeline.md` if it doesn't
 exist yet): date, Source `workflow`, who confirmed or acted, the event, and
 a note (the `Verified:` verdict; the link or "not posted" for a design
 question; who chose, among which candidates, for a decision). One row per
-event, no other upkeep. Human-facing events you weren't told about (Jira
-status changes, acceptance, deploys) are added when the user gives them to
-you or at Finish.
+event, no other upkeep. Human-facing events (Jira status changes,
+acceptance, deploys) are added when the user provides them, including
+during Finish; you can't know them yourself.
+
+**Timeline is a historical event log, not a source of current truth.**
+Current requirements, findings, decisions and implementation status stay
+authoritative in their owning ticket files (`context.md`,
+`investigation.md`, `implementation.md`). A decision that is reopened or
+superseded shows up as further rows; the current decision is the one in
+`investigation.md`, not the latest row you happen to read.
 
 A `## Correction` note doesn't just coexist with the claim it corrects —
 it supersedes it. Anyone reading a confirmed ticket document afterward (a

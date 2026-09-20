@@ -29,10 +29,11 @@ isn't one, stop and ask before generating PR notes.
    precedent if unset). Save into
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/pr.md` (create it from
    `$WORKSPACE_ROOT/tickets/_template/pr.md` if it doesn't exist yet,
-   replacing `<TICKET-ID>` with $ARGUMENTS). Record the status update
-   into `$WORKSPACE_ROOT/tickets/$ARGUMENTS/timeline.md` too (create it
+   replacing `<TICKET-ID>` with $ARGUMENTS). Append the status update as a
+   row to `$WORKSPACE_ROOT/tickets/$ARGUMENTS/timeline.md` too (create it
    from `$WORKSPACE_ROOT/tickets/_template/timeline.md` if it doesn't
-   exist yet, replacing `<TICKET-ID>` with $ARGUMENTS).
+   exist yet, replacing `<TICKET-ID>` with $ARGUMENTS): the event is the
+   status update, and the update text goes in Notes.
 2. Implementation repo — report only, never commit or push:
    - Identify the implementation repo(s) touched during Phase 3
      (Implement). This is a different directory from `WORKSPACE_ROOT`
