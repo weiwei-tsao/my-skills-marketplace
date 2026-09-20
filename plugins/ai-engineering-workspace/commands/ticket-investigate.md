@@ -86,7 +86,9 @@ Do not edit any code in this phase.
    game), not reconfirm it with the author's own query. If it contains a
    Candidates table or a Decisions entry, tell it to check the
    design-decision HARD_FAIL source: no design choice under Decisions
-   without a recorded choice by the decision owner.
+   without a recorded choice by the decision owner, and none recorded in
+   `context.md` (as an answered Open question or an appended update)
+   without a matching Decisions entry.
 
 Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. If the next action is a design decision, present the
