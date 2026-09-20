@@ -70,6 +70,17 @@
 - [ ] Ticket marked done
 - [ ] Status update sent, if needed
 
+## Evidence
+
+<!-- Index of raw test output. Keep only what a reader needs inline; put
+     longer output (logs, command output, screenshots) in
+     tickets/<TICKET-ID>/evidence/ as E<n>-<short-name>.<ext> and add a row
+     here. Redact secrets and personal data, and say so in the row. -->
+
+| ID | What it shows | How obtained (command, date, environment) | File |
+|---|---|---|---|
+|  |  |  |  |
+
 ## Final test notes for PR
 
 ```text

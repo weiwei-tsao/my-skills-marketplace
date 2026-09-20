@@ -74,6 +74,18 @@ as current — the exact failure this convention exists to prevent. A
 supersedes what it corrects, it must not be used to carry a design decision
 (see "Design decisions are not findings").
 
+**Evidence.** Raw material (query results, command output, logs,
+screenshots) doesn't go into `investigation.md` or `test.md`, which stay
+short. Put it in `$WORKSPACE_ROOT/tickets/<TICKET-ID>/evidence/` (create it
+when first needed) as `E<n>-<short-name>.<ext>`, and add one row to the
+`## Evidence` index of the document that relies on it: the ID, what it
+shows, how it was obtained (command or query, date, environment), and the
+file. A few lines a reader needs to follow a claim stay inline. Cite by ID in
+Facts and in the negative-claim table, e.g. "(E3)"; code anchors stay
+`file:line`. Redact secrets and personal data before saving and say so in
+the row. The row is what makes an evidence file usable: without what it
+shows and how it was obtained, it can be neither judged nor reproduced.
+
 ## Independent verification at gates (v1 scope: Understand / Investigate / structured-bug-fix Phase 3)
 
 **Design principles:**
