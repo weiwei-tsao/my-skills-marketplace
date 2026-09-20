@@ -16,7 +16,8 @@ Status: draft
 
 ## Hypotheses
 
-<!-- Guesses that still need confirmation. -->
+<!-- Guesses that still need confirmation. Not design options — those go
+     under Candidates, and are never "resolved" by choosing one. -->
 
 - 
 
