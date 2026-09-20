@@ -28,9 +28,11 @@ Status: draft
      findings") — goes here, never under Decisions.
      List at least two plausible ones; one must be the existing mechanism
      for the same concept, if there is one. If no second plausible candidate
-     exists, say why rather than inventing one. For the one you lean toward,
-     record what you looked for that would have invalidated it. Delete this
-     section if the ticket involves no design choice. -->
+     exists, say why rather than inventing one. For every plausible candidate
+     (always for one already proposed by an earlier session, the ticket, or a
+     reviewer), record what you looked for that would have invalidated it, or
+     write "untested" and why — having no preference doesn't waive this.
+     Delete this section if the ticket involves no design choice. -->
 
 | Candidate | Why it could work | What I tried to invalidate it | Result |
 |---|---|---|---|

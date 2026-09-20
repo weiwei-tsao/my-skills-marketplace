@@ -90,7 +90,7 @@ Only material claims need anchors (`file:line` or equivalent). Reasoning, interp
 1. The claim lacks sufficient positive, traceable evidence. Absence of contradictory evidence is not sufficient for PASS. For a broad claim (an exclusion covering a whole module/repo/theory, or a root cause asserted as complete), evidence sufficient to address one mechanism is not sufficient for the full scope claimed — the verifier must confirm other plausible mechanisms within that scope were also addressed, not just the one path the author happened to look at. A negative claim with no stated search boundary lacks sufficient evidence by definition (see "Negative claims must expose their search boundary").
 2. The repo contains material evidence that contradicts the claim — found by independently inspecting nearby/relevant code, not just the anchors the draft supplied. Give the verifier full read access to the repo, not just the cited ranges.
 3. The draft contradicts something already `confirmed`/`complete` in an earlier-phase ticket document — only checked where the calling command hands the verifier that earlier document (v1: `context.md` at the Investigate gate only, see scope note below). Read that document per the superseding-`## Correction` rule above first: a claim its own `## Correction` section already overturned is not the document's current position, so a draft that agrees with the correction (and disagrees only with the stale original) is not a contradiction. Once read that way, a contradiction says two claims disagree, not which one is wrong. If the draft's claim is the one that's unsupported or incorrect, fix or downgrade the draft (source 1) and leave the earlier document alone. Only append the earlier document's append-only `## Correction (<date>)` note (never a rewrite) when the new evidence shows the earlier document's current claim, not the draft's, no longer holds.
-4. The draft treats a design choice (see "Design decisions are not findings") as settled: it sits under Decisions with no recorded choice by the decision owner, or it presents one candidate with neither a plausible alternative nor an explanation of why no second candidate exists, or without a falsification attempt on the candidate it leans toward. A design decision is never confirmed by the draft's own findings.
+4. The draft treats a design choice (see "Design decisions are not findings") as settled: it sits under Decisions with no recorded choice by the decision owner, or it presents one candidate with neither a plausible alternative nor an explanation of why no second candidate exists, or a plausible candidate has neither a recorded falsification attempt nor an explicit "untested" with the reason. Declaring no preference does not waive this. A design decision is never confirmed by the draft's own findings.
 
 **SOFT_FLAGS** (surfaced with the gate summary, never blocking): an unaddressed alternate explanation; scope introduced in a restatement that the source material didn't state; a conclusion reachable with fewer intermediate assumptions (fact A → guess B → assumption C → explanation D → conclusion E, when A → E would suffice).
 
@@ -186,9 +186,13 @@ behavior — that is diagnosis, however large the diff.
    plausible candidate exists, record why instead of inventing one — a
    strawman ("leave everything as is") satisfies the count and defeats the
    purpose.
-3. For the candidate you lean toward, record what you looked for that would
-   have invalidated it, and what you found. A candidate supported only by
-   positive evidence hasn't been tested.
+3. For every plausible candidate — and always for one an earlier session,
+   the ticket, or a reviewer already proposed — record what you looked for
+   that would have invalidated it, and what you found. A candidate supported
+   only by positive evidence hasn't been tested. Having no preference among
+   them doesn't waive this. Where you can't test one (no access, no time),
+   write "untested" and why; an untested candidate is presented as untested,
+   never as validated.
 4. A design decision is confirmed only by an explicit choice among the
    candidates from the person who owns that decision — never by `Status: confirmed` on the investigation alone, and
    never by a verifier PASS. Stop, present the candidates and the
@@ -322,7 +326,8 @@ nodding along.
 | "I found this while investigating something else, so it's a side observation, not part of the diagnosis." | If it will be stated as a reason to proceed, it's a material claim regardless of where it was discovered. |
 | "This check passed, so the thing it verifies is fine." | Compare the check's output with the condition absent versus present. If it wouldn't differ, the check is decorative regardless of how official it looks. |
 | "This check has always passed, so it must be reliable." | Its failure path needs to have been observed on known-bad input, or — where fabrication isn't safe — concretely reasoned through. Neither yet? Not strong verification, just watched nodding along. |
-| "The existing mechanism makes this easy to implement, so the design is settled." | Ease of implementation is a feasibility finding. Whether it should own the value is a design decision: list candidates, including the existing owner, and try to invalidate the one you lean toward. |
+| "The existing mechanism makes this easy to implement, so the design is settled." | Ease of implementation is a feasibility finding. Whether it should own the value is a design decision: list candidates, including the existing owner, and try to invalidate each plausible one. |
+| "I have no preference among the candidates, so there is nothing to falsify." | Every plausible candidate needs a recorded falsification attempt or an explicit "untested" with the reason. No preference is not an exemption; it just means nobody has been tested yet. |
 | "The existing owner isn't exposed on the path I'm inspecting, so it isn't a practical option." | "Not exposed here" describes the transport, not suitability. Investigate it as a candidate. |
 | "The search returned nothing, so nothing uses it." | One formulation on one surface. Re-run it differently and record what was and wasn't searched. |
 | "The verifier re-ran my search and got the same result, so the negative claim is verified." | Same query on the same surface shares the same blind spot. The verifier must try to overturn it with a different query or method and a surface class the author didn't search. |

@@ -40,7 +40,8 @@ code.
    become?" — the trigger in `ticket-workflow`'s "Design decisions are not
    findings", checked here, when writing next steps, and at the gate — list
    candidates for that question, including the existing owner, with what
-   you tried to invalidate the one you lean toward; don't pick one. The rest
+   you tried to invalidate each plausible one ("untested" and why is a valid
+   entry; no preference doesn't waive it); don't pick one. The rest
    of the diagnosis continues as usual. Record every negative finding ("not
    found", "ruled out") with its search boundary, per "Negative claims must
    expose their search boundary".
@@ -89,7 +90,7 @@ Do not edit any code in this phase.
 
 Gate: summarize confirmed facts, likely root cause, owner, and the next
 safest action. If the next action is a design decision, present the
-candidates and what was tried to invalidate the leading one, ask the user
+candidates and what was tried to invalidate each (or that it's untested), ask the user
 to choose if they own that decision, or to bring back the choice from
 whoever does, and record it under Decisions (who chose, when, among which
 candidates) — do not set `Status: confirmed` while one is unresolved,
