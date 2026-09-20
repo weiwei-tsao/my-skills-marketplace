@@ -89,11 +89,12 @@ Only material claims need anchors (`file:line` or equivalent). Reasoning, interp
 
 **A claim's evidence burden scales with its scope, not with whether it's phrased as inclusion or exclusion.** "This code path didn't execute" is a bounded claim — one trace settles it. "This repo is not responsible" and "this is the complete root cause" are both broad claims, and both need every plausible mechanism within that scope addressed, not just the one the author happened to check — a root-cause claim that only rules in the mechanism it found, without ruling out the alternates the same evidence is also consistent with, has the identical gap as an under-scoped exclusion. Exclusion claims ("X is not the cause" / "ruled out" / "checked, not responsible" / "immune") tend to be broad by default, which is why they're easy to under-evidence: a single evidence line (e.g., one file's last-modified timestamp) rules out the one mechanism it touches, not the module/repo/theory as a whole. Route any broad claim through the same gate as the root cause — including one reached informally mid-investigation, outside the formal diagnosis write-up, if it will be stated to the user as a reason to proceed (e.g., "you can hand this off now"). A claim doesn't get to skip verification for having been discovered off to the side instead of in the template.
 
-**HARD_FAIL has four independent sources — all must be checked, none is optional:**
+**HARD_FAIL has five independent sources — all must be checked, none is optional:**
 1. The claim lacks sufficient positive, traceable evidence. Absence of contradictory evidence is not sufficient for PASS. For a broad claim (an exclusion covering a whole module/repo/theory, or a root cause asserted as complete), evidence sufficient to address one mechanism is not sufficient for the full scope claimed — the verifier must confirm other plausible mechanisms within that scope were also addressed, not just the one path the author happened to look at. A negative claim with no stated search boundary lacks sufficient evidence by definition (see "Negative claims must expose their search boundary").
 2. The repo contains material evidence that contradicts the claim — found by independently inspecting nearby/relevant code, not just the anchors the draft supplied. Give the verifier full read access to the repo, not just the cited ranges.
 3. The draft contradicts something already `confirmed`/`complete` in an earlier-phase ticket document — only checked where the calling command hands the verifier that earlier document (v1: `context.md` at the Investigate gate only, see scope note below). Read that document per the superseding-`## Correction` rule above first: a claim its own `## Correction` section already overturned is not the document's current position, so a draft that agrees with the correction (and disagrees only with the stale original) is not a contradiction. Once read that way, a contradiction says two claims disagree, not which one is wrong. If the draft's claim is the one that's unsupported or incorrect, fix or downgrade the draft (source 1) and leave the earlier document alone. Only append the earlier document's append-only `## Correction (<date>)` note (never a rewrite) when the new evidence shows the earlier document's current claim, not the draft's, no longer holds.
 4. The draft treats a design choice (see "Design decisions are not findings") as settled: it sits under Decisions with no recorded choice by the decision owner, or it is filed as a hypothesis and marked resolved, or a candidate comparison counts an unverified claim as a cost or benefit without marking it unverified, or it is recorded in `context.md` (as an answered Open question or an appended update) with no matching Decisions entry, or it presents one candidate with neither a plausible alternative nor an explanation of why no second candidate exists, or a plausible candidate has neither a recorded falsification attempt nor an explicit "untested" with the reason. Declaring no preference does not waive this. A design decision is never confirmed by the draft's own findings.
+5. The draft conflicts with — or can reasonably be read as conflicting with — a stakeholder statement recorded in `context.md` (a ticket comment, a review remark), and the conflict is not raised to the decision-maker (see "Conflicts with a stakeholder statement go to the decision-maker"). Unlike source 3, this is not settled by fixing or downgrading the draft alone: the draft must surface the conflict as a question. An ambiguous statement counts, and so does a conclusion that a candidate the statement favours is unsuitable.
 
 **SOFT_FLAGS** (surfaced with the gate summary, never blocking): an unaddressed alternate explanation; scope introduced in a restatement that the source material didn't state; a conclusion reachable with fewer intermediate assumptions (fact A → guess B → assumption C → explanation D → conclusion E, when A → E would suffice).
 
@@ -224,6 +225,28 @@ behavior — that is diagnosis, however large the diff.
    ("answered by the Decisions entry in `investigation.md`: who, when")
    instead of resolving it in prose there.
 
+## Conflicts with a stakeholder statement go to the decision-maker
+
+If a finding, a candidate's ranking, or a recommendation conflicts with —
+or can reasonably be read as conflicting with — something a stakeholder
+said in the ticket, its comments, or a review, especially about the same
+question, don't resolve it by your own reading and don't record the
+conclusion as settled. Ambiguity in what they said is the reason to ask, not
+a licence to pick the reading that fits your conclusion.
+
+**Handling:**
+1. Quote the statement verbatim, with who said it and where.
+2. Say what it appears to conflict with, and which readings are possible.
+3. Put the question to the decision-maker at the gate: which reading
+   applies, and does the conclusion stand or does the statement win? Until
+   they answer, the conclusion is a proposal, not a finding.
+
+Watch especially for a conclusion that a candidate is "unsuitable",
+"impractical" or "not the right fit" when the statement favours that very
+candidate: it needs this step before it is stated, not after. A conflict
+that is only ever fixed by downgrading your own draft, and never raised, is
+still an unraised conflict.
+
 ## Negative claims must expose their search boundary
 
 "Not found", "not used", "not exposed", "no consumer", "not active",
@@ -352,6 +375,8 @@ nodding along.
 | "This route removes an unresolved blocker from the critical path, so it's the better route." | Not needing an open question answered is a cost saving, not evidence of correctness. The question may be the real decision: keep it open and put it to the decision owner. |
 | "I'll note the answer to that open question in `context.md` so it's visible." | `context.md` is requirements. A design choice written there reads later as a requirement and hides who chose it. Record it under Decisions and point the open question at that entry. |
 | "It's only a hypothesis, but it's surely a real problem, so I'll count it against this candidate." | Unverified is unverified: mark it as such, don't score it, and check it. It is usually cheaper to verify than to reason around, and a problem nobody checked can turn out to be a small configuration task. |
+| "The comment is ambiguous, so my reading of it is fine." | Ambiguity is the reason to ask. Quote it, lay out the readings, and let the decision-maker say which applies before you state a conclusion that depends on one. |
+| "My finding says the candidate the comment favours is unsuitable, so the comment is simply outdated." | That is a conflict to raise, not to resolve. Say the comment and the finding disagree, and ask. |
 | "That constraint came from a meeting note, so it's a given." | A second-hand constraint that eliminates a candidate is a claim. Verify it — including on runtime and packaged state — or mark the candidate untested; don't use it to rule the candidate out. |
 | "The existing owner isn't exposed on the path I'm inspecting, so it isn't a practical option." | "Not exposed here" describes the transport, not suitability. Investigate it as a candidate. |
 | "The search returned nothing, so nothing uses it." | One formulation on one surface. Re-run it differently and record what was and wasn't searched. |
@@ -381,6 +406,8 @@ nodding along.
 - Honoring a dead-end that records no search boundary.
 - Filing a design choice under Hypotheses and marking it resolved.
 - Writing a design choice into `context.md` — as an answered Open question or an appended update — instead of a Decisions entry.
+- Concluding that a candidate is unsuitable when a stakeholder statement in the ticket favours it, without quoting the statement and asking the decision-maker.
+- Resolving an ambiguous stakeholder statement by your own reading.
 - Eliminating a candidate with a constraint nobody has verified, counting an unverified hypothesis as a cost in a comparison, or choosing a route because it sidesteps an open question.
 
 ## Exit criteria

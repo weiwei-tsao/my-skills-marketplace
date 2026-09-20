@@ -104,6 +104,10 @@ Entry
 
 ## Open questions
 
+<!-- Includes any finding or candidate that conflicts with, or could be read
+     as conflicting with, a stakeholder statement in the ticket: quote it,
+     give the possible readings, and ask the decision-maker. -->
+
 - 
 
 ## Next investigation steps

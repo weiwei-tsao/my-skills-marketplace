@@ -89,10 +89,17 @@ Do not edit any code in this phase.
    design-decision HARD_FAIL source: no design choice under Decisions
    without a recorded choice by the decision owner, and none recorded in
    `context.md` (as an answered Open question or an appended update)
-   without a matching Decisions entry.
+   without a matching Decisions entry. Also tell it to check the
+   stakeholder-statement HARD_FAIL source: any finding or candidate that
+   conflicts with, or could be read as conflicting with, a comment or review
+   remark recorded in `context.md` must be raised as a question, not
+   resolved by the draft's own reading.
 
 Gate: summarize confirmed facts, likely root cause, owner, and the next
-safest action. If the next action is a design decision, present the
+safest action. If any finding or candidate conflicts with, or could be read
+as conflicting with, a stakeholder statement in the ticket, quote it, say
+what it conflicts with and the possible readings, and ask the user which
+applies before treating that conclusion as settled. If the next action is a design decision, present the
 candidates and what was tried to invalidate each (or that it's untested), ask the user
 to choose if they own that decision, or to bring back the choice from
 whoever does, and record it under Decisions (who chose, when, among which
