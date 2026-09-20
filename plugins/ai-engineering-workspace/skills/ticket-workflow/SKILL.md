@@ -107,7 +107,7 @@ Only material claims need anchors (`file:line` or equivalent). Reasoning, interp
 2. The repo contains material evidence that contradicts the claim — found by independently inspecting nearby/relevant code, not just the anchors the draft supplied. Give the verifier full read access to the repo, not just the cited ranges.
 3. The draft contradicts something already `confirmed`/`complete` in an earlier-phase ticket document — only checked where the calling command hands the verifier that earlier document (v1: `context.md` at the Investigate gate only, see scope note below). Read that document per the superseding-`## Correction` rule above first: a claim its own `## Correction` section already overturned is not the document's current position, so a draft that agrees with the correction (and disagrees only with the stale original) is not a contradiction. Once read that way, a contradiction says two claims disagree, not which one is wrong. If the draft's claim is the one that's unsupported or incorrect, fix or downgrade the draft (source 1) and leave the earlier document alone. Only append the earlier document's append-only `## Correction (<date>)` note (never a rewrite) when the new evidence shows the earlier document's current claim, not the draft's, no longer holds.
 4. The draft treats a design choice (see "Design decisions are not findings") as settled: it sits under Decisions with no recorded choice by the decision owner, or it is filed as a hypothesis and marked resolved, or a candidate comparison counts an unverified claim as a cost or benefit without marking it unverified, or it is recorded in `context.md` (as an answered Open question or an appended update) with no matching Decisions entry, or it presents one candidate with neither a plausible alternative nor an explanation of why no second candidate exists, or a plausible candidate has neither a recorded falsification attempt nor an explicit "untested" with the reason. Declaring no preference does not waive this. A design decision is never confirmed by the draft's own findings.
-5. The draft conflicts with — or can reasonably be read as conflicting with — a stakeholder statement recorded in `context.md` (a ticket comment, a review remark), and the conflict is not raised to the decision-maker (see "Conflicts with a stakeholder statement go to the decision-maker"). Unlike source 3, this is not settled by fixing or downgrading the draft alone: the draft must surface the conflict as a question. An ambiguous statement counts, and so does a conclusion that a candidate the statement favours is unsuitable.
+5. The draft conflicts with — or can reasonably be read as conflicting with — a stakeholder's stated intent, requirement or preferred design direction recorded in `context.md` (a ticket comment, a review remark), and the conflict is not raised to the decision-maker (see "Conflicts with stakeholder intent or design direction go to the decision-maker"). Unlike source 3, this is not settled by fixing or downgrading the draft alone: the draft must surface the conflict as a question. An ambiguous statement counts, and so does a conclusion that a candidate the statement favours is unsuitable. A statement of fact that verified evidence contradicts is not a conflict to raise; the draft says so, citing the evidence.
 
 **SOFT_FLAGS** (surfaced with the gate summary, never blocking): an unaddressed alternate explanation; scope introduced in a restatement that the source material didn't state; a conclusion reachable with fewer intermediate assumptions (fact A → guess B → assumption C → explanation D → conclusion E, when A → E would suffice).
 
@@ -236,9 +236,10 @@ behavior — that is diagnosis, however large the diff.
    may well be the user. If the field is missing, ask the user once where
    such questions go and suggest saving the answer to `conventions.md`. This
    is a soft prompt: the user decides whether to post and whether to wait
-   for replies. **Never post, comment, message or push anything yourself.**
-   Every outward-facing action — a chat message, a Jira or issue comment, a
-   push to a remote — is sent by the user; you only draft.
+   for replies. **Never post, comment on, or message the design question
+   yourself:** draft it (a chat message, a Jira or issue comment) for the
+   user to send. This doesn't change the suite's existing Notes repo
+   automation rules.
 5. Record the choice under Decisions in `investigation.md`: who chose, when,
    among which candidates, and where it was raised (a link, or "not
    posted"). That entry is the only place the choice is
@@ -250,14 +251,26 @@ behavior — that is diagnosis, however large the diff.
    ("answered by the Decisions entry in `investigation.md`: who, when")
    instead of resolving it in prose there.
 
-## Conflicts with a stakeholder statement go to the decision-maker
+## Conflicts with stakeholder intent or design direction go to the decision-maker
 
 If a finding, a candidate's ranking, or a recommendation conflicts with —
-or can reasonably be read as conflicting with — something a stakeholder
-said in the ticket, its comments, or a review, especially about the same
-question, don't resolve it by your own reading and don't record the
-conclusion as settled. Ambiguity in what they said is the reason to ask, not
-a licence to pick the reading that fits your conclusion.
+or can reasonably be read as conflicting with — a stakeholder's stated
+intent, requirement or preferred design direction, in the ticket, its
+comments, or a review, especially about the same question, don't resolve it
+by your own reading and don't record the conclusion as settled. Ambiguity in
+what they said is the reason to ask, not a licence to pick the reading that
+fits your conclusion.
+
+**Facts are different.** A stakeholder's statement of fact ("service A owns
+this", "plugin X isn't active") that verified evidence contradicts is not a
+conflict to escalate: say so plainly, citing the evidence, as the suite's
+Golden Rules already require — the statement is stale or wrong. Only
+evidence you have actually checked can correct a statement; an unverified
+finding never overrides one. A statement often mixes both ("X is handled by
+function F and should be the source of truth"): evidence settles the factual
+half, and the direction half still goes to the decision-maker. When you
+can't tell whether a statement is fact or intent, treat it as intent and
+ask.
 
 **Handling:**
 1. Quote the statement verbatim, with who said it and where.
@@ -401,7 +414,7 @@ nodding along.
 | "I'll note the answer to that open question in `context.md` so it's visible." | `context.md` is requirements. A design choice written there reads later as a requirement and hides who chose it. Record it under Decisions and point the open question at that entry. |
 | "It's only a hypothesis, but it's surely a real problem, so I'll count it against this candidate." | Unverified is unverified: mark it as such, don't score it, and check it. It is usually cheaper to verify than to reason around, and a problem nobody checked can turn out to be a small configuration task. |
 | "The comment is ambiguous, so my reading of it is fine." | Ambiguity is the reason to ask. Quote it, lay out the readings, and let the decision-maker say which applies before you state a conclusion that depends on one. |
-| "My finding says the candidate the comment favours is unsuitable, so the comment is simply outdated." | That is a conflict to raise, not to resolve. Say the comment and the finding disagree, and ask. |
+| "My finding says the candidate the comment favours is unsuitable, so the comment is simply outdated." | A preference or design direction isn't made outdated by your finding: that is a conflict to raise, not to resolve. Say the comment and the finding disagree, and ask. Only a statement of fact that verified evidence contradicts is just corrected, citing the evidence. |
 | "That constraint came from a meeting note, so it's a given." | A second-hand constraint that eliminates a candidate is a claim. Verify it — including on runtime and packaged state — or mark the candidate untested; don't use it to rule the candidate out. |
 | "The existing owner isn't exposed on the path I'm inspecting, so it isn't a practical option." | "Not exposed here" describes the transport, not suitability. Investigate it as a candidate. |
 | "The search returned nothing, so nothing uses it." | One formulation on one surface. Re-run it differently and record what was and wasn't searched. |
@@ -429,11 +442,11 @@ nodding along.
 - Treating a single empty query as a finding.
 - A verifier reconfirming a negative claim with the author's own query on the author's own surface.
 - Honoring a dead-end that records no search boundary.
-- Posting, commenting, messaging or pushing anything on the user's behalf — a design-question draft, a Jira or issue comment, a push to a remote. You draft; the user sends.
+- Posting, commenting on, or messaging a design question yourself (a chat message, a Jira or issue comment). You draft; the user sends.
 - Filing a design choice under Hypotheses and marking it resolved.
 - Writing a design choice into `context.md` — as an answered Open question or an appended update — instead of a Decisions entry.
-- Concluding that a candidate is unsuitable when a stakeholder statement in the ticket favours it, without quoting the statement and asking the decision-maker.
-- Resolving an ambiguous stakeholder statement by your own reading.
+- Concluding that a candidate is unsuitable when a stakeholder's stated direction in the ticket favours it, without quoting the statement and asking the decision-maker.
+- Resolving an ambiguous stakeholder statement of intent or direction by your own reading, or overriding a statement of fact with a finding you haven't verified.
 - Eliminating a candidate with a constraint nobody has verified, counting an unverified hypothesis as a cost in a comparison, or choosing a route because it sidesteps an open question.
 
 ## Exit criteria

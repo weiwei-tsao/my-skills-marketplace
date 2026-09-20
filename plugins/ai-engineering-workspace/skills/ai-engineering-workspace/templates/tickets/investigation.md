@@ -106,8 +106,10 @@ Entry
 ## Open questions
 
 <!-- Includes any finding or candidate that conflicts with, or could be read
-     as conflicting with, a stakeholder statement in the ticket: quote it,
-     give the possible readings, and ask the decision-maker. -->
+     as conflicting with, a stakeholder's stated intent or design direction
+     in the ticket: quote it, give the possible readings, and ask the
+     decision-maker. A statement of fact that verified evidence contradicts
+     is corrected instead, citing the evidence. -->
 
 - 
 
