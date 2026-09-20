@@ -93,7 +93,7 @@ Only material claims need anchors (`file:line` or equivalent). Reasoning, interp
 1. The claim lacks sufficient positive, traceable evidence. Absence of contradictory evidence is not sufficient for PASS. For a broad claim (an exclusion covering a whole module/repo/theory, or a root cause asserted as complete), evidence sufficient to address one mechanism is not sufficient for the full scope claimed — the verifier must confirm other plausible mechanisms within that scope were also addressed, not just the one path the author happened to look at. A negative claim with no stated search boundary lacks sufficient evidence by definition (see "Negative claims must expose their search boundary").
 2. The repo contains material evidence that contradicts the claim — found by independently inspecting nearby/relevant code, not just the anchors the draft supplied. Give the verifier full read access to the repo, not just the cited ranges.
 3. The draft contradicts something already `confirmed`/`complete` in an earlier-phase ticket document — only checked where the calling command hands the verifier that earlier document (v1: `context.md` at the Investigate gate only, see scope note below). Read that document per the superseding-`## Correction` rule above first: a claim its own `## Correction` section already overturned is not the document's current position, so a draft that agrees with the correction (and disagrees only with the stale original) is not a contradiction. Once read that way, a contradiction says two claims disagree, not which one is wrong. If the draft's claim is the one that's unsupported or incorrect, fix or downgrade the draft (source 1) and leave the earlier document alone. Only append the earlier document's append-only `## Correction (<date>)` note (never a rewrite) when the new evidence shows the earlier document's current claim, not the draft's, no longer holds.
-4. The draft treats a design choice (see "Design decisions are not findings") as settled: it sits under Decisions with no recorded choice by the decision owner, or it is filed as a hypothesis and marked resolved, or it is recorded in `context.md` (as an answered Open question or an appended update) with no matching Decisions entry, or it presents one candidate with neither a plausible alternative nor an explanation of why no second candidate exists, or a plausible candidate has neither a recorded falsification attempt nor an explicit "untested" with the reason. Declaring no preference does not waive this. A design decision is never confirmed by the draft's own findings.
+4. The draft treats a design choice (see "Design decisions are not findings") as settled: it sits under Decisions with no recorded choice by the decision owner, or it is filed as a hypothesis and marked resolved, or a candidate comparison counts an unverified claim as a cost or benefit without marking it unverified, or it is recorded in `context.md` (as an answered Open question or an appended update) with no matching Decisions entry, or it presents one candidate with neither a plausible alternative nor an explanation of why no second candidate exists, or a plausible candidate has neither a recorded falsification attempt nor an explicit "untested" with the reason. Declaring no preference does not waive this. A design decision is never confirmed by the draft's own findings.
 
 **SOFT_FLAGS** (surfaced with the gate summary, never blocking): an unaddressed alternate explanation; scope introduced in a restatement that the source material didn't state; a conclusion reachable with fewer intermediate assumptions (fact A → guess B → assumption C → explanation D → conclusion E, when A → E would suffice).
 
@@ -197,10 +197,16 @@ behavior — that is diagnosis, however large the diff.
    only by positive evidence hasn't been tested. Having no preference among
    them doesn't waive this. Where you can't test one (no access, no time),
    write "untested" and why; an untested candidate is presented as untested,
-   never as validated. A constraint used to rule a candidate out is itself a
-   claim: reported second-hand (a meeting note, a comment), it is unverified
-   until checked — on runtime and packaged state as well as source — and an
-   unverified constraint doesn't eliminate anything.
+   never as validated. A constraint or cost used to count against a
+   candidate is itself a claim, whether reported second-hand (a meeting
+   note, a comment) or your own hypothesis. Until it is checked — on
+   runtime and packaged state as well as source — it is unverified, and an
+   unverified claim neither eliminates a candidate nor counts as a cost or
+   benefit in a comparison. Show it as "unverified" and say what it would
+   take to check or resolve it; then check it, rather than reasoning around
+   it, before it influences the choice. A problem never checked can turn out
+   to be a small task, and stating it as a blocker overstates its severity
+   and complexity.
 4. A design decision is confirmed only by an explicit choice among the
    candidates from the person who owns that decision — never by `Status: confirmed` on the investigation alone, and
    never by a verifier PASS. Stop, present the candidates and the
@@ -345,6 +351,7 @@ nodding along.
 | "I have no preference among the candidates, so there is nothing to falsify." | Every plausible candidate needs a recorded falsification attempt or an explicit "untested" with the reason. No preference is not an exemption; it just means nobody has been tested yet. |
 | "This route removes an unresolved blocker from the critical path, so it's the better route." | Not needing an open question answered is a cost saving, not evidence of correctness. The question may be the real decision: keep it open and put it to the decision owner. |
 | "I'll note the answer to that open question in `context.md` so it's visible." | `context.md` is requirements. A design choice written there reads later as a requirement and hides who chose it. Record it under Decisions and point the open question at that entry. |
+| "It's only a hypothesis, but it's surely a real problem, so I'll count it against this candidate." | Unverified is unverified: mark it as such, don't score it, and check it. It is usually cheaper to verify than to reason around, and a problem nobody checked can turn out to be a small configuration task. |
 | "That constraint came from a meeting note, so it's a given." | A second-hand constraint that eliminates a candidate is a claim. Verify it — including on runtime and packaged state — or mark the candidate untested; don't use it to rule the candidate out. |
 | "The existing owner isn't exposed on the path I'm inspecting, so it isn't a practical option." | "Not exposed here" describes the transport, not suitability. Investigate it as a candidate. |
 | "The search returned nothing, so nothing uses it." | One formulation on one surface. Re-run it differently and record what was and wasn't searched. |
@@ -374,7 +381,7 @@ nodding along.
 - Honoring a dead-end that records no search boundary.
 - Filing a design choice under Hypotheses and marking it resolved.
 - Writing a design choice into `context.md` — as an answered Open question or an appended update — instead of a Decisions entry.
-- Eliminating a candidate with a constraint nobody has verified, or choosing a route because it sidesteps an open question.
+- Eliminating a candidate with a constraint nobody has verified, counting an unverified hypothesis as a cost in a comparison, or choosing a route because it sidesteps an open question.
 
 ## Exit criteria
 

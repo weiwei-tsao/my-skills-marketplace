@@ -41,7 +41,8 @@ code.
    findings", checked here, when writing next steps, and at the gate — list
    candidates for that question, including the existing owner, with what
    you tried to invalidate each plausible one ("untested" and why is a valid
-   entry; no preference doesn't waive it); don't pick one. The rest
+   entry; no preference doesn't waive it; a cost or blocker you haven't
+   verified is written "unverified", not counted); don't pick one. The rest
    of the diagnosis continues as usual. Record every negative finding ("not
    found", "ruled out") with its search boundary, per "Negative claims must
    expose their search boundary".

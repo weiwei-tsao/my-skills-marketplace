@@ -33,6 +33,9 @@ Status: draft
      (always for one already proposed by an earlier session, the ticket, or a
      reviewer), record what you looked for that would have invalidated it, or
      write "untested" and why — having no preference doesn't waive this.
+     A cost or blocker counts against a candidate only if verified; otherwise
+     write "unverified" and what it would take to check, and check it before
+     it influences the choice.
      Delete this section if the ticket involves no design choice. -->
 
 | Candidate | Why it could work | What I tried to invalidate it | Result |
