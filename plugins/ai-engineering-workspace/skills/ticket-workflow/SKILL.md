@@ -142,11 +142,13 @@ core document is losing scanability" are signals, not conditions.
   claim relies on, that PASS no longer covers the draft and it is
   re-verified before it is confirmed. A typo or formatting change doesn't
   invalidate it.
-- After the owner is confirmed, an edit that leaves its conclusion unchanged
-  needs nothing more. One that changes it is never a supporting-only edit:
-  `investigation.md` gets a `## Correction`; `implementation.md` and
-  `test.md`, which have no Correction convention and no verifier, have their
-  summary updated in place.
+- After the owner's applicable gate has passed (Investigate for
+  `investigation.md`, Implement for `implementation.md` and `test.md`), an
+  edit that leaves its conclusion unchanged needs nothing more. One that
+  changes it is never a supporting-only edit: `investigation.md` gets a
+  `## Correction`; `implementation.md` and `test.md`, which have no
+  Correction convention and no verifier, have their summary updated in
+  place.
 
 ## Independent verification at gates (v1 scope: Understand / Investigate / structured-bug-fix Phase 3)
 
