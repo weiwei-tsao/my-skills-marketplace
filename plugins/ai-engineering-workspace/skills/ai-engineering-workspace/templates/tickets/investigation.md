@@ -116,13 +116,14 @@ Entry
 
 ## Supporting documents
 
-<!-- Authored structured detail this document owns (deep-dive analysis,
+<!-- Authored structured detail this document OWNS (deep-dive analysis,
      runbook, migration plan, ...) that has its own structure and can be
      read independently. Default is inline. Material facts, anchors, verdicts
      and current-state conclusions stay in THIS document; a link is not an
      anchor. Files live in tickets/<TICKET-ID>/supporting/, first line
-     `Owner: investigation.md`; File is a ticket-relative path. Delete this section if
-     there are none. -->
+     `Owner: investigation.md`; File is a ticket-relative path. A document owned by
+     another core document is linked in prose, not listed here. Delete this
+     section if there are none. -->
 
 | Document | Purpose | File |
 |---|---|---|

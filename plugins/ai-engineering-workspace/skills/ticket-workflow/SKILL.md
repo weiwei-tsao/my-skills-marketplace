@@ -128,7 +128,8 @@ core document is losing scanability" are signals, not conditions.
 - Material facts, anchors, verdicts and current-state conclusions stay in the
   owning document. A link to a supporting document is not an anchor.
 - Exactly one owner, named on the file's first line (`Owner: test.md`);
-  other documents may link to it. No `Status:` or gate of its own: its
+  other documents may link to it in prose but don't index it in their own
+  `## Supporting documents`. No `Status:` or gate of its own: its
   lifecycle follows its owning document and phase. (`test.md` has no
   `Status:` either; its completion is governed by the Implement gate, i.e.
   `implementation.md`'s `Status: complete`, not a field on `test.md`.) The
