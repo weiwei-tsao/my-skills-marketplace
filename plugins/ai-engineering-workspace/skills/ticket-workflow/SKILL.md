@@ -80,9 +80,14 @@ short. Put it in `$WORKSPACE_ROOT/tickets/<TICKET-ID>/evidence/` (create it
 when first needed) as `E<n>-<short-name>.<ext>`, and add one row to the
 `## Evidence` index of the document that relies on it: the ID, what it
 shows, how it was obtained (command or query, date, environment), and the
-file. A few lines a reader needs to follow a claim stay inline. Cite by ID in
-Facts and in the negative-claim table, e.g. "(E3)"; code anchors stay
-`file:line`. Redact secrets and personal data before saving and say so in
+file. Evidence IDs are unique within the ticket, not within a document:
+before creating a file, take the next unused `E<n>` across the whole
+`evidence/` directory, so `investigation.md` and `test.md` never both have
+an `E1` and a bare "(E3)" always means one thing. Record the file as a
+ticket-relative path, e.g. `evidence/E3-api-query.txt`, never a bare file
+name, since the workspace is often not your cwd. A few lines a reader needs
+to follow a claim stay inline. Cite by ID in Facts and in the negative-claim
+table, e.g. "(E3)"; code anchors stay `file:line`. Redact secrets and personal data before saving and say so in
 the row. The row is what makes an evidence file usable: without what it
 shows and how it was obtained, it can be neither judged nor reproduced.
 

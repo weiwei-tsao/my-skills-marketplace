@@ -75,7 +75,10 @@
 <!-- Index of raw test output. Keep only what a reader needs inline; put
      longer output (logs, command output, screenshots) in
      tickets/<TICKET-ID>/evidence/ as E<n>-<short-name>.<ext> and add a row
-     here. Redact secrets and personal data, and say so in the row. -->
+     here. IDs are unique across the whole ticket (next unused E<n> in
+     evidence/, shared with investigation.md); the File column is a
+     ticket-relative path, e.g. evidence/E5-test-run.txt. Redact secrets and
+     personal data, and say so in the row. -->
 
 | ID | What it shows | How obtained (command, date, environment) | File |
 |---|---|---|---|
