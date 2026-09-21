@@ -72,7 +72,8 @@ Do not edit any code in this phase.
    evidence directory `$WORKSPACE_ROOT/tickets/$ARGUMENTS/evidence/` if it
    exists (so claims that cite an evidence ID can be checked), every
    `supporting/` document that a material claim in the draft relies on (not
-   the whole directory; a material edit to one after PASS means re-verify),
+   the whole directory; changing a material claim or the reasoning it relies
+   on after PASS means re-verify),
    and `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`, so it can also check
    whether the draft contradicts anything already confirmed there —
    reading any `## Correction` section in `context.md` as overriding the

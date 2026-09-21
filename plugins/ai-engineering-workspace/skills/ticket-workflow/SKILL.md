@@ -128,15 +128,20 @@ core document is losing scanability" are signals, not conditions.
 - Material facts, anchors, verdicts and current-state conclusions stay in the
   owning document. A link to a supporting document is not an anchor.
 - Exactly one owner, named on the file's first line (`Owner: test.md`);
-  other documents may link to it. No `Status:` of its own: it inherits the
-  owner's gate. The owner indexes it, one row per document, in
+  other documents may link to it. No `Status:` or gate of its own: its
+  lifecycle follows its owning document and phase. (`test.md` has no
+  `Status:` either; its completion is governed by the Implement gate, i.e.
+  `implementation.md`'s `Status: complete`, not a field on `test.md`.) The
+  owner indexes it, one row per document, in
   `## Supporting documents` (Document, Purpose, File as a ticket-relative
   path). `context.md` is never an owner.
 - At a verifier gate, a supporting document that a gate-bound material claim
   materially relies on is part of the verification input (not the whole
-  directory). It and its owner form one verification unit: a material edit
-  to either after PASS invalidates that PASS, and the draft is re-verified
-  before it is confirmed.
+  directory). It and its owner form one verification unit: if, after PASS,
+  either one changes a material claim, or changes reasoning that a material
+  claim relies on, that PASS no longer covers the draft and it is
+  re-verified before it is confirmed. A typo or formatting change doesn't
+  invalidate it.
 - After the owner is confirmed, an edit that leaves its conclusion unchanged
   needs nothing more. One that changes it is never a supporting-only edit:
   `investigation.md` gets a `## Correction`; `implementation.md` and
