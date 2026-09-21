@@ -50,7 +50,9 @@ code.
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md` (create it from
    `$WORKSPACE_ROOT/tickets/_template/investigation.md` if it doesn't
    exist yet, replacing `<TICKET-ID>` with $ARGUMENTS; its `Status:` line
-   starts as `draft`).
+   starts as `draft`). Keep it short: put raw output in
+   `$WORKSPACE_ROOT/tickets/$ARGUMENTS/evidence/` and index it under
+   `## Evidence`, per `ticket-workflow`'s "Evidence".
 
 Do not edit any code in this phase.
 
@@ -62,7 +64,9 @@ Do not edit any code in this phase.
    conclusions are material too, and a next step that quietly expands
    scope beyond `context.md`'s confirmed boundaries is exactly the
    contradiction source 3 must catch. Also give it full read access to
-   the repo — not just the files you cited — and, in workspace mode,
+   the repo — not just the files you cited — and, in workspace mode, the
+   evidence directory `$WORKSPACE_ROOT/tickets/$ARGUMENTS/evidence/` if it
+   exists (so claims that cite an evidence ID can be checked) and
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`, so it can also check
    whether the draft contradicts anything already confirmed there —
    reading any `## Correction` section in `context.md` as overriding the

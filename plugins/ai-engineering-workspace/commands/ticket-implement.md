@@ -55,7 +55,9 @@ Rules:
   `$WORKSPACE_ROOT/tickets/_template/implementation.md` and
   `$WORKSPACE_ROOT/tickets/_template/test.md` if they don't exist yet,
   replacing `<TICKET-ID>` with $ARGUMENTS in each; `implementation.md`'s
-  `Status:` line starts as `draft`).
+  `Status:` line starts as `draft`). Keep them short: put raw test output in
+  `$WORKSPACE_ROOT/tickets/$ARGUMENTS/evidence/` and index it under
+  `## Evidence` in `test.md`, per `ticket-workflow`'s "Evidence".
 
 Gate: if every verification command that ran passed (or all were `N/A`
 or unset), update

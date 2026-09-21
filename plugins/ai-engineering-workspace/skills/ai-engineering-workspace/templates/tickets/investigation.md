@@ -101,7 +101,18 @@ Entry
 
 ## Evidence
 
-<!-- Short snippets, commands, screenshot paths, URLs. Link instead of dumping large content. -->
+<!-- Index of raw material. Keep a line or a few lines inline only when a
+     reader needs them to follow a claim. Put longer output (query results,
+     grep output, logs, screenshots) in tickets/<TICKET-ID>/evidence/ as
+     E<n>-<short-name>.<ext> and add a row here. IDs are unique across the
+     whole ticket (next unused E<n> in evidence/, shared with test.md); the
+     File column is a ticket-relative path, e.g. evidence/E3-api-query.txt.
+     Cite by ID in Facts and in the negative-claim table, e.g. "(E3)".
+     Redact secrets and personal data, and say so in the row. -->
+
+| ID | What it shows | How obtained (command or query, date, environment) | File |
+|---|---|---|---|
+|  |  |  |  |
 
 ## Open questions
 
