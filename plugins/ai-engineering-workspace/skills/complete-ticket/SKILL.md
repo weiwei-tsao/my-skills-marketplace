@@ -67,6 +67,9 @@ In workspace mode:
    - `pr.md`
    - `timeline.md`
    - `handoff.md`
+   - supporting documents (`supporting/*.md`) listed in the core documents'
+     "Supporting documents" indexes that the closure needs; follow those
+     links, don't read the whole directory
 
 ### Ticket Resolution
 

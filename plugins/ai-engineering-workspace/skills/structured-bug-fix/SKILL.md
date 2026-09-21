@@ -100,7 +100,9 @@ moment the owning repo is identified.
 Before presenting the diagnosis, run it through the independent
 verification process defined in `ticket-workflow`'s SKILL.md ("Independent
 verification at gates"). Give the fresh verifier the draft root cause,
-evidence, owner, **and the checked-not-responsible list** — an exclusion is
+evidence, owner, (in workspace mode) any supporting document a material
+claim relies on per `ticket-workflow`'s "Supporting documents", **and the
+checked-not-responsible list** — an exclusion is
 a material claim too, and a broad one by default, per `ticket-workflow`'s
 scope-scaled evidence rule — plus full read access to the repo, not just
 the cited files,

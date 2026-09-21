@@ -57,7 +57,12 @@ Rules:
   replacing `<TICKET-ID>` with $ARGUMENTS in each; `implementation.md`'s
   `Status:` line starts as `draft`). Keep them short: put raw test output in
   `$WORKSPACE_ROOT/tickets/$ARGUMENTS/evidence/` and index it under
-  `## Evidence` in `test.md`, per `ticket-workflow`'s "Evidence".
+  `## Evidence` in `test.md`, per `ticket-workflow`'s "Evidence". A
+  self-contained runbook, dry-run procedure, or migration/rollout plan may go
+  in `supporting/` and be indexed under `## Supporting documents` in its
+  owner (`implementation.md` or `test.md`), per `ticket-workflow`'s
+  "Supporting documents"; verdicts and results stay in the owner. There is no
+  verifier at this gate; supporting documents don't change that.
 
 Gate: if every verification command that ran passed (or all were `N/A`
 or unset), update

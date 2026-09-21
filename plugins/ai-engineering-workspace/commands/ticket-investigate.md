@@ -52,7 +52,11 @@ code.
    exist yet, replacing `<TICKET-ID>` with $ARGUMENTS; its `Status:` line
    starts as `draft`). Keep it short: put raw output in
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/evidence/` and index it under
-   `## Evidence`, per `ticket-workflow`'s "Evidence".
+   `## Evidence`, per `ticket-workflow`'s "Evidence". A self-contained deep
+   dive (a route comparison, a per-repo analysis) may go in
+   `supporting/` and be indexed under `## Supporting documents`, per
+   `ticket-workflow`'s "Supporting documents"; facts, anchors and
+   conclusions stay in `investigation.md`.
 
 Do not edit any code in this phase.
 
@@ -66,8 +70,11 @@ Do not edit any code in this phase.
    contradiction source 3 must catch. Also give it full read access to
    the repo — not just the files you cited — and, in workspace mode, the
    evidence directory `$WORKSPACE_ROOT/tickets/$ARGUMENTS/evidence/` if it
-   exists (so claims that cite an evidence ID can be checked) and
-   `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`, so it can also check
+   exists (so claims that cite an evidence ID can be checked), every
+   `supporting/` document that a material claim in the draft relies on (not
+   the whole directory; changing a material claim or the reasoning it relies
+   on after PASS means re-verify),
+   and `$WORKSPACE_ROOT/tickets/$ARGUMENTS/context.md`, so it can also check
    whether the draft contradicts anything already confirmed there —
    reading any `## Correction` section in `context.md` as overriding the
    claim it corrects, not as separate content alongside it. Its
