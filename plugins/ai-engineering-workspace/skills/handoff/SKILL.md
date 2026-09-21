@@ -47,7 +47,7 @@ claims launder uncertainty into false confidence.
    must expose their search boundary". No boundary? Mark it "(unbounded)".
 4. Progress = done / in-progress / next. Keep "next" actionable enough for a
    cold session; prune superseded items.
-5. Reference artifacts (commit, PR, ADR, plan file) by path/ID — don't
+5. Reference artifacts (commit, PR, ADR, plan file, ticket supporting doc) by path/ID — don't
    re-transcribe what's already durable elsewhere. The file captures what's
    *only in your head*.
 6. If the next step calls for specific skills/tools, name them.

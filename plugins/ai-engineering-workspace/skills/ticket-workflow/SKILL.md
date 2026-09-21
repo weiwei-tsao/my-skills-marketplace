@@ -111,6 +111,38 @@ table, e.g. "(E3)"; code anchors stay `file:line`. Redact secrets and personal d
 the row. The row is what makes an evidence file usable: without what it
 shows and how it was obtained, it can be neither judged nor reproduced.
 
+**Supporting documents.** `investigation.md`, `implementation.md` and
+`test.md` are summaries and current state, not containers for every detail.
+What can't be re-derived by reasoning (an observation) is evidence; what we
+authored (a deep-dive analysis, route comparison, runbook, dry-run
+procedure, migration or rollout plan) may be a supporting document at
+`$WORKSPACE_ROOT/tickets/<TICKET-ID>/supporting/<short-name>.md`, created
+when first needed. A runbook's execution output is evidence, the runbook is
+supporting, and the verdict stays in `test.md`. **Default is inline;
+extraction is deliberate**, and only when both hold: (1) it has its own
+structure or independently executable steps and can be understood without
+the phase document; (2) the owning document can keep, in a few lines,
+everything its gate needs. Length isn't the test, and "cited often" or "the
+core document is losing scanability" are signals, not conditions.
+
+- Material facts, anchors, verdicts and current-state conclusions stay in the
+  owning document. A link to a supporting document is not an anchor.
+- Exactly one owner, named on the file's first line (`Owner: test.md`);
+  other documents may link to it. No `Status:` of its own: it inherits the
+  owner's gate. The owner indexes it, one row per document, in
+  `## Supporting documents` (Document, Purpose, File as a ticket-relative
+  path). `context.md` is never an owner.
+- At a verifier gate, a supporting document that a gate-bound material claim
+  materially relies on is part of the verification input (not the whole
+  directory). It and its owner form one verification unit: a material edit
+  to either after PASS invalidates that PASS, and the draft is re-verified
+  before it is confirmed.
+- After the owner is confirmed, an edit that leaves its conclusion unchanged
+  needs nothing more. One that changes it is never a supporting-only edit:
+  `investigation.md` gets a `## Correction`; `implementation.md` and
+  `test.md`, which have no Correction convention and no verifier, have their
+  summary updated in place.
+
 ## Independent verification at gates (v1 scope: Understand / Investigate / structured-bug-fix Phase 3)
 
 **Design principles:**
@@ -122,7 +154,7 @@ shows and how it was obtained, it can be neither judged nor reproduced.
 **What counts as a material factual claim:**
 > A material factual claim is one whose falsity would materially change the gate decision, root-cause assessment, implementation scope, or completion judgment.
 
-Only material claims need anchors (`file:line` or equivalent). Reasoning, interpretation, and hypothesis don't need anchors — they only fail verification if presented as fact without being labeled as such.
+Only material claims need anchors (`file:line` or equivalent). Supporting documents such a claim relies on are verifier input (see "Supporting documents"). Reasoning, interpretation, and hypothesis don't need anchors — they only fail verification if presented as fact without being labeled as such.
 
 **A claim's evidence burden scales with its scope, not with whether it's phrased as inclusion or exclusion.** "This code path didn't execute" is a bounded claim — one trace settles it. "This repo is not responsible" and "this is the complete root cause" are both broad claims, and both need every plausible mechanism within that scope addressed, not just the one the author happened to check — a root-cause claim that only rules in the mechanism it found, without ruling out the alternates the same evidence is also consistent with, has the identical gap as an under-scoped exclusion. Exclusion claims ("X is not the cause" / "ruled out" / "checked, not responsible" / "immune") tend to be broad by default, which is why they're easy to under-evidence: a single evidence line (e.g., one file's last-modified timestamp) rules out the one mechanism it touches, not the module/repo/theory as a whole. Route any broad claim through the same gate as the root cause — including one reached informally mid-investigation, outside the formal diagnosis write-up, if it will be stated to the user as a reason to proceed (e.g., "you can hand this off now"). A claim doesn't get to skip verification for having been discovered off to the side instead of in the template.
 
