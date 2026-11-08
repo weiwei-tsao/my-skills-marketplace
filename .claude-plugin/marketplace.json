@@ -79,6 +79,15 @@
       "author": { "name": "weiwei-tsao" },
       "category": "research",
       "keywords": ["reddit", "redflagdeals", "rfd", "ugc", "content-digest", "research", "browser-use"]
+    },
+    {
+      "name": "member-site-digest",
+      "source": "./plugins/member-site-digest",
+      "version": "0.1.0",
+      "description": "Distill members-only forum/site content (美卡论坛 uscardforum, 悠卡 youcard.ca, 悠酒 tripwinego) via the user's logged-in browser session — topic research, full-thread reads, and incremental updates with traceable post citations.",
+      "author": { "name": "weiwei-tsao" },
+      "category": "research",
+      "keywords": ["uscardforum", "美卡论坛", "youcard", "悠卡", "tripwinego", "悠酒", "discourse", "forum", "content-digest", "research", "browser-use"]
     }
   ]
 }
