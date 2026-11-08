@@ -1,0 +1,7 @@
+{
+  "name": "en-community-digest",
+  "version": "0.1.0",
+  "description": "English community digest (Reddit + RedFlagDeals) via browser-use — consensus, disagreements, key terms and warnings with traceable evidence; companion to xhs-topic-digest.",
+  "author": { "name": "weiwei-tsao" },
+  "license": "MIT"
+}

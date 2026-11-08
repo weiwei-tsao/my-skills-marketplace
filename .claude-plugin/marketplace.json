@@ -70,6 +70,15 @@
       "author": { "name": "weiwei-tsao" },
       "category": "research",
       "keywords": ["xiaohongshu", "小红书", "ugc", "content-digest", "research", "social-media"]
+    },
+    {
+      "name": "en-community-digest",
+      "source": "./plugins/en-community-digest",
+      "version": "0.1.0",
+      "description": "English community digest (Reddit + RedFlagDeals) via browser-use — consensus, disagreements, key terms and warnings with traceable evidence; companion to xhs-topic-digest.",
+      "author": { "name": "weiwei-tsao" },
+      "category": "research",
+      "keywords": ["reddit", "redflagdeals", "rfd", "ugc", "content-digest", "research", "browser-use"]
     }
   ]
 }
