@@ -21,7 +21,7 @@ Site access recipes live in `sites.md` (this directory) — read it before touch
 
 ## Workflow
 
-1. **Session check first** (recipe in `sites.md`). Not logged in, or a members-only category returns 403/404 → stop and tell the user which site/account; never log in or reset passwords yourself.
+1. **Session check first** (recipe in `sites.md`). Not logged in, or a members-only category returns 403/404 → stop and tell the user which site/account; never log in or reset passwords yourself. If the user says to go ahead with public content only, proceed and list in 待验证/YMMV what guests may not see (e.g. replies count > posts fetched).
 2. **Locate**: site search (several phrasings, incl. English product names and Chinese slang), plus threads the user named. Old tripwinego.com/community/ links → find the migrated topic on youcard.ca by title.
 3. **Update mode — start point**: use `已读至 #N`. No marker → take the doc's 调研时间 and start after the last post dated on or before it (record how you chose); never trust a post *count* quoted in the doc (deleted posts). Check sibling update files in the folder for later markers. Fetch with `since=0` anyway — you need it to verify the start point and to read parents of replies (`reply_to`) that predate it. Read the original doc first and keep its structure and distinctions (e.g. its split between true credit-liquidation MS and plain bill-pay optimization) — the update answers per item it covers.
 4. **Read** with the API recipe; save every extraction to `<Topic>/raw/<site>_<topic-id>.json` before reading condensed views. Long thread: if the posts in scope total under ~30k characters, read them all; otherwise keyword-filter per sub-topic with plain case-insensitive substring match (no `\b` — it fails next to Chinese) and several spellings, then read each hit plus its parent (`reply_to`) and replies. Image-only or image-heavy posts (`imgs` non-empty, short `txt`) often hold the key screenshot — open the image and read it.
@@ -41,10 +41,12 @@ Triggered by "把 XX 加进 member-site-digest", or by any request about a site 
 1. **Identify the platform** (open the site in the user's Chrome):
    - Discourse: `meta[name=generator]` says Discourse, or `/session/current.json` answers → reuse the Discourse recipes.
    - WordPress: `/wp-json/` answers → reuse the article recipes.
-   - Anything else (phpBB, XenForo, Discuz, custom): work out from the page DOM how posts, post ids/floor numbers, dates, authors and pagination are marked up, and whether there's a JSON endpoint.
-2. **Session check**: confirm the user is logged in and members-only sections are readable. Not logged in → stop and ask; never log in yourself.
-3. **Prove the recipes on a real thread**: search, whole-thread fetch, and update-from-floor-N must each run verbatim before you write them down.
-4. **Record it**: add a row/section to `sites.md` (base URL, platform, members-only area, quirks), and add the site's names to this skill's `description` triggers.
+   - Discuz: `discuz_uid` JS global, or `/api/mobile/index.php?version=4&module=check` answers → its mobile API returns thread JSON (`module=viewthread&tid=&page=`); search is HTML only.
+   - Anything else (phpBB, XenForo, custom): work out from the page DOM how posts, post ids/floor numbers, dates, authors and pagination are marked up, and whether there's a JSON endpoint.
+   - Always check: charset (GBK/Big5 sites need search terms encoded in that charset — UTF-8 silently returns 0 hits), Cloudflare interstitials (wait/poll until the real page loads), and keep one fetch per `js` call (multi-fetch calls time out).
+2. **Session check**: confirm the user is logged in and members-only sections are readable. Not logged in → stop and ask; never log in yourself. If the user says to go ahead logged out, prove the recipes on public threads and mark the `sites.md` entry "members-only: unverified".
+3. **Prove the recipes with real values** before writing them down, each run verbatim: session check; one search including page 2; one whole thread spanning 2+ pages; one update from a mid-thread floor; the permalink format. Check whether floor numbers stay stable when earlier posts are deleted — if not (Discuz, many custom forums), resume by a stable post id and record it in the marker: `已读至 #30（pid 55082157，YYYY-MM-DD）`.
+4. **Record it**: add a row/section to `sites.md` (base URL, platform, members-only area, quirks), add the site's names to this skill's `description` triggers, and add its slug to the `<site>` list in Workflow step 6 (plus its marker format if it uses a stable id).
 5. **Commit** in the marketplace repo (`claude plugin validate .`, `python3 vetting/audit_skill.py plugins/member-site-digest`), then push — ask the user before pushing.
 
 ## Common mistakes

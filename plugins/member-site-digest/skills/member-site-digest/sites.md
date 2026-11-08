@@ -1,6 +1,6 @@
 # Site access recipes (browser-use, user's logged-in Chrome)
 
-Open the site once with `new_tab(url); wait_for_load()`, then do everything with same-origin `fetch` inside `js(...)` — cookies ride along, no HTML scraping. Switching to the other site: `goto_url(base)`; a `Page.navigate` timeout there is often harmless — `wait_for_load()`, check `page_info()['url']`, continue. Read sequentially; pause ~1s between API calls (Discourse rate-limits).
+Open the site once with `new_tab(url); wait_for_load()`, then do everything with same-origin `fetch` inside `js(...)` — cookies ride along, no HTML scraping. Switching to the other site: `goto_url(base)`; a `Page.navigate` timeout there is often harmless — `wait_for_load()`, check `page_info()['url']`, continue. Read sequentially; pause ~1s between API calls (Discourse rate-limits). Each `browser-use` heredoc is a fresh Python process — re-paste helpers/recipes in every call; nothing carries over except the browser tab.
 
 ## Discourse sites
 
