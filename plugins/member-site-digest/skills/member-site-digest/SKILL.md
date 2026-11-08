@@ -9,7 +9,7 @@ description: Use when the user wants content distilled from a specific site they
 
 Distill what members of a user-named site actually say, read through the user's **own logged-in Chrome session** via the **browser-use** skill (never curl/WebFetch — members-only content and bot blocking). Same research discipline as `en-community-digest`: read replies not just the OP, label consensus vs single DP vs conflict, date everything, audit against raw before handing over.
 
-Site access recipes live in `sites.md` (this directory) — read it before touching a site. Unknown site → probe it the same way (is it Discourse? WordPress? check session) and say the approach is ad hoc.
+Site access recipes live in `sites.md` (this directory) — read it before touching a site. Site not in `sites.md` → follow **Adding a new site** below before researching.
 
 ## Modes
 
@@ -33,6 +33,19 @@ Site access recipes live in `sites.md` (this directory) — read it before touch
    - End with **待验证 / YMMV**.
    - Members-only content stays in this private repo; don't paste it anywhere public.
 7. **Self-audit**: script-check that every quoted string appears in the `txt` of the very post (`#楼层`) it's cited to, and author/date match (normalise “”/"" and 「」 first; match each quote separately, not greedily); a paraphrase is never put in quote marks; then for each key claim grep raw for counter-evidence (a contrary DP, a failed attempt, another article saying otherwise); then re-read the md claim by claim against raw — fix unsupported, mislabelled (single DP called 共识), misattributed, or stale claims.
+
+## Adding a new site
+
+Triggered by "把 XX 加进 member-site-digest", or by any request about a site missing from `sites.md`. Do it once, then the site is a first-class source:
+
+1. **Identify the platform** (open the site in the user's Chrome):
+   - Discourse: `meta[name=generator]` says Discourse, or `/session/current.json` answers → reuse the Discourse recipes.
+   - WordPress: `/wp-json/` answers → reuse the article recipes.
+   - Anything else (phpBB, XenForo, Discuz, custom): work out from the page DOM how posts, post ids/floor numbers, dates, authors and pagination are marked up, and whether there's a JSON endpoint.
+2. **Session check**: confirm the user is logged in and members-only sections are readable. Not logged in → stop and ask; never log in yourself.
+3. **Prove the recipes on a real thread**: search, whole-thread fetch, and update-from-floor-N must each run verbatim before you write them down.
+4. **Record it**: add a row/section to `sites.md` (base URL, platform, members-only area, quirks), and add the site's names to this skill's `description` triggers.
+5. **Commit** in the marketplace repo (`claude plugin validate .`, `python3 vetting/audit_skill.py plugins/member-site-digest`), then push — ask the user before pushing.
 
 ## Common mistakes
 
