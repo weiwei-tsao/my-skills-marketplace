@@ -88,6 +88,15 @@
       "author": { "name": "weiwei-tsao" },
       "category": "research",
       "keywords": ["uscardforum", "美卡论坛", "youcard", "悠卡", "tripwinego", "悠酒", "discourse", "forum", "content-digest", "research", "browser-use"]
+    },
+    {
+      "name": "award-vs-cash-check",
+      "source": "./plugins/award-vs-cash-check",
+      "version": "0.1.0",
+      "description": "Before redeeming points for a flight: price the same-date cash fare and the award (miles + surcharges), compute value per source point, and decide redeem vs. pay cash and keep the points.",
+      "author": { "name": "weiwei-tsao" },
+      "category": "finance",
+      "keywords": ["points", "miles", "award", "redemption", "avion", "asia-miles", "browser-use"]
     }
   ]
 }

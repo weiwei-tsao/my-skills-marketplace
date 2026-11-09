@@ -1,0 +1,7 @@
+{
+  "name": "award-vs-cash-check",
+  "version": "0.1.0",
+  "description": "Before redeeming points for a flight: price the same-date cash fare and the award (miles + surcharges), compute value per source point, and decide redeem vs. pay cash and keep the points.",
+  "author": { "name": "weiwei-tsao" },
+  "license": "MIT"
+}
