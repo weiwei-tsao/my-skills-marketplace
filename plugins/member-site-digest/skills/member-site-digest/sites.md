@@ -1,13 +1,13 @@
 # Site access recipes (browser-use, user's logged-in Chrome)
 
-Open the site once with `new_tab(url); wait_for_load()`, then do everything with same-origin `fetch` inside `js(...)` — cookies ride along, no HTML scraping. Switching to the other site: `goto_url(base)`; a `Page.navigate` timeout there is often harmless — `wait_for_load()`, check `page_info()['url']`, continue. Read sequentially; pause ~1s between API calls (Discourse rate-limits). Each `browser-use` heredoc is a fresh Python process — re-paste helpers/recipes in every call; nothing carries over except the browser tab.
+Open the site once with `new_tab(url); wait_for_load()`, then do everything with same-origin `fetch` inside `js(...)` — cookies ride along, no HTML scraping. Switching to the other site: `goto_url(base)`; a `Page.navigate` timeout there is often harmless — `wait_for_load()`, check `page_info()['url']`, continue. Read sequentially; pause ~1s between API calls (Discourse rate-limits). Each `browser-use` heredoc is a fresh Python process — re-paste helpers/recipes in every call; nothing carries over except the browser tab. If even `js("1+1")` times out, the tab is wedged (e.g. after a timed-out fetch): `new_tab(url)` and continue there.
 
 ## Discourse sites
 
 | site | base | notes |
 |---|---|---|
 | 美卡论坛 | `https://www.uscardforum.com` | 玩卡/信用卡 boards; Canada megathread = topic 122492 |
-| 悠卡 | `https://youcard.ca` | tripwinego forum moved here (2026). VIP = category 27 「白金 Lounge」 (`read_restricted`; list it: `/c/27.json` → `topic_list.topics`); old VIP threads kept their original dates. For "VIP 里怎么说" also keyword-filter 悠酒's 【VIP】 articles (网友的 DP · VIP 群历史记录, 二手市场行情) — VIP chatter often lives there |
+| 悠卡 | `https://youcard.ca` | **= 悠酒世界's forum** (moved from tripwinego.com/community/ in 2026; same owner and members — write it up together with 悠酒 articles under slug `tripwinego`). VIP = category 27 「白金 Lounge」 (`read_restricted`; list it: `/c/27.json` → `topic_list.topics`); old VIP threads kept their original dates. For "VIP 里怎么说" also keyword-filter 悠酒's 【VIP】 articles (网友的 DP · VIP 群历史记录, 二手市场行情) — VIP chatter often lives there |
 
 **Session check**
 ```python

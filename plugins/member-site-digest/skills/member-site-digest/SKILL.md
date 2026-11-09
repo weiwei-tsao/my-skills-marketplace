@@ -15,7 +15,7 @@ Site access recipes live in `sites.md` (this directory) — read it before touch
 
 | User gives | Mode | Scope |
 |---|---|---|
-| a topic (+ optional site) | **topic** | site search → pick relevant threads/articles → read each fully |
+| a topic (+ optional site) | **topic** | search **every site in `sites.md`** unless the user names specific ones → pick relevant threads/articles → read each fully |
 | a thread URL | **thread** | read every post; long threads: filter by sub-topic keywords, then read matches in full with their reply context |
 | an existing digest / "追更新" | **update** | report on posts after the header's `已读至` marker; write a separate update file |
 
@@ -27,7 +27,7 @@ Site access recipes live in `sites.md` (this directory) — read it before touch
 4. **Read** with the API recipe; save every extraction to `<Topic>/raw/<site>_<topic-id>.json` before reading condensed views. Long thread: if the posts in scope total under ~30k characters, read them all; otherwise keyword-filter per sub-topic with plain case-insensitive substring match (no `\b` — it fails next to Chinese) and several spellings, then read each hit plus its parent (`reply_to`) and replies. Image-only or image-heavy posts (`imgs` non-empty, short `txt`) often hold the key screenshot — open the image and read it.
 5. **Weigh** — before citing a post, read replies to it and the same author's next few posts; members often clarify ("拉满了" may mean *their own* quota, not a platform limit). Then: several independent members → 共识(n); one DP → attribute with `#楼层`/author/date; conflicting → 分歧, both sides with dates. A reply agreeing with its parent is not independent. Check the user's premise too — a figure in the question ("8x") may be a blogger's amortised number, not the product's terms; say so up front. Mod/OP guides = what's recommended, not proof it still works. The site's own articles can contradict each other (e.g. one says breakfast in Canada, another says a dining credit) — that's 分歧 too: say which article says what. Everything time-sensitive (fees, rules, "已死/还能用") carries a date; prefer newer, flag unresolved conflicts. Channels die fast — say "截至 YYYY-MM-DD 的最新楼层".
 6. **Write** to the topic folder in the research repo (create `<Topic>/` if missing), in Chinese:
-   - `findings-<site>-<n>.md` (`<site>` = uscardforum | youcard | tripwinego; `<n>` = next free number) — one file per site, matching the existing folders; when the question spans sites, each file opens with the same overall answer and links its sibling. Update mode: `<original-file-stem>-update-YYYY-MM.md`, linking the file it updates.
+   - `findings-<site>-<n>.md` (`<site>` = uscardforum | tripwinego; `<n>` = next free number). One file per **source**: 悠酒's articles (tripwinego.com) and its forum (youcard.ca) are the same source → one `findings-tripwinego-*` file with forum and article sections. When the question spans sources, each file answers from its own evidence and links the other — don't copy the same answer into both. Update mode: `<original-file-stem>-update-YYYY-MM.md`, linking the file it updates.
    - Header: 来源 (each thread/article: title + URL + author + start date), 调研时间, and per thread `已读至 #<post_number>（YYYY-MM-DD）`.
    - Body: start with the direct answer to the user's question; then key terms (fees, limits, thresholds, dates); then themes fit to the topic. Cite DPs as `（#1357，author，YYYY-MM-DD）`. When comparing options (channels, cards), list each option's cost/terms side by side.
    - End with **待验证 / YMMV**.
