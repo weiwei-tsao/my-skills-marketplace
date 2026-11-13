@@ -74,11 +74,11 @@
     {
       "name": "en-community-digest",
       "source": "./plugins/en-community-digest",
-      "version": "0.1.0",
-      "description": "English community digest (Reddit + RedFlagDeals) via browser-use — consensus, disagreements, key terms and warnings with traceable evidence; companion to xhs-topic-digest.",
+      "version": "0.1.1",
+      "description": "English community digest (Reddit, RedFlagDeals, Doctor of Credit, Danny Deal Guru) via browser-use — consensus, disagreements, key terms and warnings with traceable evidence; companion to xhs-topic-digest.",
       "author": { "name": "weiwei-tsao" },
       "category": "research",
-      "keywords": ["reddit", "redflagdeals", "rfd", "ugc", "content-digest", "research", "browser-use"]
+      "keywords": ["reddit", "redflagdeals", "rfd", "doctorofcredit", "dannydealguru", "ugc", "content-digest", "research", "browser-use"]
     },
     {
       "name": "member-site-digest",
