@@ -1,9 +1,9 @@
 ---
 name: en-community-digest
-description: Use when the user wants English-language community opinion on a topic — what Reddit or RedFlagDeals (RFD) threads and comments actually say (recommendations, warnings, recent changes, consensus, disagreements) — especially Canadian/Ontario topics like credit cards, deals, services, kids activities, travel. Also use when asked to merge an English web digest with a xiaohongshu (小红书) digest. Triggers include "英文资料", "Reddit 怎么说", "RFD 上", "English sources", "what does reddit think".
+description: Use when the user wants English-language community opinion on a topic — what Reddit, RedFlagDeals (RFD), Doctor of Credit (DoC) or Danny Deal Guru (DDG) posts and comments actually say (recommendations, warnings, recent changes, consensus, disagreements) — especially Canadian/Ontario topics like credit cards, deals, services, kids activities, travel, and US bank/credit-card bonuses. Also use when asked to merge an English web digest with a xiaohongshu (小红书) digest. Triggers include "英文资料", "Reddit 怎么说", "RFD 上", "DoC 上", "Doctor of Credit", "Danny Deal Guru", "English sources", "what does reddit think".
 ---
 
-# EN Community Digest (Reddit + RFD)
+# EN Community Digest (Reddit + RFD + DoC + DDG)
 
 ## Overview
 
@@ -11,17 +11,17 @@ English counterpart of `xhs-topic-digest`: a small UGC qualitative study — sea
 
 All page access goes through the **browser-use** skill (user's real Chrome, logged-in, human-like). Don't try `curl`/WebFetch first — Reddit and many forums block them.
 
-Sources in scope: Reddit, RFD. Other platforms (X, Telegram, GitHub, custom sites) are not covered yet — see repo issue #1; for a user-named site, use the same Google `site:` + read-the-page approach and say it's ad hoc.
+Sources in scope: Reddit, RFD, Doctor of Credit (`doctorofcredit.com`), Danny Deal Guru (`dannydealguru.com`). DoC and DDG are **US-focused** deal blogs (bank/credit-card bonuses, US issuers): search them for US topics, skip them for Canada-only topics unless the user names them. Other platforms (X, Telegram, GitHub, custom sites) are not covered yet — see repo issue #1; for a user-named site, use the same Google `site:` + read-the-page approach and say it's ad hoc.
 
 ## Workflow
 
 1. **Candidate pool — one Google search per site** (combining with `OR` lets Reddit crowd out RFD):
-   `https://www.google.com/search?q=<kw>+site%3Areddit.com&tbs=qdr:y` and the same with `site%3Aforums.redflagdeals.com`. `tbs=qdr:y` = past year; drop it for evergreen topics. Extract with `js("[...document.querySelectorAll('a h3')].map(h=>({t:h.innerText,u:h.closest('a').href}))")`. Multi-part question → one search per sub-question (and per site); put the user's situation in a phrasing (e.g. `SUV`, `Ontario`). Add another phrasing (`<kw> worth it`, `<kw> vs`, `<kw> problem`) if the pool is one-note.
-2. **Sample** ~6–10 threads in total (both platforms; ~3 per sub-question for multi-part asks), across sub-angles, subreddits, recency, and opposing takes — not just top results. A brand subreddit (r/Wealthsimple, r/amexcanada) skews fan-side: counterweight with r/PersonalFinanceCanada or RFD and say in `sample_summary` if the sample still leans one way. Read each (recipes below) and save every extraction to `<Topic>/raw/<platform>_<id>.json`. Keep adding threads only while each adds a new angle, shifts confidence, or shows real disagreement.
+   `https://www.google.com/search?q=<kw>+site%3Areddit.com&tbs=qdr:y` and the same with `site%3Aforums.redflagdeals.com` (plus `site%3Adoctorofcredit.com` and `site%3Adannydealguru.com` for US topics). `tbs=qdr:y` = past year; drop it for evergreen topics. Extract with `js("[...document.querySelectorAll('a h3')].map(h=>({t:h.innerText,u:h.closest('a').href}))")`. Multi-part question → one search per sub-question (and per site); put the user's situation in a phrasing (e.g. `SUV`, `Ontario`). Add another phrasing (`<kw> worth it`, `<kw> vs`, `<kw> problem`) if the pool is one-note.
+2. **Sample** ~6–10 threads in total (every in-scope platform; ~3 per sub-question for multi-part asks), across sub-angles, subreddits, recency, and opposing takes — not just top results. A brand subreddit (r/Wealthsimple, r/amexcanada) skews fan-side: counterweight with r/PersonalFinanceCanada or RFD and say in `sample_summary` if the sample still leans one way. Read each (recipes below) and save every extraction to `<Topic>/raw/<platform>_<id>.json`. Keep adding threads only while each adds a new angle, shifts confidence, or shows real disagreement.
 3. **Read comments for information gain**: data points, dated changes, corrections, failures, dissent. Skip "this"/"following". Weight by score, but a low-score dated correction beats a high-score joke.
-4. **Corroborate**: several independent users agree → consensus; one user → attribute it; conflicting → say so, don't average. A reply quoting or agreeing with its parent (`d`+1) is not independent. Affiliate/referral-link posts = evidence of *what* is pushed, not *whether* it's good. Note dates on anything time-sensitive (fees, earn rates, policies, prices). Products get renamed or re-tiered — map old/new names explicitly. Seasonal topics: separate this season's evidence from last season's and flag a theme resting mostly on year-old posts.
+4. **Corroborate**: several independent users agree → consensus; one user → attribute it; conflicting → say so, don't average. A reply quoting or agreeing with its parent (`d`+1) is not independent. Affiliate/referral-link posts = evidence of *what* is pushed, not *whether* it's good. On DoC/DDG the article itself is one source (the blog's), and the author's replies in its comments are the same source — the independent data points are the readers' comments ("got the bonus after 45 days", "DD via X didn't trigger it"). Note dates on anything time-sensitive (fees, earn rates, policies, prices). Products get renamed or re-tiered — map old/new names explicitly. Seasonal topics: separate this season's evidence from last season's and flag a theme resting mostly on year-old posts.
 5. **Output** to the topic folder in this repo (create `<Topic-Name>/` if missing):
-   - `en-digest-YYYY-MM.json` — source of truth: `topic`, `sample_summary` (threads read, per platform), `themes[]` {`theme`, `consensus`, `disagreements`, `recommendations`, `warnings`, `evidence_notes`}, `notable_updates[]`, `uncertainties[]`. `evidence_notes` = one entry per source: {platform, url (thread URL; RFD add `#p<id>`), author, date, post|comment, quote}.
+   - `en-digest-YYYY-MM.json` — source of truth: `topic`, `sample_summary` (threads read, per platform), `themes[]` {`theme`, `consensus`, `disagreements`, `recommendations`, `warnings`, `evidence_notes`}, `notable_updates[]`, `uncertainties[]`. `evidence_notes` = one entry per source: {platform, url (thread URL; RFD add `#p<id>`, DoC/DDG add `#comment-<id>`), author, date, post|comment, quote}.
    - `en-digest-YYYY-MM.md` — in Chinese (user's reading language). Shape:
      1. **结论**: a direct answer to the user's actual question, applied to their stated situation (province, eligibility, spending). When it compares options (where to buy, which card), give each option's net cost/terms from raw side by side — never favour one while omitting the other's discount or counter-evidence.
      2. **Key terms** the decision hinges on — fees, caps/limits, earn rates, eligibility, deadlines — each with its source date. Check the raw data for these explicitly; they're easy to drop.
@@ -55,6 +55,19 @@ c?.querySelectorAll('blockquote').forEach(q=>q.remove());
 return {id:a.id,date:a.querySelector('.dateline_timestamp')?.innerText,author:a.querySelector('.postauthor')?.innerText?.trim(),txt:c?.innerText?.trim().slice(0,800)}})""")
 ```
 
+**Doctor of Credit / Danny Deal Guru** (WordPress + wpDiscuz, no login needed). The page lazy-loads comments; fetch them same-origin from WordPress's comments API instead, newest first:
+
+```python
+goto_url(url); wait_for_load()
+r = js("""(async()=>{const id=document.body.className.match(/postid-(\\d+)/)?.[1];
+const txt=h=>{const d=document.createElement('div');d.innerHTML=h;return d.textContent.trim()};
+const ld=[...document.querySelectorAll('script[type="application/ld+json"]')].map(s=>s.textContent).join(' ');
+const out=[];for(let p=1;p<=5;p++){const res=await fetch(`/wp-json/wp/v2/comments?post=${id}&per_page=100&page=${p}&orderby=date&order=desc&_fields=id,parent,author_name,date,content`);
+ if(!res.ok)break;const a=await res.json();out.push(...a.map(c=>({id:c.id,parent:c.parent,author:c.author_name,date:c.date.slice(0,10),body:txt(c.content.rendered).slice(0,800)})));if(a.length<100)break}
+return {id,title:document.querySelector('h1')?.innerText||document.title,published:ld.match(/"datePublished":"([^"]+)/)?.[1],modified:ld.match(/"dateModified":"([^"]+)/)?.[1],body:document.querySelector('.entry-content')?.innerText.slice(0,12000),comments:out}})()""")
+```
+`parent` links a reply to its comment (0 = top-level). Capped at the newest 500 comments — enough for current terms. Both blogs keep one evergreen post per bonus, edit it in place and re-date it on every repost — `published`/`modified` mean "last reposted", not "offer started" (`published` can even be later than `modified`). Cite the later of the two as the post date. The comment date range is only the *sample's* coverage (truncated at 500 on busy posts), not the offer's age — leave the current offer's start date in 待确认 unless the body or a dated source states it. Older comments may describe an earlier version of the offer: check them against the current terms before citing. Check the body for an "expired"/"update" note before citing its terms.
+
 Pace like a person: read threads sequentially in one tab, don't fire dozens of fetches in parallel.
 
 ## Merging with a xiaohongshu digest
@@ -64,6 +77,7 @@ Only when asked. Read both `.md`/`.json` digests in the topic folder and write `
 ## Common mistakes
 
 - One combined `OR` search → RFD vanishes from the pool.
+- Citing a DoC/DDG post's terms without checking its update notes and the latest comments — the bonus may have changed or died since; recent comments are where that shows first.
 - Trying old.reddit or reading only rendered `shreddit-comment`s → missing most of the thread.
 - Reading RFD page 1 of a megathread and reporting 2017 info as current.
 - Treating one confident comment as fact; counting echoed replies as independent corroboration.
