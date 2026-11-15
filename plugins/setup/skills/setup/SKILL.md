@@ -86,8 +86,8 @@ Print the plan below. Use actual detected values. Do not create files yet.
   security.md     [✓ if auth layer detected / — if not]
 
 ### Skills  (.claude/skills/)
-  fix/            customized 5-phase bug diagnosis (quality gate: [detected commands])
-  git-commit/     customized with detected quality gate commands
+  (not generated: commits → git-commit plugin; bug diagnosis →
+   ai-engineering-workspace:structured-bug-fix — they see Dev Commands via CLAUDE.md)
   [deploy/        if CI/CD config detected: .github/workflows/, Dockerfile, fly.toml, vercel.json]
   [migrate/       if DB migration tooling detected]
 
@@ -140,8 +140,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Create each file confirmed in the plan at `.claude/rules/<name>.md`. Only create files on the confirmed list.
 
 ### git.md
-- Conventional Commits format: `type(scope): description` — ≤12 words, imperative mood, lowercase
-- Commit types: feat · fix · refactor · docs · style · chore · test · perf · revert
+- Commit message convention: describe the pattern this repo's `git log` already uses (prefix form, types/scopes, casing); only if history has no clear pattern, write Conventional Commits `type(scope): description`
+- Commit messages are one subject line, ≤12-word description, imperative mood — no body, no `Co-Authored-By:` or other trailers
 - Branch naming convention (e.g. `feat/`, `fix/`, `chore/`)
 - What must never be committed: `.env*`, secrets, build artifacts, database files, `node_modules/`
 - PR checklist: tests pass, no console.log, no hardcoded values
@@ -151,6 +151,7 @@ Create each file confirmed in the plan at `.claude/rules/<name>.md`. Only create
 - Data flow: trace a typical request from UI action → API → DB → response using actual file paths detected in Phase 1
 - Server/client boundary rules (if applicable)
 - Key invariants: serialization steps, auth check points, singleton patterns, edge runtime constraints
+- Key Pitfalls: non-obvious gotchas worth remembering (start empty; `/refresh` proposes entries from recent fix commits)
 
 ### api.md *(if API layer detected)*
 - Endpoint naming convention and URL structure
@@ -189,114 +190,7 @@ Create each file confirmed in the plan at `.claude/rules/<name>.md`. Only create
 
 ## Phase 5 — Create Skills
 
-### fix skill — `.claude/skills/fix/SKILL.md`
-
-Fill in the template with project-specific values from Phase 1:
-
-```markdown
----
-description: Structured bug diagnosis and resolution — no code changes until root cause is confirmed
----
-
-# Structured Bug Fix
-
-Phased approach: diagnose fully before touching any code.
-
-## Phase 1: Gather Context (read-only)
-
-Ask for: error message or symptom, reproduction steps, suspected area.
-Skip questions already answered by the user.
-
-## Phase 2: Trace the Full Data Flow
-
-[Insert actual request-to-response layers with real file paths detected in Phase 1.
- Example for a Next.js + Prisma project:
-   User action (component) → API route (src/app/api/) → service/db (src/lib/) → Prisma → DB → serialize → response]
-
-Cross-cutting concerns to always check:
-[Insert project-specific invariants from architecture.md — e.g., server/client boundary, stale closures, serialization steps]
-
-Read files at each relevant layer. Do not assume — verify each hop.
-
-## Phase 3: Present Diagnosis — Wait for Confirmation
-
-Before writing a single line of code, present:
-
-  Root cause: <one sentence>
-  Evidence: <file:line — what it shows> (list 2–4)
-  Files that need changes: <path — what and why> (numbered list)
-
-  No code has been changed yet. Confirm to proceed.
-
-## Phase 4: Implement the Fix
-
-Apply changes to ALL identified files, not just the most obvious one.
-
-Checklist before marking done:
-[Insert project-specific checklist — e.g.:]
-- [ ] Every file from the diagnosis addressed
-- [ ] No hardcoded secrets or env var fallbacks
-[Add TypeScript items if applicable: no new `any` types]
-[Add DB items if applicable: serialize before returning to client]
-[Add auth items if applicable: auth check present on new routes]
-
-## Phase 5: Verify
-
-\`\`\`bash
-[Insert detected quality gate commands — all must pass]
-\`\`\`
-
-If any check fails, fix before closing.
-```
-
-### git-commit skill — `.claude/skills/git-commit/SKILL.md`
-
-```markdown
----
-description: Run quality checks, draft a Conventional Commits message with ≤12-word description, and commit staged changes.
----
-
-## 1. Quality Gate
-
-Run in parallel — stop and report if any fail:
-
-\`\`\`bash
-[Insert detected lint command]
-[Insert detected format:check command]
-[Insert detected typecheck command — omit if none detected]
-\`\`\`
-
-## 2. Inspect Staged Changes
-
-\`\`\`bash
-git status
-git diff --staged
-\`\`\`
-
-If nothing is staged: stop and offer to show `git diff`.
-Unstage and warn if staged files include: `.env*`, `*.db`, `node_modules/`, build output directories.
-
-## 3. Draft Commit Message
-
-Format: `type(scope): description`
-
-Types: feat · fix · refactor · docs · style · chore · test · perf · revert
-Scopes: [insert top-level module names detected in Phase 1]
-Rules: ≤12 words after the colon, imperative mood, lowercase, no trailing period.
-
-Breaking change: append `!` before colon — `feat(api)!: remove field from response`
-
-## 4. Commit
-
-Show the draft to the user and get confirmation. Then:
-
-\`\`\`bash
-git commit -m "$(cat <<'EOF'
-type(scope): description
-EOF
-)"
-\`\`\`
-```
+Do **not** generate `fix` or `git-commit` skills: those come from installed plugins (`git-commit`, and `ai-engineering-workspace:structured-bug-fix`), which run "the repo's checks"; CLAUDE.md is loaded into every session, so its Dev Commands section is where they find them. Only generate the project-specific skills below when their trigger is detected; if none is, skip this phase.
 
 ### deploy skill *(if CI/CD config detected)* — `.claude/skills/deploy/SKILL.md`
 
