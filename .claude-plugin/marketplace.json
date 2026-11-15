@@ -97,6 +97,15 @@
       "author": { "name": "weiwei-tsao" },
       "category": "finance",
       "keywords": ["points", "miles", "award", "redemption", "avion", "asia-miles", "browser-use"]
+    },
+    {
+      "name": "shortlist-crosscheck",
+      "source": "./plugins/shortlist-crosscheck",
+      "version": "0.1.0",
+      "description": "Cross-check a shortlist (venues, products, places, courses, events) across platforms via browser-use — identity, availability, ratings, red flags, ✅/⚠️/❌ with traceable evidence; companion to the digest skills.",
+      "author": { "name": "weiwei-tsao" },
+      "category": "research",
+      "keywords": ["cross-check", "verification", "shortlist", "research", "browser-use"]
     }
   ]
 }

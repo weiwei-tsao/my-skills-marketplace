@@ -1,0 +1,9 @@
+{
+  "name": "shortlist-crosscheck",
+  "version": "0.1.0",
+  "description": "Cross-check a shortlist (venues, products, places, courses, events) across platforms via browser-use — identity, availability, ratings, red flags, ✅/⚠️/❌ with traceable evidence; companion to the digest skills.",
+  "author": {
+    "name": "weiwei-tsao"
+  },
+  "license": "MIT"
+}
