@@ -42,7 +42,7 @@ discovers and links the individual `skills/*` directories inside those bundles.
 | --- | --- | --- | --- |
 | `a11y-audit` | quality | Accessibility audit support for WCAG 2.1/2.2 checks. | — |
 | `git-commit` | workflow | Runs the repo's quality checks, drafts a one-line commit message that follows the repo's own conventions, and commits staged changes. | — |
-| `setup` | workflow | Initializes and refreshes `.claude/` project infrastructure. | — |
+| `project-context` | workflow | Initializes and refreshes `.claude/` project infrastructure. | — |
 | `ai-engineering-workspace` | workflow | Ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction — five skills, each usable standalone where applicable. | Optional: `git-commit`, `weiwei-notes`, `system-design-coach` |
 | `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. | — |
 | `weiwei-notes` | writing | Turns discussions, debugging sessions, or ticket analysis into notes/blog articles in Weiwei's writing style. | Optional: `WEIWEI_PROMPTS_PATH` env var (style source file) |

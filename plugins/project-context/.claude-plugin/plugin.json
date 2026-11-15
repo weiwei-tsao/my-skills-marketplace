@@ -1,5 +1,5 @@
 {
-  "name": "setup",
+  "name": "project-context",
   "version": "0.2.0",
   "description": "Initializes .claude/ infrastructure (CLAUDE.md, rules, skills, hooks) for any project. Includes a companion refresh skill for keeping docs in sync as code evolves.",
   "author": { "name": "weiwei-tsao" },

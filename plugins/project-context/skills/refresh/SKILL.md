@@ -14,7 +14,7 @@ Scan for drift between the current codebase and the existing `.claude/` document
 
 Check that `CLAUDE.md` and `.claude/` both exist. If neither is present, stop:
 
-> No .claude/ infrastructure found. Run /setup first.
+> No .claude/ infrastructure found. Run /project-context:setup first.
 
 Also re-check `.gitignore` for `CLAUDE.md` and `.claude/`. If either is missing, add it silently and note it in the final report.
 Skip any path that `git ls-files -- CLAUDE.md .claude` shows as already tracked — ignoring a tracked file does not untrack it — and note in the report that it was left shared.
