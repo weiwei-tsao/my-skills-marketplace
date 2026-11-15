@@ -38,7 +38,7 @@ bundle 内部的各个 `skills/*` 目录。
 | 插件 | 分类 | 用途 |
 | --- | --- | --- |
 | `a11y-audit` | quality | 辅助进行 WCAG 2.1/2.2 可访问性审计。 |
-| `git-commit` | workflow | 运行质量检查，起草 Conventional Commits 信息，并提交 staged changes。 |
+| `git-commit` | workflow | 运行仓库自己的质量检查，按该仓库的提交习惯起草一行提交信息，并提交 staged changes。 |
 | `setup` | workflow | 初始化和刷新项目中的 `.claude/` 基础设施。 |
 | `ai-engineering-workspace` | workflow | Ticket 全家桶：工作区脚手架、阶段门控 ticket 流程、结构化 bug 修复、跨会话 handoff、ticket completion 知识沉淀 —— 五个 skill，可按场景单独使用。 |
 | `system-design-coach` | learning | 通过路线图、case drill 和答案 review 辅助学习系统设计。 |

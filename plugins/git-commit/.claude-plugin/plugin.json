@@ -1,7 +1,7 @@
 {
   "name": "git-commit",
   "version": "0.2.0",
-  "description": "Run quality checks and draft a Conventional Commits message, then commit staged changes.",
+  "description": "Run the repo's quality checks, draft a one-line commit message following the repo's own conventions, then commit staged changes.",
   "author": { "name": "weiwei-tsao" },
   "license": "MIT"
 }

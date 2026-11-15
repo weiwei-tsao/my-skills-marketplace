@@ -41,7 +41,7 @@ discovers and links the individual `skills/*` directories inside those bundles.
 | Plugin | Category | Purpose |
 | --- | --- | --- |
 | `a11y-audit` | quality | Accessibility audit support for WCAG 2.1/2.2 checks. |
-| `git-commit` | workflow | Runs quality checks, drafts a Conventional Commits message, and commits staged changes. |
+| `git-commit` | workflow | Runs the repo's quality checks, drafts a one-line commit message that follows the repo's own conventions, and commits staged changes. |
 | `setup` | workflow | Initializes and refreshes `.claude/` project infrastructure. |
 | `ai-engineering-workspace` | workflow | Ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction — five skills, each usable standalone where applicable. |
 | `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. |
