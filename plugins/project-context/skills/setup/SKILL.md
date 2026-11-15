@@ -57,6 +57,8 @@ Read `package.json` `"scripts"` (or `Makefile` targets). Record the exact comman
 - Type check: look for `typecheck`, `type-check`, `tsc --noEmit`
 - Test: look for `test`, `jest`, `vitest`, `playwright`
 
+Also record a **per-file lint command** for the edit hook — the linter invoked on a single file, not the project-wide script — and the file extensions it handles. Examples: ESLint → `npx eslint` for `ts tsx js jsx`; Biome → `npx biome lint` for `ts tsx js jsx json`; Ruff → `ruff check` for `py`; golangci-lint → skip (it lints packages, not files). If no linter can run on a single file, record none.
+
 ### Project structure
 List top-level directories under `src/` (or root if no `src/`). Note the purpose of each module if inferable from name.
 
@@ -93,9 +95,9 @@ Print the plan below. Use actual detected values. Do not create files yet.
   [deploy/        if CI/CD config detected: .github/workflows/, Dockerfile, fly.toml, vercel.json]
   [migrate/       if DB migration tooling detected]
 
-### Hooks  (.claude/settings.json)
-  PostToolUse(Write,Edit) → [lint command if detected, else "none — no lint command found"]
-  PreToolUse(Bash)        → block: rm -rf /, force push to main, DROP TABLE/DATABASE
+### Hooks  (.claude/settings.json → scripts in .claude/hooks/)
+  PostToolUse(Write,Edit) → lint-edited-file.sh: [per-file lint command + extensions, else "none — no per-file linter found"]
+  PreToolUse(Bash)        → guard-bash.sh: block recursive delete of / or ~, force push to main/master, DROP TABLE/DATABASE/SCHEMA
 
 ### Refresh routine
   Will offer a weekly scheduled check after setup completes.
@@ -245,7 +247,12 @@ description: Create, apply, and roll back database migrations safely. Use when c
 
 ## Phase 6 — Create Hooks Configuration
 
-Write `.claude/settings.json`. If the file already exists, merge — do not overwrite existing keys.
+Hook logic lives in script files, not inline in `settings.json`. Claude Code passes each tool call to a hook as JSON on **stdin** (there is no `$CLAUDE_TOOL_INPUT` variable), and only **exit code 2** blocks a PreToolUse call or feeds a PostToolUse failure back to Claude.
+
+1. Copy the templates from this skill's `templates/hooks/` directory into the project's `.claude/hooks/`, unchanged except for the placeholders below, and make them executable (`chmod +x`):
+   - `guard-bash.sh` — always.
+   - `lint-edited-file.sh` — only if a per-file lint command was detected in Phase 1. Replace `__LINT_CMD__` with that command (e.g. `npx eslint`) and `__LINT_EXTS__` with its extensions (e.g. `ts tsx js jsx`).
+2. Write `.claude/settings.json`. If the file already exists, merge — do not overwrite existing keys.
 
 ```json
 {
@@ -256,7 +263,7 @@ Write `.claude/settings.json`. If the file already exists, merge — do not over
         "hooks": [
           {
             "type": "command",
-            "command": "[detected lint command, e.g. npm run lint] || true"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/lint-edited-file.sh"
           }
         ]
       }
@@ -267,7 +274,7 @@ Write `.claude/settings.json`. If the file already exists, merge — do not over
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"$CLAUDE_TOOL_INPUT\" | grep -qE 'rm -rf /|git push --force[[:space:]]+main|git push -f[[:space:]]+main|DROP TABLE|DROP DATABASE' && echo 'BLOCKED: dangerous command' >&2 && exit 1 || exit 0"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/guard-bash.sh"
           }
         ]
       }
@@ -276,7 +283,16 @@ Write `.claude/settings.json`. If the file already exists, merge — do not over
 }
 ```
 
-If no quality gate command was detected, omit the `PostToolUse` block entirely.
+If no per-file lint command was detected, omit the `PostToolUse` block and `lint-edited-file.sh` entirely.
+
+3. Verify the guard before reporting success — both must hold:
+
+```bash
+echo '{"tool_input":{"command":"git push -f origin main"}}' | .claude/hooks/guard-bash.sh; echo $?   # expect 2
+echo '{"tool_input":{"command":"git status"}}' | .claude/hooks/guard-bash.sh; echo $?              # expect 0
+```
+
+The scripts read JSON with `jq`, falling back to `python3`. If neither is installed, tell the user the guard will not check commands.
 
 ---
 
@@ -292,6 +308,7 @@ Created:
   ✓ .claude/rules/ ([n] files)
   ✓ .claude/skills/ ([n] skills)
   ✓ .claude/settings.json
+  ✓ .claude/hooks/ ([n] scripts, guard verified)
 
 Would you like a weekly scheduled check (every Monday 09:00) that scans
 for doc drift and sends a push notification with suggested updates?

@@ -62,6 +62,7 @@ Re-read `package.json` scripts (or Makefile). Compare against the commands liste
 - Flag commands that have been renamed or removed.
 - Flag new quality gate commands not yet in Dev Commands.
 - If the project still has legacy `.claude/skills/fix/` or `.claude/skills/git-commit/` copies from an older setup, flag them for removal — the plugins replace them.
+- If `.claude/settings.json` has an inline hook command that reads `$CLAUDE_TOOL_INPUT` (written by an older setup), flag it: that variable does not exist, so the guard never fires. Propose replacing it with `.claude/hooks/guard-bash.sh` from the setup skill's `templates/hooks/`, and replacing a whole-project `... || true` lint hook with `lint-edited-file.sh`.
 
 ### 2e. Recent fix commits → Key Pitfalls candidates
 ```bash
