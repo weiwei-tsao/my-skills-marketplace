@@ -6,7 +6,7 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit
 
 # Project Claude Setup
 
-Initialize a complete `.claude/` development environment tailored to this project's stack. Work through phases in strict order. **Do not create any files before the user confirms the plan in Phase 2.**
+Initialize a complete `.claude/` development environment tailored to this project's stack. Work through phases in strict order. **Do not create any files before the user confirms the plan in Phase 2** — the only exception is the Phase 0 `.gitignore` update, which runs first.
 
 ---
 
