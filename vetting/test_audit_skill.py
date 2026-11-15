@@ -111,6 +111,18 @@ class ReviewedFindings(unittest.TestCase):
         self.assertEqual(a.apply_reviewed(rep, "demo", reviewed), 0)
         self.assertEqual(sev(rep, "silent-action"), [a.INFO])
 
+    def test_one_entry_covers_only_one_of_two_identical_findings(self):
+        filler = "Same filler line."
+        block = [filler] * 3 + [FLAGGED] + [filler] * 3
+        body = "---\nname: demo\ndescription: demo skill\n---\n" + "\n".join(block + block) + "\n"
+        rep = a.audit(write_plugin(self.root, body))
+        hits = [f for f in rep.findings if f.rule == "silent-action"]
+        self.assertEqual(len(hits), 2)
+        self.assertEqual(hits[0].context, hits[1].context)  # truly indistinguishable
+        stale = a.apply_reviewed(rep, "demo", [entry_for(rep)])
+        self.assertEqual(stale, 0)
+        self.assertEqual(sorted(sev(rep, "silent-action")), sorted([a.INFO, a.HIGH]))
+
     def test_entry_without_fingerprint_never_matches(self):
         rep = a.audit(write_plugin(self.root))
         e = entry_for(rep)

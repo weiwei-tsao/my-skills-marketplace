@@ -190,13 +190,19 @@ def apply_reviewed(rep, plugin: str, reviewed) -> int:
     An entry matches only on plugin, file, rule, full line text AND the context
     fingerprint. CRITICAL findings, taint-flow findings and findings without a
     text/context fingerprint are never downgraded. A downgrade means "a human
-    judged this expected", not "no risk"."""
+    judged this expected", not "no risk".
+
+    Each entry covers at most one finding. Entries carry no line number, so two
+    findings with identical text and context are indistinguishable: each needs
+    its own entry, and an entry is spent on the earliest such finding."""
     mine = [r for r in reviewed if r.get("plugin") == plugin]
     used = set()
     for f in rep.findings:
         if not _reviewable(f):
             continue
         for i, r in enumerate(mine):
+            if i in used:  # one entry covers at most one finding
+                continue
             if (r.get("file"), r.get("rule"), r.get("text"), r.get("context_sha256")) == \
                     (f.file, f.rule, f.text, f.context):
                 f.severity = INFO
