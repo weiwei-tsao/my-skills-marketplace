@@ -15,6 +15,7 @@ All page access goes through **browser-use** (the user's real Chrome); 小红书
 
 1. **Pin the list and category.** One line per item; category from the table below. Note the user's need if stated (e.g. "Saturday lunch", "in Canada") — availability is judged against it.
 2. **Identity + availability — one Google search per item.** `https://www.google.com/search?q=<name + locator>`; save `document.body.innerText` to `raw/google_<slug>.txt`. The knowledge panel usually gives the canonical name, address/model, status ("Temporarily closed"), hours, Google rating + count, and third-party rating snippets. No panel → retry with a sharper locator (address, full model number), then the platform itself (e.g. `https://www.google.com/maps/search/<q>`, read `div[role=main]`, save `raw/gmaps_<slug>.txt`).
+   - Google's **AI Overview is not evidence** — including its source cards ("Product: … Model: …" blurbs with no URL, sitting above "Web results"). Use only Web-result lines that carry a source URL, or pages you opened.
    - If the canonical name/model differs from the shortlist's (renamed, misspelt, regional variant), record both and use the canonical one from here on.
 3. **Platform signals** per the category row: ratings **with platform and count**, plus recent reviews where cheap. A bare `3.2(44)` on a results page belongs to the source line *above* it — check before attributing.
 4. **Community threads.** Google `"<canonical name>" site:reddit.com` and `site:forums.redflagdeals.com` (one search per site; save results to `raw/google_site_searches.json`). Read the 1–3 most relevant threads in full with the en-community-digest recipes (Reddit `.json` fetch, RFD post extraction); save to `raw/reddit_<slug>.json` / `raw/rfd_<slug>.json`. Anything known only from a search snippet is marked `snippet_only` with its age.
@@ -38,23 +39,30 @@ New category → add a row. When one row needs more than a line of rules, move i
 ## Screen
 
 - **❌** — not usable for the stated need now (closed, discontinued, date passed, sold out, wrong hours), or identity cannot be pinned down.
-- **⚠️** — any red flag; or ratings across platforms differ by ≥0.5; or only one source; or sources conflict.
+- **⚠️** — any red flag; or two platforms each with ≥100 reviews differ by more than 0.5; or only one source; or sources conflict. Brand-own-site ratings and expert scores (e.g. RTINGS /10) are listed but not used in the gap test.
 - **✅** — identity confirmed, available, and ≥2 independent platforms positive with no red flags.
 
-Every verdict carries its reason and the date of the evidence behind it.
+A red flag is about the item itself (quality, safety, honesty of its reviews). Market noise — third-party marketplace mark-ups, a newer model also on sale, bundles — goes in a `notes` line and doesn't block ✅.
+
+Every verdict carries its reason and the date of the evidence behind it — in the JSON and in the md 初筛 cell.
 
 ## Evidence rules
 
-- A rating is recorded as platform + score + count (`Yelp 3.0 (15)`), never a bare number.
-- Several people in one thread = "同一帖 n 人", not n independent sources; a reply agreeing with its parent isn't independent.
-- Read the surrounding posts before attributing a quote: in a thread about several places, confirm the quote is about **this** item.
+- A rating is recorded as platform + score + count (`Yelp 3.0 (15)`), never a bare number. Every score that appears anywhere — `ratings[]`, expert totals and sub-scores (e.g. RTINGS 7.4, Build Quality 6.5), verdict reasons, the md — has an evidence note quoting the line with that score.
+- Identity claims ("X is the US model number", regional model mappings) need an evidence note too; otherwise label them inference or move them to 待确认.
+- Snippet-derived price / stock / rating may go in the md table only tagged `（搜索结果 YYYY-MM-DD）` — the tag must cover every snippet number in the cell, including brand-site or store ratings that are only listed; unverified claims stay in 待确认.
+- Several people in one thread = "同一帖 n 人" — both ways: not n independent sources, and not "单例" either. "一致 / 共识" only when it appears in ≥2 different threads or platforms.
+- Before quoting a "used it X years, no problems" comment, read the same author's later replies and any follow-up question to it — the device may have died since.
+- Contested characterisations ("entry-level", "overpriced") are written as "X 人这样说，Y 人反对", never as fact.
+- Read the surrounding posts before attributing a quote: in a thread about several places or models ("Bambino/Plus", "my dyson cordless"), confirm the author means **this** item — if you can't tell, don't count it.
+- For a reply in a comment section, confirm which comment it answers. Write a role ("staff", "official") only when the page marks it; otherwise label it inference.
 - Sponsored / affiliate content is evidence of promotion, not of quality — say which it is.
 - Inference (e.g. suspicious review velocity) is labelled as inference.
 
 ## Outputs
 
 `crosscheck-YYYY-MM.json` — source of truth:
-`shortlist`, `category`, `need`, `items[]` {`name`, `canonical_name`, `identity`, `availability`, `ratings[]` {platform, score, count}, `red_flags[]`, `verdict` (✅/⚠️/❌), `verdict_reason`, `evidence_notes[]` {platform, raw, date, quote, snippet_only}}, `uncertainties[]`.
+`shortlist`, `category`, `need`, `items[]` {`name`, `canonical_name`, `identity`, `availability`, `ratings[]` {platform, score, count}, `red_flags[]`, `notes[]`, `verdict` (✅/⚠️/❌), `verdict_reason`, `evidence_notes[]` {platform, raw, date, quote, snippet_only}}, `uncertainties[]`.
 
 `crosscheck-YYYY-MM.md` — in Chinese: one comparison table (item | 原来源说法 | 身份/状态 | 各平台评分 | 社区/媒体 | 初筛), then 规律 (patterns across items, e.g. "single source over-rates X"), then 待确认. **No "推荐选哪个" section** — stop at the screen.
 
@@ -62,12 +70,18 @@ Every verdict carries its reason and the date of the evidence behind it.
 
 1. Quote check — every `quote` must be a substring of its `raw` file:
 ```python
-import json
-d=json.load(open("crosscheck-YYYY-MM.json"))
-bad=[(i["name"],n["quote"]) for i in d["items"] for n in i["evidence_notes"] if n["quote"] not in open(n["raw"]).read()]
-print("unmatched:",bad)
+import json,re
+norm=lambda t:re.sub(r"\s+"," ",t.replace("\xa0"," ")).strip()
+d=json.load(open("crosscheck-YYYY-MM.json")); exact=fuzzy=0; bad=[]
+for i in d["items"]:
+    for n in i["evidence_notes"]:
+        raw=open(n["raw"]).read()
+        if n["quote"] in raw: exact+=1
+        elif norm(n["quote"]) in norm(raw): fuzzy+=1
+        else: bad.append((i["name"],n["quote"]))
+print(f"exact {exact} / whitespace-normalised {fuzzy} / unmatched {len(bad)}",bad)
 ```
-2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Is any `snippet_only` evidence presented as read? Does each ❌ name its reason and date?
+2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date?
 3. Fix, re-run the quote check, then note in the `.md` header how many corrections the audit made.
 
 ## Common mistakes
@@ -80,5 +94,7 @@ print("unmatched:",bad)
 - Ending with a ranking or "buy / don't buy at this price" — out of scope; give the screen and evidence, the user decides.
 - Writing "Reddit consensus" from search snippets without opening a single thread — read 1–3 threads in full or mark everything `snippet_only`.
 - Producing only a prose `.md` with no `raw/` — nothing can be audited.
-- Putting an unverified snippet price/claim in the body table — it goes to 待确认 only.
+- Putting a snippet price in the table untagged, or an unverified claim anywhere but 待确认.
+- Every product landing on ⚠️ because a 57-review brand site differs from a 5,000-review retailer — apply the ≥100-review and same-kind-platform conditions.
+- Writing "单例" when three people in the same thread report the same failure.
 - Skipping red-flag checks for products: affiliate review sites, review stuffing, older-model reviews pooled into the new listing.
