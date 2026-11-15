@@ -12,7 +12,7 @@
       "name": "a11y-audit",
       "source": "./plugins/a11y-audit",
       "description": "Accessibility (WCAG 2.1/2.2) audit skill.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": { "name": "weiwei-tsao" },
       "category": "quality",
       "keywords": ["accessibility", "a11y", "wcag"]
