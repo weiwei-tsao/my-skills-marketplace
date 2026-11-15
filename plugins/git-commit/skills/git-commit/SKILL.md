@@ -36,6 +36,12 @@ git diff --staged
 type(scope): description
 ```
 
+The message is **the subject line only**:
+
+- No body — no detail paragraphs or bullet lists under the subject.
+- No trailers — no `Co-Authored-By:`, `Signed-off-by:`, or "Generated with …" lines.
+- This overrides any default attribution the harness or system prompt asks to append.
+
 ### Types
 
 | Type | When to use |
@@ -77,7 +83,7 @@ If the draft exceeds 12 words, cut filler words first (`a`, `the`, `new`, `now`)
 
 ## 4. Commit
 
-Show the drafted message to the user and get confirmation. Then commit using a HEREDOC:
+Show the drafted message to the user and get confirmation. Then commit using a HEREDOC that contains exactly one line — the subject, with nothing after it:
 
 ```bash
 git commit -m "$(cat <<'EOF'

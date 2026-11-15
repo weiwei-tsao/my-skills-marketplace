@@ -47,6 +47,9 @@ fix(<TICKET-ID>): short description
 
 Keep the description under ~10 words when possible.
 
+Commit messages are the subject line only: no body and no trailers
+(no `Co-Authored-By:` or "Generated with …" lines).
+
 ## Notes repo automation
 
 <!-- Only relevant when the ticket workspace lives in its own separate git

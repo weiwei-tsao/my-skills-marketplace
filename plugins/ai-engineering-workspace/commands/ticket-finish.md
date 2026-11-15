@@ -44,7 +44,9 @@ isn't one, stop and ask before generating PR notes.
      (`type(scope): description`, ≤12 words, imperative mood) if that
      skill is available, falling back to
      `$WORKSPACE_ROOT/conventions.md`'s "Commit / PR title style"
-     otherwise — this only borrows its message-format rules.
+     otherwise — this only borrows its message-format rules. Either way
+     the message is the subject line only: no body and no trailers
+     (no `Co-Authored-By:` or "Generated with …" lines).
    - Do not run `git commit` or `git push` yourself, and do not invoke
      the `git-commit` skill to execute a commit on your behalf — this
      applies whether or not that skill is installed. The user commits
