@@ -35,6 +35,7 @@ Validate locally before pushing: `claude plugin validate .`
 - `0` — clean
 - `1` — HIGH findings (CI warns, does not fail)
 - `2` — CRITICAL findings (CI fails the build)
+- `3` — stale `reviewed-findings.json` entries, only with `--strict-reviewed` (CI fails the build)
 
 CI (`.github/workflows/vet-skills.yml`) re-audits every plugin under `plugins/*/` on every push and PR. A CRITICAL finding blocks merge.
 
@@ -44,7 +45,7 @@ CI (`.github/workflows/vet-skills.yml`) re-audits every plugin under `plugins/*/
 python3 vetting/audit_skill.py plugins/<name> [--quiet] [--json report.json] [--no-reviewed]
 ```
 
-`vetting/reviewed-findings.json` lists findings a human has read and judged expected. A finding is downgraded to INFO only when plugin, file, rule **and the full line text** match, so editing that line makes it fire again (the report also flags stale entries). Add an entry only after reading the line in context, with a `reason`. `--no-reviewed` shows every finding at full severity. `silent-action` also skips a keyword directly negated ("never silently", "don't X or silently").
+`vetting/reviewed-findings.json` lists findings a human has read and judged expected. A finding is downgraded to INFO only when plugin, file, rule, **the full line text and a fingerprint of the 3 lines on each side** match, so editing that line or its surroundings makes it fire again. CRITICAL and `taint-flow` findings are never downgraded. A downgrade means a human judged it expected, not that the risk is gone — new skills from untrusted sources still need a human read, and `reviewed-findings.json` can change in the same PR as the code it covers, so review both together. CI runs with `--strict-reviewed`: a stale entry (exit 3) fails the build. Tests: `python3 -m unittest discover -s vetting -p 'test_*.py'`. Add an entry only after reading the line in context, with a `reason`. `--no-reviewed` shows every finding at full severity. `silent-action` also skips a keyword directly negated ("never silently", "don't X or silently").
 
 ## Plugin hooks
 

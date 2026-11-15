@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Test the auditor
+        run: python3 -m unittest discover -s vetting -p 'test_*.py' -v
+
       - name: Audit every plugin
         run: |
           set -e
@@ -27,11 +30,15 @@ jobs:
           for dir in plugins/*/; do
             [ -d "$dir" ] || continue
             echo "::group::Auditing $dir"
-            # exit 2 = critical -> fail; exit 1 = high -> warn; 0 = clean
-            python3 vetting/audit_skill.py "$dir" --no-color || rc=$?
+            # exit 2 = critical -> fail; 3 = stale reviewed entry -> fail;
+            # exit 1 = high -> warn; 0 = clean
+            python3 vetting/audit_skill.py "$dir" --no-color --strict-reviewed || rc=$?
             rc=${rc:-0}
             if [ "$rc" -eq 2 ]; then
               echo "::error::CRITICAL findings in $dir"
+              fail=1
+            elif [ "$rc" -eq 3 ]; then
+              echo "::error::Stale entries in vetting/reviewed-findings.json for $dir — re-read the lines and update the list"
               fail=1
             elif [ "$rc" -eq 1 ]; then
               echo "::warning::HIGH findings in $dir — review"

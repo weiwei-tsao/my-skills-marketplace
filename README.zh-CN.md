@@ -253,6 +253,7 @@ vetting/
 | `0` | clean | 继续。 |
 | `1` | HIGH findings | 本地警告；CI 报 warning。 |
 | `2` | CRITICAL findings | 本地停止；CI 失败。 |
+| `3` | 审核记录过期（仅 `--strict-reviewed`） | CI 失败。 |
 
 手动审计：
 
@@ -262,8 +263,8 @@ python3 vetting/audit_skill.py plugins/<name> --no-color
 
 如果需要机器可读报告，可以加上 `--json report.json`。
 
-已人工确认无问题的发现记录在 `vetting/reviewed-findings.json`（插件、文件、规则、整行原文、理由）。
-只有那一行原文不变时才降级为 INFO，任何改动都会让它重新报出。加 `--no-reviewed` 可查看全部原始发现。
+已人工确认无问题的发现记录在 `vetting/reviewed-findings.json`（插件、文件、规则、整行原文、前后各 3 行的指纹、理由）。
+只有那一行及其上下文都不变时才降级为 INFO，任何改动都会让它重新报出。CRITICAL 和 `taint-flow` 发现永远不会被降级；CI 带 `--strict-reviewed`，有过期记录时以退出码 3 失败。加 `--no-reviewed` 可查看全部原始发现。
 
 ## 维护规则
 

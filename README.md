@@ -268,6 +268,7 @@ vetting/
 | `0` | Clean | Continue. |
 | `1` | HIGH findings | Warn locally; CI reports a warning. |
 | `2` | CRITICAL findings | Stop locally; CI fails. |
+| `3` | Stale reviewed entries (`--strict-reviewed` only) | CI fails. |
 
 Run a manual audit with:
 
@@ -278,9 +279,11 @@ python3 vetting/audit_skill.py plugins/<name> --no-color
 Add `--json report.json` if you need a machine-readable report.
 
 Findings already read and judged expected are listed in
-`vetting/reviewed-findings.json` (plugin, file, rule, full line text, reason).
-They are reported as INFO only while the line is unchanged; any edit makes
-the finding fire again. Use `--no-reviewed` to see every finding at full severity.
+`vetting/reviewed-findings.json` (plugin, file, rule, full line text, a
+fingerprint of the surrounding lines, reason). They are reported as INFO only
+while the line and its surroundings are unchanged; any edit makes the finding
+fire again. CRITICAL and `taint-flow` findings are never downgraded, and CI
+fails on stale entries (`--strict-reviewed`, exit 3). Use `--no-reviewed` to see every finding at full severity.
 
 ## Maintenance Rules
 
