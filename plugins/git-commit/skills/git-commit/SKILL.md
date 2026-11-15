@@ -5,18 +5,7 @@ description: Run the current repo's quality checks, draft a one-line commit mess
 
 When invoked, execute the steps below in strict order. Do not skip or reorder.
 
-## 1. Quality Gate
-
-Use the checks **this repo** defines; do not assume a toolchain. Look, in order, at:
-
-1. Commit or contribution rules in `CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md`.
-2. Pre-commit config (`.pre-commit-config.yaml`, `.husky/`, `lefthook.yml`).
-3. Task runners: `package.json` scripts (`lint`, `format:check`, `typecheck`, `test`), `Makefile`, `justfile`, `pyproject.toml`.
-4. What CI runs (`.github/workflows/*.yml`) — run the same fast checks locally.
-
-Run the checks you found (in parallel when independent). If any fails, stop and report the error — do not proceed until all pass. If the repo defines no checks, say so in one line and continue.
-
-## 2. Inspect Staged Changes
+## 1. Inspect Staged Changes
 
 ```bash
 git status
@@ -29,6 +18,32 @@ git diff --staged
   - Local databases and data dumps (`*.db`, `*.db-journal`, `*.db-shm`, `*.db-wal`, `data/`)
   - Build output and dependencies (`node_modules/`, `.next/`, `dist/`, `build/`, `*.tsbuildinfo`)
   - Anything the repo's `.gitignore` would exclude
+- Record the staged snapshot before running any checks:
+
+  ```bash
+  git diff --staged --name-only   # files in the commit
+  git diff --staged | git hash-object --stdin   # fingerprint of the staged content
+  git diff --name-only            # unstaged changes already present
+  ```
+
+## 2. Quality Gate
+
+Use the checks **this repo** defines; do not assume a toolchain. Look, in order, at:
+
+1. Commit or contribution rules in `CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md`.
+2. Pre-commit config (`.pre-commit-config.yaml`, `.husky/`, `lefthook.yml`).
+3. Task runners: `package.json` scripts (`lint`, `format:check`, `typecheck`, `test`), `Makefile`, `justfile`, `pyproject.toml`.
+4. What CI runs (`.github/workflows/*.yml`) — run the same fast checks locally.
+
+Prefer check-only variants (`format:check`, `lint` without `--fix`). Run the checks you found (in parallel when independent). If any fails, stop and report the error — do not proceed until all pass. If the repo defines no checks, say so in one line and continue.
+
+### Verify the snapshot did not move
+
+After the checks, re-run the three commands from step 1 and compare:
+
+- **Staged fingerprint changed** (a hook or script re-staged files), or **a staged file now also has unstaged changes** (an autofix rewrote it in the worktree): the checks did not run against what would be committed. **Stop before committing** and show the user which files changed and the diff, and let them decide what to stage. After they re-stage, start again from step 1 — the new snapshot must pass the gate itself.
+- **New unstaged changes only in files that are not staged**: they are not part of this commit. Mention them in one line and continue.
+- **No change**: the gate passed on exactly the content being committed. Continue.
 
 ## 3. Learn This Repo's Commit Convention
 
