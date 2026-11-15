@@ -195,7 +195,7 @@ for i in d["items"]:
 print(f"screen/verification rule violations: {len(rule)}",rule)
 print(f"possible reposts (same text, different origin — check manually): {len(reposts)}",reposts)
 ```
-2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Does every score in the md / verdict reasons (incl. expert sub-scores) and every identity claim map to an evidence note? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date? For each ❌, does the unusability fact itself (closed, discontinued, sold out…) cite a dated evidence note that states it — not just any dated note on the item? (The script only checks that some dated note exists.)
+2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Does every score in the md / verdict reasons (incl. expert sub-scores) and every identity claim map to an evidence note? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date? For each ❌, does the unusability fact itself (closed, discontinued, sold out…) cite a dated evidence note that states it — not just any dated note on the item? (The script only checks that some dated note exists.) For each `blocked`, does every access failure used to justify it belong to a required check that is still unfinished? A failure on an unrelated source, or on a check another route later completed, can't justify `blocked`. (The script only checks that some failure was logged.)
    Hand over only when the script prints 0 unmatched and 0 rule violations.
 3. Fix, re-run the quote check, then note in the `.md` header how many corrections the audit made.
 
@@ -212,4 +212,5 @@ print(f"possible reposts (same text, different origin — check manually): {len(
 - Putting a snippet price in the table untagged, or an unverified claim anywhere but 待确认.
 - Every product landing on ⚠️ because a 57-review brand site differs from a 5,000-review retailer — apply the ≥100-review and same-kind-platform conditions.
 - Writing "单例" when three people in the same thread report the same failure.
+- Marking an item `blocked` because Reddit returned 429 while the missing step is availability and the booking page loaded fine — the 429 belongs to the community check (done another way, or its own `missing` entry); the unfinished availability check is `partial` unless *its* routes failed.
 - Skipping red-flag checks for products: affiliate review sites, review stuffing, older-model reviews pooled into the new listing.
