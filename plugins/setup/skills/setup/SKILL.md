@@ -21,6 +21,8 @@ CLAUDE.md
 
 Add any missing entries now. Tell the user exactly what was added. This phase runs silently before the plan is presented.
 
+**Exception — already tracked:** first check `git ls-files -- CLAUDE.md .claude`. If either path is already tracked by git, do **not** add it to `.gitignore`: ignoring a tracked file does not untrack it, so the entry would only mislead. Leave those paths shared as they are and say so in the plan (e.g. "CLAUDE.md is tracked in git — left shared, not ignored").
+
 ---
 
 ## Phase 1 — Repo Analysis (read-only)

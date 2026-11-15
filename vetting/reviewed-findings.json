@@ -84,16 +84,16 @@
     "file": "skills/refresh/SKILL.md",
     "rule": "silent-action",
     "text": "Also re-check `.gitignore` for `CLAUDE.md` and `.claude/`. If either is missing, add it silently and note it in the final report.",
-    "context_sha256": "d9b56d8cee2b88b5d4ae63309f4d84210b597c21dac005f92a0c0859ee36f333",
-    "reason": "Adding CLAUDE.md/.claude/ to .gitignore without asking is intended (owner decision 2026-11-15) and reported in the final summary."
+    "context_sha256": "5fdf97258a54ba094baae3d091853b63708607b456fee339cb6945b8efa180d8",
+    "reason": "Adding CLAUDE.md/.claude/ to .gitignore without asking is intended (owner decision 2026-11-15), reported in the final report, and skipped for paths already tracked by git."
   },
   {
     "plugin": "setup",
     "file": "skills/setup/SKILL.md",
     "rule": "silent-action",
     "text": "Add any missing entries now. Tell the user exactly what was added. This phase runs silently before the plan is presented.",
-    "context_sha256": "c374942f02e7a00eccba3adc8a4ea494286cea13f6bb025232d3c52ed097e752",
-    "reason": "Phase 0 .gitignore update runs before confirmation by design (owner decision 2026-11-15); it tells the user what was added."
+    "context_sha256": "e1833409a9319beaa89c20e812272a827a96d3222d12fe2c070c7cdf25e9da06",
+    "reason": "Phase 0 .gitignore update runs before confirmation by design (owner decision 2026-11-15); it tells the user what was added and skips paths already tracked by git."
   },
   {
     "plugin": "xhs-topic-digest",
