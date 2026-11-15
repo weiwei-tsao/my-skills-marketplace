@@ -9,20 +9,32 @@ description: Use when the user already has a shortlist — restaurants/venues, p
 
 A shortlist from one source (a 小红书 digest, a friend, an ad) carries that source's blind spots: stale status, promo posts, community-specific taste, wrong names. This skill checks each item on independent platforms and returns evidence plus a first-pass screen. It does **not** find candidates and does **not** pick the winner for the user's situation — situations change; the user decides.
 
-All page access goes through **browser-use** (the user's real Chrome); 小红书 through the xiaohongshu MCP. Don't try `curl`/WebFetch first — many of these sites block them.
+Pages are fetched with whichever **permitted** method suits the source (see *Access and failures*). **The caller's project rules decide what is permitted and preferred** — e.g. a repo that says "browser-use first for social sites, no curl/WebFetch first" wins. 小红书 goes through the xiaohongshu MCP.
 
 ## Workflow
 
-1. **Pin the list and category.** One line per item; category from the table below. Note the user's need if stated (e.g. "Saturday lunch", "in Canada") — availability is judged against it.
+1. **Pin the list, category and need.** One line per item; category from the table below. Record the need as `need` {text, requires, target_window, tz} — `requires` is what availability must prove (`hours`, `reservation`, `listing`, `stock`, `seats`, `dates`), e.g. "Saturday 12:30 lunch for 6, booked" → `reservation`, `2026-11-14T12:30/13:30`, `America/Toronto`.
 2. **Identity + availability — one Google search per item.** `https://www.google.com/search?q=<name + locator>`; save `document.body.innerText` to `raw/google_<slug>.txt`. The knowledge panel usually gives the canonical name, address/model, status ("Temporarily closed"), hours, Google rating + count, and third-party rating snippets. No panel → retry with a sharper locator (address, full model number), then the platform itself (e.g. `https://www.google.com/maps/search/<q>`, read `div[role=main]`, save `raw/gmaps_<slug>.txt`).
    - Google's **AI Overview is not evidence** — including its source cards ("Product: … Model: …" blurbs with no URL, sitting above "Web results"). Use only Web-result lines that carry a source URL, or pages you opened.
    - If the canonical name/model differs from the shortlist's (renamed, misspelt, regional variant), record both and use the canonical one from here on.
 3. **Platform signals** per the category row: ratings **with platform and count**, plus recent reviews where cheap. A bare `3.2(44)` on a results page belongs to the source line *above* it — check before attributing.
-4. **Community threads.** Google `"<canonical name>" site:reddit.com` and `site:forums.redflagdeals.com` (one search per site; save results to `raw/google_site_searches.json`). Read the 1–3 most relevant threads in full with the en-community-digest recipes (Reddit `.json` fetch, RFD post extraction); save to `raw/reddit_<slug>.json` / `raw/rfd_<slug>.json` with the thread URL stored in the file. For Reddit also keep each comment's permalink — add `link:'https://www.reddit.com'+x.permalink` to the recipe's comment object; for RFD each reply's `id` gives the anchor `#p<id>` on the thread link. Anything known only from a search snippet is marked `snippet_only` with its age.
+4. **Community threads.** Google `"<canonical name>" site:reddit.com` and `site:forums.redflagdeals.com` (one search per site; save results to `raw/google_site_searches.json`). Read the 1–3 most relevant threads in full with the en-community-digest recipes (Reddit `.json` fetch, RFD post extraction); save to `raw/reddit_<slug>.json` / `raw/rfd_<slug>.json` with the thread URL stored in the file. For Reddit also keep each comment's permalink — add `link:'https://www.reddit.com'+x.permalink` to the recipe's comment object; for RFD each reply's `id` (already like `p12345`) gives the anchor `#<id>` on the thread link. Anything known only from a search snippet is marked `snippet_only` with its age.
 5. **Write outputs** (below) in the caller's topic folder.
 6. **Audit** (below) — not optional.
 
 Pace like a person: sequential, one tab, a few seconds between searches.
+
+## Access and failures
+
+Access, evidence and verification are three different questions: did this attempt get usable content; what kind of evidence is it (opened page, official structured data, snippet, user-provided); and are the item's required checks done (*Verification status*). A successful fetch never by itself makes an item `verified`.
+
+- **Pick a permitted method per source**, not one tool for everything: a search engine to discover; an official API/feed for structured data where available; a plain HTTP fetch for public pages where the project allows it; browser-use for interactive, dynamic or logged-in pages; content the user exports when nothing else works. No fixed fallback order.
+- **Log every attempt** in the item's `access_log[]` {source, url, method, at, outcome, partial, note}. `outcome` is one of `ok`, `timeout`, `rate_limited` (HTTP 429), `captcha`, `auth_required`, `content_incomplete`, `not_found`, `browser_error`; `partial` = the page loaded but key content was missing.
+- **Bounded retries.** `timeout` / `browser_error` / `content_incomplete`: one retry of the same URL. `rate_limited` / `captcha` / `auth_required`: no retry of that URL in this run (honour Retry-After; don't wait it out inside the run). At most **12 attempts per item**.
+- **Never bypass access controls**: no solving or dodging CAPTCHAs, no switching IPs, profiles or browsers to get past a block, no logging in to accounts the user didn't set up for this.
+- **After a failure**, use another *permitted* route to the same evidence if there is one (e.g. the public `.json` of a thread the browser couldn't load) and log both attempts. If none works, record the step in `verification.missing[]` with the failure type and **move on to the next item** — one blocked site never stops the shortlist.
+- `blocked` is an item-level outcome: only when a required check stayed undone because access failed on every permitted route. A failed attempt rescued by another route is just a logged failure.
+- Stop early on decisive cheap evidence for the *search budget* (e.g. a second thread adds nothing new), but never skip a required check.
 
 ## Category table
 
@@ -41,6 +53,8 @@ New category → add a row. When one row needs more than a line of rules, move i
 Keep **what the item is like** (the screen) apart from **how much you managed to check** (`verification`). A page that wouldn't load is not evidence about the item.
 
 Required checks per item: (1) identity, (2) availability for the stated need, (3) platform ratings, (4) community search — **every** site search step 4 of the workflow lists (Reddit and RFD); one site answering doesn't excuse skipping the other. A check is done when it ran and gave an answer — including `no_results` (the search ran and found nothing relevant), which does **not** make the item partial.
+
+**Availability is proven only for what the need requires.** Record `availability` {kind, status, target_window, tz, checked_at, source, method}: `kind` is what the evidence actually shows (`hours`, `reservation`, `listing`, `stock`, `seats`, `dates`), `status` is `confirmed` / `not_available` / `unconfirmed` for the target window. Opening hours don't prove a table can be booked; a product listing doesn't prove stock; an event page doesn't prove seats. Check (2) is done only when `kind` matches `need.requires` (confirmed or not available); otherwise it goes in `missing[]` (e.g. "parties of 6 must phone to book" → reservation `unconfirmed`, `partial`).
 
 `verification.status` is exactly one value; when several apply, take the first in this order:
 
@@ -97,9 +111,9 @@ Every verdict carries `verdict_reason` and `verdict_date` (the day this screen w
 ## Outputs
 
 `crosscheck-YYYY-MM.json` — source of truth:
-`shortlist`, `category`, `need`, `items[]` {`name`, `canonical_name`, `identity`, `availability`, `ratings[]` {platform, score, count}, `red_flags[]`, `investigation_triggers[]` {trigger, check, result, note}, `notes[]`, `verification` {status, missing[] {step, reason}, no_results[], reason}, `verdict` (✅/⚠️/❌), `verdict_reason`, `verdict_date`, `verdict_scope`, `evidence_notes[]` {platform, origin, via, url, raw, date, checked_at, quote, snippet_only, supports[]}}, `uncertainties[]`.
+`shortlist`, `category`, `need` {text, requires, target_window, tz}, `items[]` {`name`, `canonical_name`, `identity`, `availability` {kind, status, target_window, tz, checked_at, source, method}, `access_log[]` {source, url, method, at, outcome, partial, note}, `ratings[]` {platform, score, count}, `red_flags[]`, `investigation_triggers[]` {trigger, check, result, note}, `notes[]`, `verification` {status, missing[] {step, reason}, no_results[], reason}, `verdict` (✅/⚠️/❌), `verdict_reason`, `verdict_date`, `verdict_scope`, `evidence_notes[]` {platform, origin, via, url, raw, date, checked_at, quote, snippet_only, supports[]}}, `uncertainties[]`.
 
-Provenance per note: `origin` = who first published it (e.g. `yelp.ca`, `reddit r/Markham aaa111`, `google maps`, the original site for a repost); `via` = how you reached it (`google_serp`, `gmaps`, `reddit_json`, `rfd_page`, `site_page`, …); `snippet_only` = access level (true = seen only in a results page/aggregator); `supports[]` = which claim(s) it backs (`identity`, `availability`, `rating`, `positive`, `negative`, `red_flag`, `closure`). `url` is required so the user can reopen the source: the comment/post permalink when there is one (Reddit comment link, RFD `#p<id>`), else the thread or page URL; for `snippet_only` evidence the search result's own URL; for knowledge-panel data the Google search URL.
+Provenance per note: `origin` = who first published it (e.g. `yelp.ca`, `reddit r/Markham aaa111`, `google maps`, the original site for a repost); `via` = how you reached it (`google_serp`, `gmaps`, `reddit_json`, `rfd_page`, `site_page`, …); `snippet_only` = access level (true = seen only in a results page/aggregator); `supports[]` = which claim(s) it backs (`identity`, `availability`, `rating`, `positive`, `negative`, `red_flag`, `closure`). `url` is required so the user can reopen the source: the comment/post permalink when there is one (Reddit comment link, RFD `#<id>` e.g. `#p12345`), else the thread or page URL; for `snippet_only` evidence the search result's own URL; for knowledge-panel data the Google search URL.
 
 `crosscheck-YYYY-MM.md` — in Chinese: one comparison table (item | 原来源说法 | 身份/状态 | 各平台评分 | 社区/媒体 | 初筛) — the 初筛 cell reads `<verdict> · <verification.status>：<reason> · <verdict_date>` (e.g. `⚠️ · blocked：Reddit 429，未完成社区核实 · 2026-11-14`), matching the JSON; then 规律 (patterns across items, e.g. "single source over-rates X"), then 待确认. **No "推荐选哪个" section** — stop at the screen.
 
@@ -156,6 +170,23 @@ for i in d["items"]:
         q=norm(n["quote"]).lower(); k=seen.setdefault(q,k) if len(q)>=30 else k
         keys.append(k); opened|=not n.get("snippet_only")
     if vd=="✅" and (len(set(keys))<2 or not opened): rule.append((i["name"],"✅ without 2 independent positive sources incl. 1 opened",sorted(set(keys))))
+need=d.get("need") or {}
+HARD={"rate_limited","captcha","auth_required"}; SOFT={"timeout","browser_error","content_incomplete"}
+OUT=HARD|SOFT|{"ok","not_found"}
+for i in d["items"]:
+    log=i.get("access_log") or []; av=i.get("availability") or {}; st=(i.get("verification") or {}).get("status")
+    if not log: rule.append((i["name"],"no access_log",None))
+    if len(log)>12: rule.append((i["name"],"over 12 attempts",len(log)))
+    by={}
+    for a in log:
+        if a.get("outcome") not in OUT: rule.append((i["name"],"bad outcome",a.get("outcome")))
+        by.setdefault(a.get("url"),[]).append(a.get("outcome"))
+    for u,outs in by.items():
+        if any(o in HARD for o in outs[:-1]): rule.append((i["name"],"retried after 429/captcha/auth",u))
+        if sum(o in SOFT for o in outs)>2 or (len(outs)>2 and outs[0] in SOFT): rule.append((i["name"],"more than one retry",u))
+    if st=="blocked" and not any(a.get("outcome") in HARD|SOFT for a in log): rule.append((i["name"],"blocked without a logged failure",None))
+    if any(not av.get(k) for k in ("kind","status","target_window","tz","checked_at","source","method")): rule.append((i["name"],"availability incomplete",sorted(k for k in av if av.get(k))))
+    if i.get("verdict")=="✅" and not (av.get("kind")==need.get("requires") and av.get("status")=="confirmed"): rule.append((i["name"],"✅ without availability of the required kind",(av.get("kind"),av.get("status"),need.get("requires"))))
 reposts=[]
 for i in d["items"]:
     by={}
