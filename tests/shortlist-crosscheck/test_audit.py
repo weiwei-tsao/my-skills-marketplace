@@ -129,6 +129,7 @@ CASES = {
     "claim audit not recorded": (lambda o, m, p: (o["audit"].update(claim_checked=[]), (o, m, p))[-1], "claim audit not recorded"),
     "verdict while stage pending": (lambda o, m, p: (p["items"][NAME].update(community="pending", audited=False), (o, m, p))[-1], "stage not done"),
     "no progress file": (lambda o, m, p: (o, m, None), "no progress.json"),
+    "audited false, all stages done": (lambda o, m, p: (p["items"][NAME].update(audited=False), (o, m, p))[-1], "item not audited"),
     "superseded positive still counted": (lambda o, m, p: (it(o).update(evidence_notes=[
         copy.deepcopy(E_RED), dict(copy.deepcopy(E_RFD), superseded_by="E4"),
         note(4, "Second Kimchi House, friendly staff and fair prices for lunch.", "rfd rh p7001", "rfd_page", "raw/reddit.json", ("negative",)),

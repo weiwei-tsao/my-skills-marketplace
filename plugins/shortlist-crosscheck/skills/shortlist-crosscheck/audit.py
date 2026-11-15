@@ -94,6 +94,7 @@ for i in d["items"]:
     pg=(prog or {}).get(i["name"])
     if prog is not None and i.get("verdict") in ("✅","❌") and (not pg or any(pg.get(s)!="done" for s in ("identity","availability","community"))):
         rule.append((i["name"],"verdict while a stage not done",pg))
+    if prog is not None and (not pg or pg.get("audited") is not True): rule.append((i["name"],"item not audited",(pg or {}).get("audited")))
 reposts=[]
 for i in d["items"]:
     by={}
