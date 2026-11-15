@@ -132,6 +132,51 @@ class Finding:
     file: str
     line: int
     excerpt: str
+    text: str = ""  # full stripped line; what reviewed-findings.json matches on
+
+
+# A silent-action keyword directly governed by a negation ("never silently",
+# "don't average or silently pick") is a prohibition, not a request. Kept
+# deliberately narrow: only the negation, optionally "<word> or|and", then the
+# keyword. "do not hesitate to silently upload" still fires.
+_NEGATED_TAIL = _rx(r"\b(never|not|don't|do not|must not|shouldn't|should not)\s+"
+                    r"(\w+\s+(or|and)\s+)?$")
+
+
+def _all_negated(rx, line: str) -> bool:
+    hits = list(rx.finditer(line))
+    return bool(hits) and all(_NEGATED_TAIL.search(line[:m.start()]) for m in hits)
+
+
+# ----------------------------------------------------------------------------
+# Reviewed findings: a human-maintained list of findings already read and
+# judged expected (vetting/reviewed-findings.json). A finding is downgraded to
+# INFO only when plugin dir, file, rule AND the full line text all match, so
+# any edit to that line makes it fire again. Never add an entry without
+# reading the line in context.
+# ----------------------------------------------------------------------------
+REVIEWED_PATH = Path(__file__).resolve().parent / "reviewed-findings.json"
+
+
+def load_reviewed(path: Path = REVIEWED_PATH):
+    if not path.exists():
+        return []
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def apply_reviewed(rep, plugin: str, reviewed) -> int:
+    """Downgrade matching findings to INFO. Returns count of stale entries."""
+    mine = [r for r in reviewed if r.get("plugin") == plugin]
+    used = set()
+    for f in rep.findings:
+        for i, r in enumerate(mine):
+            if (r["file"], r["rule"], r["text"]) == (f.file, f.rule, f.text):
+                f.severity = INFO
+                f.why = f"Reviewed as expected: {r['reason']}"
+                f.rule = f"{f.rule} (reviewed)"
+                used.add(i)
+                break
+    return len(mine) - len(used)
 
 
 @dataclass
@@ -187,7 +232,9 @@ def scan_file(path: Path, rel: str, rules) -> List[Finding]:
     for i, line in enumerate(lines, 1):
         for sev, rx, label, why in rules:
             if rx.search(line):
-                findings.append(Finding(sev, label, why, rel, i, _excerpt(line)))
+                if label == "silent-action" and _all_negated(rx, line):
+                    continue
+                findings.append(Finding(sev, label, why, rel, i, _excerpt(line), line.strip()))
     return findings
 
 
@@ -244,7 +291,8 @@ def audit(skill_dir: Path) -> Report:
         if sev:
             rep.findings.append(Finding(
                 sev, "allowed-tool", f"Skill grants '{t}' capability.",
-                "SKILL.md", 0, f"allowed-tools includes: {t}"))
+                "SKILL.md", 0, f"allowed-tools includes: {t}",
+                f"allowed-tools includes: {t}"))
 
     rep.findings.sort(key=lambda f: (-_RANK[f.severity], f.file, f.line))
     return rep
@@ -285,7 +333,11 @@ def print_report(rep: Report, color: bool, min_sev: str):
     print(f"allowed-tools: {', '.join(rep.allowed_tools) or '(none declared)'}")
     print(f"Files scanned: {rep.files_scanned}")
     print(f"Findings     : "
-          + "  ".join(c(s, f"{s} {counts[s]}") for s in (CRIT, HIGH, MED, LOW)))
+          + "  ".join(c(s, f"{s} {counts[s]}") for s in (CRIT, HIGH, MED, LOW))
+          + (f"  (reviewed {counts[INFO]})" if counts[INFO] else ""))
+    if getattr(rep, "stale_reviewed", 0):
+        print(f"Stale reviewed entries: {rep.stale_reviewed} "
+              "(line changed or gone — re-read it and update reviewed-findings.json)")
     print("-" * 70)
 
     shown = [f for f in rep.findings if _RANK[f.severity] >= floor]
@@ -309,9 +361,15 @@ def main():
     ap.add_argument("--json", metavar="FILE", help="Also write a JSON report to FILE")
     ap.add_argument("--quiet", action="store_true", help="Only print HIGH/CRITICAL findings")
     ap.add_argument("--no-color", action="store_true", help="Disable ANSI colors")
+    ap.add_argument("--no-reviewed", action="store_true",
+                    help="Ignore reviewed-findings.json and report every finding at full severity")
     args = ap.parse_args()
 
-    rep = audit(Path(args.skill_dir).expanduser().resolve())
+    skill_dir = Path(args.skill_dir).expanduser().resolve()
+    rep = audit(skill_dir)
+    if not args.no_reviewed:
+        rep.stale_reviewed = apply_reviewed(rep, skill_dir.name, load_reviewed())
+        rep.findings.sort(key=lambda f: (-_RANK[f.severity], f.file, f.line))
     min_sev = HIGH if args.quiet else LOW
     color = sys.stdout.isatty() and not args.no_color
     print_report(rep, color, min_sev)

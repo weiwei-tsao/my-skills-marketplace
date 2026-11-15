@@ -41,8 +41,10 @@ CI (`.github/workflows/vet-skills.yml`) re-audits every plugin under `plugins/*/
 ## Auditing an existing plugin manually
 
 ```bash
-python3 vetting/audit_skill.py plugins/<name> [--quiet] [--json report.json]
+python3 vetting/audit_skill.py plugins/<name> [--quiet] [--json report.json] [--no-reviewed]
 ```
+
+`vetting/reviewed-findings.json` lists findings a human has read and judged expected. A finding is downgraded to INFO only when plugin, file, rule **and the full line text** match, so editing that line makes it fire again (the report also flags stale entries). Add an entry only after reading the line in context, with a `reason`. `--no-reviewed` shows every finding at full severity. `silent-action` also skips a keyword directly negated ("never silently", "don't X or silently").
 
 ## Plugin hooks
 

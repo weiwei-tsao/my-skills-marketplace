@@ -277,6 +277,11 @@ python3 vetting/audit_skill.py plugins/<name> --no-color
 
 Add `--json report.json` if you need a machine-readable report.
 
+Findings already read and judged expected are listed in
+`vetting/reviewed-findings.json` (plugin, file, rule, full line text, reason).
+They are reported as INFO only while the line is unchanged; any edit makes
+the finding fire again. Use `--no-reviewed` to see every finding at full severity.
+
 ## Maintenance Rules
 
 - Keep this public repository free of secrets, tokens, credentials, and private

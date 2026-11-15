@@ -262,6 +262,9 @@ python3 vetting/audit_skill.py plugins/<name> --no-color
 
 如果需要机器可读报告，可以加上 `--json report.json`。
 
+已人工确认无问题的发现记录在 `vetting/reviewed-findings.json`（插件、文件、规则、整行原文、理由）。
+只有那一行原文不变时才降级为 INFO，任何改动都会让它重新报出。加 `--no-reviewed` 可查看全部原始发现。
+
 ## 维护规则
 
 - 公开仓库中不要放 secrets、tokens、credentials 或公司私有资料。
