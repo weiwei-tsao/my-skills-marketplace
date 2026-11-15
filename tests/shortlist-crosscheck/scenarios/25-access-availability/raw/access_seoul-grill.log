@@ -1,0 +1,4 @@
+2026-11-14T10:10-05:00 browser-use GET https://www.reddit.com/r/Markham/comments/s222/seoul_grill/ -> HTTP 429 Too Many Requests (Retry-After: 900)
+2026-11-14T10:11-05:00 http-fetch GET https://www.reddit.com/r/Markham/comments/s222/seoul_grill.json -> HTTP 429 Too Many Requests
+2026-11-14T10:12-05:00 browser-use GET https://forums.redflagdeals.com/search/?q=%22Seoul+Grill%22+Markham -> CAPTCHA challenge ("Verify you are human")
+2026-11-14T10:13-05:00 browser-use GET https://www.opentable.ca/r/seoul-grill-markham -> HTTP 200 (page loaded)

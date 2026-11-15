@@ -1,0 +1,28 @@
+{
+ "items": {
+  "Harvest Maker Fair": {
+   "identity": "pending",
+   "availability": "pending",
+   "community": "pending",
+   "audited": false,
+   "failure": null,
+   "checked_at": null
+  },
+  "Winter Lights Market": {
+   "identity": "done",
+   "availability": "done",
+   "community": "failed",
+   "audited": false,
+   "failure": "interrupted: browser crashed during community search",
+   "checked_at": "2026-11-14"
+  },
+  "Kids Science Day": {
+   "identity": "done",
+   "availability": "done",
+   "community": "done",
+   "audited": true,
+   "failure": null,
+   "checked_at": "2026-11-14"
+  }
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "items": {
+  "Breville Bambino Plus": {
+   "identity": "done",
+   "availability": "done",
+   "community": "done",
+   "audited": false,
+   "failure": null,
+   "checked_at": "2026-11-14"
+  }
+ }
+}
