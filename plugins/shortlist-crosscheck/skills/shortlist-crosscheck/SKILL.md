@@ -18,7 +18,7 @@ All page access goes through **browser-use** (the user's real Chrome); 小红书
    - Google's **AI Overview is not evidence** — including its source cards ("Product: … Model: …" blurbs with no URL, sitting above "Web results"). Use only Web-result lines that carry a source URL, or pages you opened.
    - If the canonical name/model differs from the shortlist's (renamed, misspelt, regional variant), record both and use the canonical one from here on.
 3. **Platform signals** per the category row: ratings **with platform and count**, plus recent reviews where cheap. A bare `3.2(44)` on a results page belongs to the source line *above* it — check before attributing.
-4. **Community threads.** Google `"<canonical name>" site:reddit.com` and `site:forums.redflagdeals.com` (one search per site; save results to `raw/google_site_searches.json`). Read the 1–3 most relevant threads in full with the en-community-digest recipes (Reddit `.json` fetch, RFD post extraction); save to `raw/reddit_<slug>.json` / `raw/rfd_<slug>.json`. Anything known only from a search snippet is marked `snippet_only` with its age.
+4. **Community threads.** Google `"<canonical name>" site:reddit.com` and `site:forums.redflagdeals.com` (one search per site; save results to `raw/google_site_searches.json`). Read the 1–3 most relevant threads in full with the en-community-digest recipes (Reddit `.json` fetch, RFD post extraction); save to `raw/reddit_<slug>.json` / `raw/rfd_<slug>.json` with the thread URL stored in the file. For Reddit also keep each comment's permalink — add `link:'https://www.reddit.com'+x.permalink` to the recipe's comment object; for RFD each reply's `id` gives the anchor `#p<id>` on the thread link. Anything known only from a search snippet is marked `snippet_only` with its age.
 5. **Write outputs** (below) in the caller's topic folder.
 6. **Audit** (below) — not optional.
 
@@ -62,7 +62,9 @@ Every verdict carries its reason and the date of the evidence behind it — in t
 ## Outputs
 
 `crosscheck-YYYY-MM.json` — source of truth:
-`shortlist`, `category`, `need`, `items[]` {`name`, `canonical_name`, `identity`, `availability`, `ratings[]` {platform, score, count}, `red_flags[]`, `notes[]`, `verdict` (✅/⚠️/❌), `verdict_reason`, `evidence_notes[]` {platform, raw, date, quote, snippet_only}}, `uncertainties[]`.
+`shortlist`, `category`, `need`, `items[]` {`name`, `canonical_name`, `identity`, `availability`, `ratings[]` {platform, score, count}, `red_flags[]`, `notes[]`, `verdict` (✅/⚠️/❌), `verdict_reason`, `evidence_notes[]` {platform, url, raw, date, quote, snippet_only}}, `uncertainties[]`.
+
+`url` is required so the user can reopen the source: the comment/post permalink when there is one (Reddit comment link, RFD `#p<id>`), else the thread or page URL; for `snippet_only` evidence the search result's own URL; for knowledge-panel data the Google search URL.
 
 `crosscheck-YYYY-MM.md` — in Chinese: one comparison table (item | 原来源说法 | 身份/状态 | 各平台评分 | 社区/媒体 | 初筛), then 规律 (patterns across items, e.g. "single source over-rates X"), then 待确认. **No "推荐选哪个" section** — stop at the screen.
 
@@ -94,6 +96,8 @@ nosrc=[(i["name"],r["platform"],r["score"]) for i in d["items"] for r in i.get("
        if not any(str(r["score"]) in n["quote"] for n in i["evidence_notes"])]
 print(f"exact {exact} / whitespace-normalised {fuzzy} / unmatched {len(bad)}",bad)
 print(f"scores without an evidence quote: {len(nosrc)}",nosrc)
+nourl=[(i["name"],n["quote"][:40]) for i in d["items"] for n in i["evidence_notes"] if not str(n.get("url") or "").startswith("http")]
+print(f"evidence without a source url: {len(nourl)}",nourl)
 ```
 2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Does every score in the md / verdict reasons (incl. expert sub-scores) and every identity claim map to an evidence note? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date?
 3. Fix, re-run the quote check, then note in the `.md` header how many corrections the audit made.
