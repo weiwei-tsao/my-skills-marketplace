@@ -26,13 +26,13 @@ Pace like a person: sequential, one tab, a few seconds between searches.
 
 ## Category table
 
-| Category | Identity | Available now? | Ratings / reviews | Red flags |
-|---|---|---|---|---|
-| Restaurant / local business | Address, canonical Google name | Google Maps status, hours on the user's day | Google, Yelp, TripAdvisor, delivery apps, local subreddit, RFD | sponsored posts; review count growing implausibly fast for its age; dine-in vs delivery rating gap |
-| Product | Full model number, regional version | In stock + price at Canadian retailers (Amazon.ca, Costco, Best Buy, RFD price threads) | Amazon, RFD, Reddit, expert tests (e.g. RTINGS) | affiliate links; review stuffing; reviews of an older model mixed in |
-| Travel place | Official name, exact location | Closed / seasonal / booking required | Google, TripAdvisor, Reddit | Instagram-only hype; photos vs reality gap |
-| Course | Provider, instructor, specific course/term | Enrolment open, start date, price | Reddit, course-platform reviews, RFD | sales copy; praise only on the provider's own channels |
-| Event | Organizer, venue, date | Date not passed, tickets left | Eventbrite, Google, Reddit on past editions | brand-new organizer; no past-edition record |
+| Category | Identity | Available now? | Ratings / reviews | Positive signal | Red flags | Investigation triggers |
+|---|---|---|---|---|---|---|
+| Restaurant / local business | Address, canonical Google name | Google Maps status, hours on the user's day | Google, Yelp, TripAdvisor, delivery apps, local subreddit, RFD | a diner praising the food/service/value relevant to the need | sponsored posts presented as reviews | review count growing implausibly fast for its age; dine-in vs delivery rating gap |
+| Product | Full model number, regional version | In stock + price at Canadian retailers (Amazon.ca, Costco, Best Buy, RFD price threads) | Amazon, RFD, Reddit, expert tests (e.g. RTINGS) | an owner reporting it works as expected after real use; an expert test recommending it | affiliate links; review stuffing; reviews of an older model mixed in | rating gap between retailers; spike of recent 5★ reviews |
+| Travel place | Official name, exact location | Closed / seasonal / booking required | Google, TripAdvisor, Reddit | a visitor recommending it for this kind of trip | Instagram-only hype; photos vs reality gap | rating gap; mostly old reviews |
+| Course | Provider, instructor, specific course/term | Enrolment open, start date, price | Reddit, course-platform reviews, RFD | a past student reporting the promised outcome | sales copy; praise only on the provider's own channels | ratings only on the provider's site |
+| Event | Organizer, venue, date | Date not passed, tickets left | Eventbrite, Google, Reddit on past editions | a past attendee recommending a previous edition | brand-new organizer; no past-edition record | ticket-site rating far from community talk |
 
 New category → add a row. When one row needs more than a line of rules, move it to `references/<category>.md`.
 
@@ -56,8 +56,8 @@ Every unfinished check goes in `missing[]` as {step, reason}; checks that ran an
 ## Screen
 
 - **❌** — evidence (dated) that it's not usable for the stated need now (closed, discontinued, date passed, sold out, wrong hours) or that it's the wrong item. Requires `verified`.
-- **⚠️** — any red flag; or two platforms each with ≥100 reviews differ by more than 0.5; or only one source; or sources conflict; **or verification isn't `verified`**. Brand-own-site ratings and expert scores (e.g. RTINGS /10) are listed but not used in the gap test.
-- **✅** — identity confirmed, available, and ≥2 independent platforms positive with no red flags, at least one of them read on-page (a page or thread you opened, not `snippet_only`). Requires `verified`.
+- **⚠️** — any red flag; or an investigation trigger left `unresolved`; or fewer than 2 independent positive sources; or sources conflict; **or verification isn't `verified`**.
+- **✅** — identity confirmed, available, ≥2 **independent positive sources** (below) with at least one read on-page (not `snippet_only`), no red flags, no unresolved trigger. Requires `verified`.
 
 | verification | ✅ | ⚠️ | ❌ |
 |---|---|---|---|
@@ -66,9 +66,19 @@ Every unfinished check goes in `missing[]` as {step, reason}; checks that ran an
 
 This is deliberately strict: a place confirmed permanently closed whose community check was blocked stays ⚠️ — put the dated closure evidence first in `verdict_reason` so the user sees it.
 
+## Independent positive evidence
+
+- **Positive** = an explicit favourable judgment relevant to the user's need, per the category's *Positive signal* column. A rating alone is not positive unless the source shows it in a favourable context you can quote; no complaints found is not positive.
+- **Independent** = a different originating source (`origin`): who first published the judgment. Count origins, not URLs:
+  - all `snippet_only` notes from one search results page = **one indirect source**, however many platforms it lists (Google aggregates; it is not Yelp + TripAdvisor + Google); the **knowledge panel is part of that page** — Google's own aggregate, `snippet_only`, not an opened page (it still counts as Google evidence for identity/availability);
+  - a repost, quote or syndicated copy of a review = the original's origin (identical text on two sites counts once);
+  - one thread = one origin, however many people in it (still report "同一帖 n 人").
+- **Investigation triggers** (rating gap between two comparable platforms each with ≥100 reviews of more than 0.5 — brand-own-site and expert /10 scores excluded; suspicious review velocity; the category's triggers column) are not findings. Record each in `investigation_triggers[]` {trigger, check, result: resolved | unresolved, note}: do the check (same model/location/time window? recent spike?) and say what it showed. Only a substantiated problem becomes a `red_flag`; an unresolved trigger keeps the item at ⚠️ with the explanation.
+- Every verdict states `verdict_scope`: what was actually checked and how (e.g. "identity+hours via Google panel; Reddit thread opened; RFD searched, no results; Yelp snippet only").
+
 A red flag is about the item itself (quality, safety, honesty of its reviews). Market noise — third-party marketplace mark-ups, a newer model also on sale, bundles — goes in a `notes` line and doesn't block ✅.
 
-Every verdict carries `verdict_reason` and `verdict_date` (the day this screen was made; each `evidence_notes[].date` stays the day that evidence was collected) — in the JSON and in the md 初筛 cell.
+Every verdict carries `verdict_reason` and `verdict_date` (the day this screen was made; each `evidence_notes[].checked_at` is the day you retrieved that evidence, and `date` is the evidence's own date — when the post/review was written, or `checked_at` for undated live data like a status panel) — in the JSON and in the md 初筛 cell.
 
 ## Evidence rules
 
@@ -86,15 +96,15 @@ Every verdict carries `verdict_reason` and `verdict_date` (the day this screen w
 ## Outputs
 
 `crosscheck-YYYY-MM.json` — source of truth:
-`shortlist`, `category`, `need`, `items[]` {`name`, `canonical_name`, `identity`, `availability`, `ratings[]` {platform, score, count}, `red_flags[]`, `notes[]`, `verification` {status, missing[] {step, reason}, no_results[], reason}, `verdict` (✅/⚠️/❌), `verdict_reason`, `verdict_date`, `evidence_notes[]` {platform, url, raw, date, quote, snippet_only}}, `uncertainties[]`.
+`shortlist`, `category`, `need`, `items[]` {`name`, `canonical_name`, `identity`, `availability`, `ratings[]` {platform, score, count}, `red_flags[]`, `investigation_triggers[]` {trigger, check, result, note}, `notes[]`, `verification` {status, missing[] {step, reason}, no_results[], reason}, `verdict` (✅/⚠️/❌), `verdict_reason`, `verdict_date`, `verdict_scope`, `evidence_notes[]` {platform, origin, via, url, raw, date, checked_at, quote, snippet_only, supports[]}}, `uncertainties[]`.
 
-`url` is required so the user can reopen the source: the comment/post permalink when there is one (Reddit comment link, RFD `#p<id>`), else the thread or page URL; for `snippet_only` evidence the search result's own URL; for knowledge-panel data the Google search URL.
+Provenance per note: `origin` = who first published it (e.g. `yelp.ca`, `reddit r/Markham aaa111`, `google maps`, the original site for a repost); `via` = how you reached it (`google_serp`, `gmaps`, `reddit_json`, `rfd_page`, `site_page`, …); `snippet_only` = access level (true = seen only in a results page/aggregator); `supports[]` = which claim(s) it backs (`identity`, `availability`, `rating`, `positive`, `negative`, `red_flag`, `closure`). `url` is required so the user can reopen the source: the comment/post permalink when there is one (Reddit comment link, RFD `#p<id>`), else the thread or page URL; for `snippet_only` evidence the search result's own URL; for knowledge-panel data the Google search URL.
 
 `crosscheck-YYYY-MM.md` — in Chinese: one comparison table (item | 原来源说法 | 身份/状态 | 各平台评分 | 社区/媒体 | 初筛) — the 初筛 cell reads `<verdict> · <verification.status>：<reason> · <verdict_date>` (e.g. `⚠️ · blocked：Reddit 429，未完成社区核实 · 2026-11-14`), matching the JSON; then 规律 (patterns across items, e.g. "single source over-rates X"), then 待确认. **No "推荐选哪个" section** — stop at the screen.
 
 ## Audit (before handing over)
 
-1. Script check, run from the topic folder — every `quote` is in its `raw` file (JSON raw is parsed and HTML entities decoded first), every `ratings[]` score appears in one of that item's quotes, every evidence note has a url, and verdict and verification follow the Screen matrix:
+1. Script check, run from the topic folder — every `quote` is in its `raw` file (JSON raw is parsed and HTML entities decoded first), every `ratings[]` score appears in one of that item's quotes, every evidence note has a url and provenance, verdict and verification follow the Screen matrix, and ✅ rests on ≥2 independent positive sources:
 ```python
 import json,re,html
 def text(p):  # raw file as plain text: JSON → its string values joined; HTML entities decoded
@@ -131,7 +141,25 @@ for i in d["items"]:
     if st=="verified" and v.get("missing"): rule.append((i["name"],"verified with unfinished checks",v["missing"]))
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",str(i.get("verdict_date") or "")): rule.append((i["name"],"no verdict_date",None))
     if vd=="❌" and not any(n.get("date") for n in i["evidence_notes"]): rule.append((i["name"],"❌ without dated evidence",None))
+    for n in i["evidence_notes"]:
+        if not (n.get("origin") and n.get("via") and n.get("supports") and re.fullmatch(r"\d{4}-\d{2}-\d{2}",str(n.get("checked_at") or ""))):
+            rule.append((i["name"],"note missing provenance",n["quote"][:30]))
+    if not i.get("verdict_scope"): rule.append((i["name"],"no verdict_scope",None))
+    if vd=="✅" and any(t.get("result")!="resolved" for t in i.get("investigation_triggers",[])): rule.append((i["name"],"✅ with unresolved trigger",None))
+    keys,seen,opened=[],{},False  # independence: snippets on one results page = one source; same quote text = same source
+    for n in i["evidence_notes"]:
+        if "positive" not in (n.get("supports") or []): continue
+        k=("serp",n["raw"]) if n.get("snippet_only") else ("origin",str(n.get("origin")).lower())
+        q=norm(n["quote"]).lower(); k=seen.setdefault(q,k) if len(q)>=30 else k
+        keys.append(k); opened|=not n.get("snippet_only")
+    if vd=="✅" and (len(set(keys))<2 or not opened): rule.append((i["name"],"✅ without 2 independent positive sources incl. 1 opened",sorted(set(keys))))
+reposts=[]
+for i in d["items"]:
+    by={}
+    for n in i["evidence_notes"]: by.setdefault(norm(n["quote"]).lower(),set()).add(str(n.get("origin")).lower())
+    reposts+=[(i["name"],q[:40],sorted(o)) for q,o in by.items() if len(o)>1 and len(q)>=30]
 print(f"screen/verification rule violations: {len(rule)}",rule)
+print(f"possible reposts (same text, different origin — check manually): {len(reposts)}",reposts)
 ```
 2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Does every score in the md / verdict reasons (incl. expert sub-scores) and every identity claim map to an evidence note? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date? For each ❌, does the unusability fact itself (closed, discontinued, sold out…) cite a dated evidence note that states it — not just any dated note on the item? (The script only checks that some dated note exists.)
    Hand over only when the script prints 0 unmatched and 0 rule violations.
