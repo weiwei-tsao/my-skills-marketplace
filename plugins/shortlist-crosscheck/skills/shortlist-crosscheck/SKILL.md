@@ -36,15 +36,39 @@ Pace like a person: sequential, one tab, a few seconds between searches.
 
 New category → add a row. When one row needs more than a line of rules, move it to `references/<category>.md`.
 
+## Verification status
+
+Keep **what the item is like** (the screen) apart from **how much you managed to check** (`verification`). A page that wouldn't load is not evidence about the item.
+
+Required checks per item: (1) identity, (2) availability for the stated need, (3) platform ratings, (4) community search — **every** site search step 4 of the workflow lists (Reddit and RFD); one site answering doesn't excuse skipping the other. A check is done when it ran and gave an answer — including `no_results` (the search ran and found nothing relevant), which does **not** make the item partial.
+
+`verification.status` is exactly one value; when several apply, take the first in this order:
+
+| Status | When |
+|---|---|
+| `ambiguous` | the item can't be pinned to one entity (two businesses / models fit the shortlist name) — leave it unresolved, list the candidates, don't pick one |
+| `blocked` | a required check couldn't be done because access failed (HTTP 429, captcha, login wall, page won't load after a retry) |
+| `partial` | a required check is still missing for another reason (e.g. hours not published anywhere you looked) |
+| `verified` | all four checks done |
+
+Every unfinished check goes in `missing[]` as {step, reason}; checks that ran and found nothing go in `no_results[]`.
+
 ## Screen
 
-- **❌** — not usable for the stated need now (closed, discontinued, date passed, sold out, wrong hours), or identity cannot be pinned down.
-- **⚠️** — any red flag; or two platforms each with ≥100 reviews differ by more than 0.5; or only one source; or sources conflict. Brand-own-site ratings and expert scores (e.g. RTINGS /10) are listed but not used in the gap test.
-- **✅** — identity confirmed, available, and ≥2 independent platforms positive with no red flags, at least one of them read on-page (a page or thread you opened, not `snippet_only`).
+- **❌** — evidence (dated) that it's not usable for the stated need now (closed, discontinued, date passed, sold out, wrong hours) or that it's the wrong item. Requires `verified`.
+- **⚠️** — any red flag; or two platforms each with ≥100 reviews differ by more than 0.5; or only one source; or sources conflict; **or verification isn't `verified`**. Brand-own-site ratings and expert scores (e.g. RTINGS /10) are listed but not used in the gap test.
+- **✅** — identity confirmed, available, and ≥2 independent platforms positive with no red flags, at least one of them read on-page (a page or thread you opened, not `snippet_only`). Requires `verified`.
+
+| verification | ✅ | ⚠️ | ❌ |
+|---|---|---|---|
+| `verified` | yes | yes | yes |
+| `partial` / `blocked` / `ambiguous` | no | yes | no |
+
+This is deliberately strict: a place confirmed permanently closed whose community check was blocked stays ⚠️ — put the dated closure evidence first in `verdict_reason` so the user sees it.
 
 A red flag is about the item itself (quality, safety, honesty of its reviews). Market noise — third-party marketplace mark-ups, a newer model also on sale, bundles — goes in a `notes` line and doesn't block ✅.
 
-Every verdict carries its reason and the date of the evidence behind it — in the JSON and in the md 初筛 cell.
+Every verdict carries `verdict_reason` and `verdict_date` (the day this screen was made; each `evidence_notes[].date` stays the day that evidence was collected) — in the JSON and in the md 初筛 cell.
 
 ## Evidence rules
 
@@ -62,15 +86,15 @@ Every verdict carries its reason and the date of the evidence behind it — in t
 ## Outputs
 
 `crosscheck-YYYY-MM.json` — source of truth:
-`shortlist`, `category`, `need`, `items[]` {`name`, `canonical_name`, `identity`, `availability`, `ratings[]` {platform, score, count}, `red_flags[]`, `notes[]`, `verdict` (✅/⚠️/❌), `verdict_reason`, `evidence_notes[]` {platform, url, raw, date, quote, snippet_only}}, `uncertainties[]`.
+`shortlist`, `category`, `need`, `items[]` {`name`, `canonical_name`, `identity`, `availability`, `ratings[]` {platform, score, count}, `red_flags[]`, `notes[]`, `verification` {status, missing[] {step, reason}, no_results[], reason}, `verdict` (✅/⚠️/❌), `verdict_reason`, `verdict_date`, `evidence_notes[]` {platform, url, raw, date, quote, snippet_only}}, `uncertainties[]`.
 
 `url` is required so the user can reopen the source: the comment/post permalink when there is one (Reddit comment link, RFD `#p<id>`), else the thread or page URL; for `snippet_only` evidence the search result's own URL; for knowledge-panel data the Google search URL.
 
-`crosscheck-YYYY-MM.md` — in Chinese: one comparison table (item | 原来源说法 | 身份/状态 | 各平台评分 | 社区/媒体 | 初筛), then 规律 (patterns across items, e.g. "single source over-rates X"), then 待确认. **No "推荐选哪个" section** — stop at the screen.
+`crosscheck-YYYY-MM.md` — in Chinese: one comparison table (item | 原来源说法 | 身份/状态 | 各平台评分 | 社区/媒体 | 初筛) — the 初筛 cell reads `<verdict> · <verification.status>：<reason> · <verdict_date>` (e.g. `⚠️ · blocked：Reddit 429，未完成社区核实 · 2026-11-14`), matching the JSON; then 规律 (patterns across items, e.g. "single source over-rates X"), then 待确认. **No "推荐选哪个" section** — stop at the screen.
 
 ## Audit (before handing over)
 
-1. Script check, run from the topic folder — every `quote` is in its `raw` file (JSON raw is parsed and HTML entities decoded first), and every `ratings[]` score appears in one of that item's quotes:
+1. Script check, run from the topic folder — every `quote` is in its `raw` file (JSON raw is parsed and HTML entities decoded first), every `ratings[]` score appears in one of that item's quotes, every evidence note has a url, and verdict and verification follow the Screen matrix:
 ```python
 import json,re,html
 def text(p):  # raw file as plain text: JSON → its string values joined; HTML entities decoded
@@ -98,6 +122,15 @@ print(f"exact {exact} / whitespace-normalised {fuzzy} / unmatched {len(bad)}",ba
 print(f"scores without an evidence quote: {len(nosrc)}",nosrc)
 nourl=[(i["name"],n["quote"][:40]) for i in d["items"] for n in i["evidence_notes"] if not str(n.get("url") or "").startswith("http")]
 print(f"evidence without a source url: {len(nourl)}",nourl)
+rule=[]
+for i in d["items"]:
+    v=i.get("verification") or {}; st=v.get("status"); vd=i.get("verdict")
+    if st not in ("verified","partial","blocked","ambiguous"): rule.append((i["name"],"bad status",st))
+    if vd in ("✅","❌") and st!="verified": rule.append((i["name"],f"{vd} needs verified",st))
+    if st in ("partial","blocked","ambiguous") and not v.get("missing"): rule.append((i["name"],"missing[] empty",st))
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",str(i.get("verdict_date") or "")): rule.append((i["name"],"no verdict_date",None))
+    if vd=="❌" and not any(n.get("date") for n in i["evidence_notes"]): rule.append((i["name"],"❌ without dated evidence",None))
+print(f"screen/verification rule violations: {len(rule)}",rule)
 ```
 2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Does every score in the md / verdict reasons (incl. expert sub-scores) and every identity claim map to an evidence note? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date?
 3. Fix, re-run the quote check, then note in the `.md` header how many corrections the audit made.
