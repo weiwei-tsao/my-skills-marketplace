@@ -47,7 +47,7 @@
     {
       "name": "system-design-coach",
       "source": "./plugins/system-design-coach",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "System design learning coach with roadmap planning, interactive case drills, answer review, and a maintenance handoff for future expansion.",
       "author": { "name": "weiwei-tsao" },
       "category": "learning",
