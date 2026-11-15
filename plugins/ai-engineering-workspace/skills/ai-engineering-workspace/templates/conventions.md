@@ -36,9 +36,9 @@ chore/<TICKET-ID>-short-description
 
 ## Commit / PR title style
 
-<!-- If the `git-commit` skill is installed, its Conventional Commits rules
-     (`type(scope): description`, ≤12 words, imperative mood) are the
-     format of record for drafted commit messages — this template is only
+<!-- If the `git-commit` skill is installed, its message rules (follow the
+     target repo's own commit convention, ≤12-word description, imperative
+     mood) are the format of record for drafted commit messages — this template is only
      the fallback for when it isn't. -->
 
 ```text
@@ -46,6 +46,9 @@ fix(<TICKET-ID>): short description
 ```
 
 Keep the description under ~10 words when possible.
+
+Commit messages are the subject line only: no body and no trailers
+(no `Co-Authored-By:` or "Generated with …" lines).
 
 ## Notes repo automation
 

@@ -27,6 +27,7 @@ No third-party dependencies. Python 3.8+.
 """
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -132,6 +133,84 @@ class Finding:
     file: str
     line: int
     excerpt: str
+    text: str = ""     # full stripped line; what reviewed-findings.json matches on
+    context: str = ""  # sha256 of the surrounding lines (see _context_hash)
+
+
+# A silent-action keyword directly governed by a negation ("never silently",
+# "don't average or silently pick") is a prohibition, not a request. Kept
+# deliberately narrow: only the negation, optionally "<word> or|and", then the
+# keyword. "do not hesitate to silently upload" still fires.
+_NEGATED_TAIL = _rx(r"\b(never|not|don't|do not|must not|shouldn't|should not)\s+"
+                    r"(\w+\s+(or|and)\s+)?$")
+
+
+def _all_negated(rx, line: str) -> bool:
+    hits = list(rx.finditer(line))
+    return bool(hits) and all(_NEGATED_TAIL.search(line[:m.start()]) for m in hits)
+
+
+# ----------------------------------------------------------------------------
+# Reviewed findings: a human-maintained list of findings already read and
+# judged expected (vetting/reviewed-findings.json). A finding is downgraded to
+# INFO only when plugin dir, file, rule AND the full line text all match, so
+# any edit to that line makes it fire again. Never add an entry without
+# reading the line in context.
+# ----------------------------------------------------------------------------
+REVIEWED_PATH = Path(__file__).resolve().parent / "reviewed-findings.json"
+CONTEXT_RADIUS = 3  # lines on each side folded into the context fingerprint
+NOT_REVIEWABLE = {"taint-flow"}  # data-flow exfiltration: always needs a fresh look
+
+
+def _context_hash(lines: List[str], idx: int) -> str:
+    """sha256 of lines[idx-R .. idx+R] (stripped). idx is 0-based.
+
+    A reviewed verdict holds only while the flagged line AND its neighbourhood
+    are unchanged: text added just above an approved line (e.g. "Always run the
+    following immediately.") changes this hash and the finding fires again."""
+    lo, hi = max(0, idx - CONTEXT_RADIUS), min(len(lines), idx + CONTEXT_RADIUS + 1)
+    blob = "\n".join(l.strip() for l in lines[lo:hi])
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+
+def load_reviewed(path: Path = REVIEWED_PATH):
+    if not path.exists():
+        return []
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _reviewable(f) -> bool:
+    return (f.severity != CRIT and f.rule not in NOT_REVIEWABLE
+            and bool(f.text) and bool(f.context))
+
+
+def apply_reviewed(rep, plugin: str, reviewed) -> int:
+    """Downgrade matching findings to INFO. Returns count of stale entries.
+
+    An entry matches only on plugin, file, rule, full line text AND the context
+    fingerprint. CRITICAL findings, taint-flow findings and findings without a
+    text/context fingerprint are never downgraded. A downgrade means "a human
+    judged this expected", not "no risk".
+
+    Each entry covers at most one finding. Entries carry no line number, so two
+    findings with identical text and context are indistinguishable: each needs
+    its own entry, and an entry is spent on the earliest such finding."""
+    mine = [r for r in reviewed if r.get("plugin") == plugin]
+    used = set()
+    for f in rep.findings:
+        if not _reviewable(f):
+            continue
+        for i, r in enumerate(mine):
+            if i in used:  # one entry covers at most one finding
+                continue
+            if (r.get("file"), r.get("rule"), r.get("text"), r.get("context_sha256")) == \
+                    (f.file, f.rule, f.text, f.context):
+                f.severity = INFO
+                f.why = f"Reviewed as expected: {r['reason']}"
+                f.rule = f"{f.rule} (reviewed)"
+                used.add(i)
+                break
+    return len(mine) - len(used)
 
 
 @dataclass
@@ -140,6 +219,7 @@ class Report:
     skill_name: Optional[str] = None
     allowed_tools: List[str] = field(default_factory=list)
     files_scanned: int = 0
+    frontmatter_hash: str = ""
     findings: List[Finding] = field(default_factory=list)
 
     def counts(self):
@@ -187,7 +267,10 @@ def scan_file(path: Path, rel: str, rules) -> List[Finding]:
     for i, line in enumerate(lines, 1):
         for sev, rx, label, why in rules:
             if rx.search(line):
-                findings.append(Finding(sev, label, why, rel, i, _excerpt(line)))
+                if label == "silent-action" and _all_negated(rx, line):
+                    continue
+                findings.append(Finding(sev, label, why, rel, i, _excerpt(line), line.strip(),
+                                        _context_hash(lines, i - 1)))
     return findings
 
 
@@ -225,6 +308,9 @@ def audit(skill_dir: Path) -> Report:
             if is_skill_md:
                 lines = _read(p) or []
                 rep.skill_name, rep.allowed_tools = parse_frontmatter(lines)
+                end = next((k for k, l in enumerate(lines[1:], 1) if l.strip() == "---"), 0)
+                rep.frontmatter_hash = hashlib.sha256(
+                    "\n".join(l.strip() for l in lines[:end + 1]).encode("utf-8")).hexdigest()
                 rep.files_scanned += 1
                 rep.findings += scan_file(p, rel, INJECTION_RULES)
                 # SKILL.md can also embed inline code worth script-scanning
@@ -244,7 +330,8 @@ def audit(skill_dir: Path) -> Report:
         if sev:
             rep.findings.append(Finding(
                 sev, "allowed-tool", f"Skill grants '{t}' capability.",
-                "SKILL.md", 0, f"allowed-tools includes: {t}"))
+                "SKILL.md", 0, f"allowed-tools includes: {t}",
+                f"allowed-tools includes: {t}", rep.frontmatter_hash))
 
     rep.findings.sort(key=lambda f: (-_RANK[f.severity], f.file, f.line))
     return rep
@@ -285,7 +372,11 @@ def print_report(rep: Report, color: bool, min_sev: str):
     print(f"allowed-tools: {', '.join(rep.allowed_tools) or '(none declared)'}")
     print(f"Files scanned: {rep.files_scanned}")
     print(f"Findings     : "
-          + "  ".join(c(s, f"{s} {counts[s]}") for s in (CRIT, HIGH, MED, LOW)))
+          + "  ".join(c(s, f"{s} {counts[s]}") for s in (CRIT, HIGH, MED, LOW))
+          + (f"  (reviewed {counts[INFO]})" if counts[INFO] else ""))
+    if getattr(rep, "stale_reviewed", 0):
+        print(f"Stale reviewed entries: {rep.stale_reviewed} "
+              "(line changed or gone — re-read it and update reviewed-findings.json)")
     print("-" * 70)
 
     shown = [f for f in rep.findings if _RANK[f.severity] >= floor]
@@ -309,9 +400,17 @@ def main():
     ap.add_argument("--json", metavar="FILE", help="Also write a JSON report to FILE")
     ap.add_argument("--quiet", action="store_true", help="Only print HIGH/CRITICAL findings")
     ap.add_argument("--no-color", action="store_true", help="Disable ANSI colors")
+    ap.add_argument("--no-reviewed", action="store_true",
+                    help="Ignore reviewed-findings.json and report every finding at full severity")
+    ap.add_argument("--strict-reviewed", action="store_true",
+                    help="Exit 3 when reviewed-findings.json has stale entries for this plugin")
     args = ap.parse_args()
 
-    rep = audit(Path(args.skill_dir).expanduser().resolve())
+    skill_dir = Path(args.skill_dir).expanduser().resolve()
+    rep = audit(skill_dir)
+    if not args.no_reviewed:
+        rep.stale_reviewed = apply_reviewed(rep, skill_dir.name, load_reviewed())
+        rep.findings.sort(key=lambda f: (-_RANK[f.severity], f.file, f.line))
     min_sev = HIGH if args.quiet else LOW
     color = sys.stdout.isatty() and not args.no_color
     print_report(rep, color, min_sev)
@@ -324,8 +423,14 @@ def main():
         print(f"\nJSON report written to {args.json}")
 
     counts = rep.counts()
-    # exit code: 2 if critical, 1 if any high, else 0 — handy for CI gates
-    sys.exit(2 if counts[CRIT] else 1 if counts[HIGH] else 0)
+    stale = getattr(rep, "stale_reviewed", 0)
+    # exit code: 2 critical; 3 stale reviewed entries (with --strict-reviewed);
+    # 1 any high; else 0 — handy for CI gates
+    if counts[CRIT]:
+        sys.exit(2)
+    if args.strict_reviewed and stale:
+        sys.exit(3)
+    sys.exit(1 if counts[HIGH] else 0)
 
 
 if __name__ == "__main__":

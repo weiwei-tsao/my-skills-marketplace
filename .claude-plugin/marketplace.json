@@ -12,7 +12,7 @@
       "name": "a11y-audit",
       "source": "./plugins/a11y-audit",
       "description": "Accessibility (WCAG 2.1/2.2) audit skill.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": { "name": "weiwei-tsao" },
       "category": "quality",
       "keywords": ["accessibility", "a11y", "wcag"]
@@ -20,16 +20,16 @@
     {
       "name": "git-commit",
       "source": "./plugins/git-commit",
-      "version": "0.1.0",
-      "description": "Run quality checks and draft a Conventional Commits message, then commit staged changes.",
+      "version": "0.2.0",
+      "description": "Run the repo's quality checks, draft a one-line commit message following the repo's own conventions, then commit staged changes.",
       "author": { "name": "weiwei-tsao" },
       "category": "workflow",
-      "keywords": ["git", "commit", "conventional-commits"]
+      "keywords": ["git", "commit", "conventional-commits", "commit-convention"]
     },
     {
       "name": "setup",
       "source": "./plugins/setup",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Initializes .claude/ infrastructure (CLAUDE.md, rules, skills, hooks) for any project. Includes a companion refresh skill for keeping docs in sync as code evolves.",
       "author": { "name": "weiwei-tsao" },
       "category": "workflow",
@@ -38,7 +38,7 @@
     {
       "name": "ai-engineering-workspace",
       "source": "./plugins/ai-engineering-workspace",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "description": "Generic AI-engineering ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction.",
       "author": { "name": "weiwei-tsao" },
       "category": "workflow",
@@ -47,7 +47,7 @@
     {
       "name": "system-design-coach",
       "source": "./plugins/system-design-coach",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "System design learning coach with roadmap planning, interactive case drills, answer review, and a maintenance handoff for future expansion.",
       "author": { "name": "weiwei-tsao" },
       "category": "learning",
@@ -56,7 +56,7 @@
     {
       "name": "weiwei-notes",
       "source": "./plugins/weiwei-notes",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Turn discussions, debugging sessions, or ticket analysis into notes/blog articles in Weiwei's writing style (结论先行, 根因导向, 中英混合).",
       "author": { "name": "weiwei-tsao" },
       "category": "writing",
@@ -101,7 +101,7 @@
     {
       "name": "shortlist-crosscheck",
       "source": "./plugins/shortlist-crosscheck",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Cross-check a shortlist (venues, products, places, courses, events) across platforms via browser-use — identity, availability, ratings, red flags, ✅/⚠️/❌ with traceable evidence; companion to the digest skills.",
       "author": { "name": "weiwei-tsao" },
       "category": "research",

@@ -35,14 +35,19 @@ Codex 都提供清晰的审核、安装和更新流程。
 里可安装的 plugin；对 Codex 来说，`install-codex-skills.sh` 会发现并链接这些
 bundle 内部的各个 `skills/*` 目录。
 
-| 插件 | 分类 | 用途 |
-| --- | --- | --- |
-| `a11y-audit` | quality | 辅助进行 WCAG 2.1/2.2 可访问性审计。 |
-| `git-commit` | workflow | 运行质量检查，起草 Conventional Commits 信息，并提交 staged changes。 |
-| `setup` | workflow | 初始化和刷新项目中的 `.claude/` 基础设施。 |
-| `ai-engineering-workspace` | workflow | Ticket 全家桶：工作区脚手架、阶段门控 ticket 流程、结构化 bug 修复、跨会话 handoff、ticket completion 知识沉淀 —— 五个 skill，可按场景单独使用。 |
-| `system-design-coach` | learning | 通过路线图、case drill 和答案 review 辅助学习系统设计。 |
-| `weiwei-notes` | writing | 把讨论、排查过程或 ticket 分析整理成 Weiwei 风格的笔记 / blog 文章（结论先行、根因导向、中英混合）。 |
+| 插件 | 分类 | 用途 | 依赖 |
+| --- | --- | --- | --- |
+| `a11y-audit` | quality | 辅助进行 WCAG 2.1/2.2 可访问性审计。 | — |
+| `git-commit` | workflow | 运行仓库自己的质量检查，按该仓库的提交习惯起草一行提交信息，并提交 staged changes。 | — |
+| `setup` | workflow | 初始化和刷新项目中的 `.claude/` 基础设施。 | — |
+| `ai-engineering-workspace` | workflow | Ticket 全家桶：工作区脚手架、阶段门控 ticket 流程、结构化 bug 修复、跨会话 handoff、ticket completion 知识沉淀 —— 五个 skill，可按场景单独使用。 | 可选：`git-commit`、`weiwei-notes`、`system-design-coach` |
+| `system-design-coach` | learning | 通过路线图、case drill 和答案 review 辅助学习系统设计。 | — |
+| `weiwei-notes` | writing | 把讨论、排查过程或 ticket 分析整理成 Weiwei 风格的笔记 / blog 文章（结论先行、根因导向、中英混合）。 | 可选：环境变量 `WEIWEI_PROMPTS_PATH`（风格源文件） |
+| `xhs-topic-digest` | research | 总结小红书某个关键词下笔记和评论的实际内容：共识、分歧、推荐、避坑。 | 小红书 MCP 服务 |
+| `en-community-digest` | research | 英文社区摘要（Reddit、RedFlagDeals、Doctor of Credit、Danny Deal Guru），证据可追溯；与 `xhs-topic-digest` 配套。 | `browser-use` skill |
+| `member-site-digest` | research | 用登录态浏览器提炼会员站内容（美卡论坛、悠卡、悠酒）：主题研究、长帖通读、追更新。 | `browser-use` skill + 已登录的 Chrome |
+| `shortlist-crosscheck` | research | 对已有候选清单做跨平台核实（是否存在、是否可用、评分、风险），逐项给出 ✅/⚠️/❌。 | `browser-use` skill、`en-community-digest` |
+| `award-vs-cash-check` | finance | 兑换前对比同日现金票价与里程票成本，计算每点价值。 | `browser-use` skill |
 
 权威列表以
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) 为准。
@@ -139,7 +144,7 @@ cd my-skills-marketplace
 示例：
 
 ```bash
-./add-skill.sh ~/Documents/Repositories/plain-dock/.claude/skills/git-commit git-commit
+./add-skill.sh ~/path/to/project/.claude/skills/git-commit git-commit
 ```
 
 脚本会执行四道关卡：
@@ -150,10 +155,11 @@ cd my-skills-marketplace
    并记录可疑访问。如果没有 Docker，脚本会明确警告并询问是否继续。
 3. **人工阅读**：脚本会打印发现的 `SKILL.md`，由维护者手动确认。
 4. **准入复制**：skill 会被复制到 `plugins/<plugin-name>/`，脚本生成最小
-   plugin manifest，并打印需要粘贴到 marketplace 的 catalog entry。
+   plugin manifest（description 为 `TODO` 占位），并打印需要粘贴到 marketplace 的 catalog entry。
 
 准入后，把脚本打印的条目粘贴到 `.claude-plugin/marketplace.json` 的
-`plugins` 数组中，补全 `description`、`category` 和 `keywords`，然后验证并提交：
+`plugins` 数组中，补全 `description`、`category` 和 `keywords`，并把同一个
+`description` 写进 `plugins/<plugin-name>/.claude-plugin/plugin.json`，然后验证并提交：
 
 ```bash
 claude plugin validate .
@@ -229,6 +235,8 @@ install-codex-skills.sh           # Codex 本地 skills 软链接安装脚本
 plugins/<name>/
   .claude-plugin/plugin.json      # plugin manifest
   skills/<name>/SKILL.md          # skill 指令
+  commands/*.md                   # 可选：slash commands
+  scripts/                        # 可选：hooks 或 skills 调用的脚本
   hooks/hooks.json                # 可选：生命周期 hooks（自动执行，见"安全边界"）
 vetting/
   audit_skill.py                  # 静态审计器
@@ -245,6 +253,7 @@ vetting/
 | `0` | clean | 继续。 |
 | `1` | HIGH findings | 本地警告；CI 报 warning。 |
 | `2` | CRITICAL findings | 本地停止；CI 失败。 |
+| `3` | 审核记录过期（仅 `--strict-reviewed`） | CI 失败。 |
 
 手动审计：
 
@@ -253,6 +262,9 @@ python3 vetting/audit_skill.py plugins/<name> --no-color
 ```
 
 如果需要机器可读报告，可以加上 `--json report.json`。
+
+已人工确认无问题的发现记录在 `vetting/reviewed-findings.json`（插件、文件、规则、整行原文、前后各 3 行的指纹、理由）。
+只有那一行及其上下文都不变时才降级为 INFO，任何改动都会让它重新报出。CRITICAL 和 `taint-flow` 发现永远不会被降级；CI 带 `--strict-reviewed`，有过期记录时以退出码 3 失败。加 `--no-reviewed` 可查看全部原始发现。
 
 ## 维护规则
 

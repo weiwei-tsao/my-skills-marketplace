@@ -13,7 +13,7 @@ self-chain ahead.
 | Phase | Command | Purpose |
 |---|---|---|
 | Router | `/ai-engineering-workspace:ask [ID]` | Read-only: inspect literal `Status:` fields and recommend the next command |
-| Setup | `/ai-engineering-workspace:setup [path]` | Create or upgrade the ticket workspace and templates |
+| Scaffold | `/ai-engineering-workspace:workspace-scaffold [path]` | Create or upgrade the ticket workspace and templates |
 | 1. Understand | `/ai-engineering-workspace:ticket-understand <ID>` | Fetch the ticket + comments, confirm the ask, before any code is touched |
 | 2. Investigate | `/ai-engineering-workspace:ticket-investigate <ID>` | Read-only: trace flow, confirm root cause + owner |
 | 3. Implement | `/ai-engineering-workspace:ticket-implement <ID>` | Minimal change, only after investigation is confirmed; verification must pass before Finish is allowed |

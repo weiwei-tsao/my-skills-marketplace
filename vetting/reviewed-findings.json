@@ -1,0 +1,114 @@
+[
+  {
+    "plugin": "ai-engineering-workspace",
+    "file": "commands/ticket-finish.md",
+    "rule": "silent-action",
+    "text": "if that field also allows push) without asking, drafting that",
+    "context_sha256": "dcb104fe7b53752809552918b5b4d28bd075bfa30af2322be9dd0773124c8d77",
+    "reason": "Notes-repo auto-commit/push is opt-in via conventions.md 'Notes repo automation' (default no); implementation repo is never auto-committed."
+  },
+  {
+    "plugin": "ai-engineering-workspace",
+    "file": "commands/ticket-investigate.md",
+    "rule": "silent-action",
+    "text": "conclusions are material too, and a next step that quietly expands",
+    "context_sha256": "9dedfe4e95070c0fac6d30081116d72bbb592c64b0e11bb87f81d0965108ce67",
+    "reason": "Describes a failure mode the verifier must catch (next step that quietly expands scope); not an instruction."
+  },
+  {
+    "plugin": "ai-engineering-workspace",
+    "file": "skills/ai-engineering-workspace/SKILL.md",
+    "rule": "silent-action",
+    "text": "— never a bare relative path that would silently resolve against the",
+    "context_sha256": "293d2f75004874c01a69212ee98221ee93bd11f7978c782954039b7b739c7de9",
+    "reason": "Warns against bare relative paths that would silently resolve wrongly; not an instruction."
+  },
+  {
+    "plugin": "ai-engineering-workspace",
+    "file": "skills/ai-engineering-workspace/SKILL.md",
+    "rule": "silent-action",
+    "text": "without asking, but only if `conventions.md`'s \"Notes repo automation\"",
+    "context_sha256": "7a5d155038e75a735754fdf4c58587f2f15e3376d8fcc4175b492597fd73522c",
+    "reason": "Same opt-in notes-repo auto-commit as ticket-finish; gated by conventions.md, default no."
+  },
+  {
+    "plugin": "ai-engineering-workspace",
+    "file": "skills/ai-engineering-workspace/templates/conventions.md",
+    "rule": "silent-action",
+    "text": "without asking each time. The implementation repo's code is never",
+    "context_sha256": "41915c0e284d003d910176f5a2179707d68f775c8dbe253a497ca997e266e82e",
+    "reason": "Template comment documenting the opt-in notes-repo automation switch."
+  },
+  {
+    "plugin": "ai-engineering-workspace",
+    "file": "skills/ticket-workflow/SKILL.md",
+    "rule": "silent-action",
+    "text": "(would this row be included, excluded, or silently absent?) and why the",
+    "context_sha256": "26d425473fa7d7d27f63845487d1305c111b32c4b8bd93e53429c8f3ad0ea24c",
+    "reason": "Verification question ('or silently absent?'); not an instruction."
+  },
+  {
+    "plugin": "en-community-digest",
+    "file": "skills/en-community-digest/SKILL.md",
+    "rule": "data-to-net",
+    "text": "const out=[];for(let p=1;p<=5;p++){const res=await fetch(`/wp-json/wp/v2/comments?post=${id}&per_page=100&page=${p}&orderby=date&order=desc&_fields=id,parent,author_name,date,content`);",
+    "context_sha256": "41e485eded03a41cbbdca3b91756bd808c47ab90f5e2cdc8a41e8b37f19402ed",
+    "reason": "Same-origin fetch of public WordPress comments from the page being read; ${id}/${p} are page-local values, no local or env data leaves the browser."
+  },
+  {
+    "plugin": "member-site-digest",
+    "file": "skills/member-site-digest/SKILL.md",
+    "rule": "silent-action",
+    "text": "- Always check: charset (GBK/Big5 sites need search terms encoded in that charset — UTF-8 silently returns 0 hits), Cloudflare interstitials (wait/poll until the real page loads), and keep one fetch per `js` call (multi-fetch calls time out).",
+    "context_sha256": "3f55328b7d79f1a3a24e974465aede859ac7b3af250c6b2c85bbb4ddb6011e59",
+    "reason": "Describes a charset pitfall (UTF-8 search silently returns 0 hits); not an instruction."
+  },
+  {
+    "plugin": "setup",
+    "file": "SKILL.md",
+    "rule": "allowed-tool",
+    "text": "allowed-tools includes: Bash",
+    "context_sha256": "214a870264b68e2d3beeb2efc579a195629e50bb46a86dd3c29d7160a95a67ff",
+    "reason": "setup needs Bash to detect the stack and write .claude/ files; every write happens after plan confirmation except the .gitignore update."
+  },
+  {
+    "plugin": "setup",
+    "file": "skills/refresh/SKILL.md",
+    "rule": "silent-action",
+    "text": "Scan for drift between the current codebase and the existing `.claude/` documentation. Present specific, targeted suggestions. **Apply nothing without confirmation.**",
+    "context_sha256": "f5b34b08e9840e56ddcb01fc12f9c2310924703af458f3ef3336f2466971b77e",
+    "reason": "'Apply nothing without confirmation' is the opposite of a silent action."
+  },
+  {
+    "plugin": "setup",
+    "file": "skills/refresh/SKILL.md",
+    "rule": "silent-action",
+    "text": "Also re-check `.gitignore` for `CLAUDE.md` and `.claude/`. If either is missing, add it silently and note it in the final report.",
+    "context_sha256": "5fdf97258a54ba094baae3d091853b63708607b456fee339cb6945b8efa180d8",
+    "reason": "Adding CLAUDE.md/.claude/ to .gitignore without asking is intended (owner decision 2026-11-15), reported in the final report, and skipped for paths already tracked by git."
+  },
+  {
+    "plugin": "setup",
+    "file": "skills/setup/SKILL.md",
+    "rule": "silent-action",
+    "text": "Add any missing entries now. Tell the user exactly what was added. This phase runs silently before the plan is presented.",
+    "context_sha256": "e1833409a9319beaa89c20e812272a827a96d3222d12fe2c070c7cdf25e9da06",
+    "reason": "Phase 0 .gitignore update runs before confirmation by design (owner decision 2026-11-15); it tells the user what was added and skips paths already tracked by git."
+  },
+  {
+    "plugin": "xhs-topic-digest",
+    "file": "skills/xhs-topic-digest/SKILL.md",
+    "rule": "silent-action",
+    "text": "- Default to this skill whenever the request names a xiaohongshu keyword/topic and asks what people say, whether something's worth it, recommendations, or 避坑/攻略/评价 — treat these as content-digest requests without asking which kind of report is wanted.",
+    "context_sha256": "9d976ef3055853b861105bf9d8a4866e44d12c8d58283df84fa2353300ca0611",
+    "reason": "Routing rule: do not ask which report type is wanted when signals are clear; no side effects."
+  },
+  {
+    "plugin": "xhs-topic-digest",
+    "file": "skills/xhs-topic-digest/SKILL.md",
+    "rule": "silent-action",
+    "text": "- Taking `search_feeds`' top-N-by-likes as the sample instead of a candidate pool — this silently drops entire sub-angles of the topic.",
+    "context_sha256": "2457b4279e20bcbedc5dd914714057d9f178a74499844b687b8fa2a4fa7db47c",
+    "reason": "Describes a sampling pitfall (top-N by likes silently drops sub-angles); not an instruction."
+  }
+]

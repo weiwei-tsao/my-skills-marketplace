@@ -17,6 +17,7 @@ Check that `CLAUDE.md` and `.claude/` both exist. If neither is present, stop:
 > No .claude/ infrastructure found. Run /setup first.
 
 Also re-check `.gitignore` for `CLAUDE.md` and `.claude/`. If either is missing, add it silently and note it in the final report.
+Skip any path that `git ls-files -- CLAUDE.md .claude` shows as already tracked — ignoring a tracked file does not untrack it — and note in the report that it was left shared.
 
 ---
 
@@ -57,15 +58,16 @@ grep -rn "src/" .claude/
 For each referenced path, verify it still exists. Flag paths that have moved or been deleted.
 
 ### 2d. Quality gate drift
-Re-read `package.json` scripts (or Makefile). Compare against the commands listed in `.claude/skills/git-commit/SKILL.md` and `.claude/skills/fix/SKILL.md`.
+Re-read `package.json` scripts (or Makefile). Compare against the commands listed in CLAUDE.md's Dev Commands (CLAUDE.md is loaded every session, so that is where the git-commit and structured-bug-fix plugins find them) and any hooks in `.claude/settings.json`.
 - Flag commands that have been renamed or removed.
-- Flag new quality gate commands not yet in skills.
+- Flag new quality gate commands not yet in Dev Commands.
+- If the project still has legacy `.claude/skills/fix/` or `.claude/skills/git-commit/` copies from an older setup, flag them for removal — the plugins replace them.
 
 ### 2e. Recent fix commits → Key Pitfalls candidates
 ```bash
 git log --oneline -40 --grep="fix"
 ```
-Read the commit messages. For each fix commit, check whether a corresponding entry already exists in `.claude/skills/fix/SKILL.md` under Key Pitfalls.
+Read the commit messages. For each fix commit, check whether a corresponding entry already exists in `.claude/rules/architecture.md` under Key Pitfalls.
 - Flag patterns that appear 2+ times and are not yet documented.
 - Flag any commit message that hints at a non-obvious gotcha (stale closures, serialization, boundary violations, async ordering).
 
@@ -87,7 +89,6 @@ Format the report as below. Show only files with findings. If nothing needs upda
 ### No changes needed
   git.md ✓
   security.md ✓
-  skills/git-commit/SKILL.md ✓
 
 ### Suggested updates
 
@@ -101,7 +102,7 @@ rules/architecture.md
 rules/db.md
   + Add: Redis caching pattern (ioredis detected in src/lib/cache.ts)
 
-skills/fix/SKILL.md
+rules/architecture.md
   + Key Pitfalls — 3 recent fix commits suggest patterns worth documenting:
     · fix(payments): handle idempotency key collision (abc1234)
     · fix(auth): await params before destructuring route handlers (def5678)

@@ -12,8 +12,8 @@ description: Use when Weiwei asks to turn a discussion, debugging session, ticke
 
 ## Step 0 — 读风格源文件
 
-写之前先读 `/Users/bule-station/Documents/personal-prompts/weiwei-prompts.md`(如果存在)。
-那是 canonical 的风格定义,会持续更新;本 skill 只是它在「文章写作」场景的适配。若文件不存在,直接用下面的规则。
+写之前先看环境变量 `WEIWEI_PROMPTS_PATH`(只读这一个变量,它的值是一个本地文件路径):若已设置且文件存在,先读它指向的文件。
+那是 canonical 的风格定义,会持续更新;本 skill 只是它在「文章写作」场景的适配。若变量未设置或文件不存在,直接用下面的规则。
 
 ## Step 1 — Public-safe 脱敏
 

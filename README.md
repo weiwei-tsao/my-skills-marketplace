@@ -38,14 +38,19 @@ The current catalog includes these plugin bundles. For Claude Code, each row is
 installed as a plugin from the marketplace. For Codex, `install-codex-skills.sh`
 discovers and links the individual `skills/*` directories inside those bundles.
 
-| Plugin | Category | Purpose |
-| --- | --- | --- |
-| `a11y-audit` | quality | Accessibility audit support for WCAG 2.1/2.2 checks. |
-| `git-commit` | workflow | Runs quality checks, drafts a Conventional Commits message, and commits staged changes. |
-| `setup` | workflow | Initializes and refreshes `.claude/` project infrastructure. |
-| `ai-engineering-workspace` | workflow | Ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction — five skills, each usable standalone where applicable. |
-| `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. |
-| `weiwei-notes` | writing | Turns discussions, debugging sessions, or ticket analysis into notes/blog articles in Weiwei's writing style. |
+| Plugin | Category | Purpose | Requires |
+| --- | --- | --- | --- |
+| `a11y-audit` | quality | Accessibility audit support for WCAG 2.1/2.2 checks. | — |
+| `git-commit` | workflow | Runs the repo's quality checks, drafts a one-line commit message that follows the repo's own conventions, and commits staged changes. | — |
+| `setup` | workflow | Initializes and refreshes `.claude/` project infrastructure. | — |
+| `ai-engineering-workspace` | workflow | Ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction — five skills, each usable standalone where applicable. | Optional: `git-commit`, `weiwei-notes`, `system-design-coach` |
+| `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. | — |
+| `weiwei-notes` | writing | Turns discussions, debugging sessions, or ticket analysis into notes/blog articles in Weiwei's writing style. | Optional: `WEIWEI_PROMPTS_PATH` env var (style source file) |
+| `xhs-topic-digest` | research | Summarizes what xiaohongshu (小红书) posts and comments actually say about a keyword: consensus, disagreements, recommendations, warnings. | xiaohongshu MCP server |
+| `en-community-digest` | research | English community digest from Reddit, RedFlagDeals, Doctor of Credit, and Danny Deal Guru, with traceable evidence; companion to `xhs-topic-digest`. | `browser-use` skill |
+| `member-site-digest` | research | Distills members-only forums (美卡论坛, 悠卡, 悠酒) through the user's logged-in browser: topic research, full-thread reads, incremental updates. | `browser-use` skill + logged-in Chrome |
+| `shortlist-crosscheck` | research | Verifies an existing shortlist across platforms (identity, availability, ratings, red flags) and screens each item ✅/⚠️/❌. | `browser-use` skill, `en-community-digest` |
+| `award-vs-cash-check` | finance | Prices the cash fare against an award redemption and computes value per point before redeeming. | `browser-use` skill |
 
 The source of truth for the list is
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json).
@@ -148,7 +153,7 @@ cd my-skills-marketplace
 For example:
 
 ```bash
-./add-skill.sh ~/Documents/Repositories/plain-dock/.claude/skills/git-commit git-commit
+./add-skill.sh ~/path/to/project/.claude/skills/git-commit git-commit
 ```
 
 The script runs four gates:
@@ -161,11 +166,13 @@ The script runs four gates:
 3. **Human review**: the script prints the discovered `SKILL.md` for manual
    confirmation.
 4. **Admission**: the skill is copied into `plugins/<plugin-name>/`, a minimal
-   plugin manifest is generated, and a catalog entry is printed.
+   plugin manifest is generated with a `TODO` description, and a catalog entry
+   is printed.
 
 After admission, paste the printed entry into the `plugins` array in
 `.claude-plugin/marketplace.json`, fill in `description`, `category`, and
-`keywords`, then validate and commit:
+`keywords`, copy the same `description` into
+`plugins/<plugin-name>/.claude-plugin/plugin.json`, then validate and commit:
 
 ```bash
 claude plugin validate .
@@ -243,6 +250,8 @@ install-codex-skills.sh           # symlink installer for Codex local skills
 plugins/<name>/
   .claude-plugin/plugin.json      # plugin manifest
   skills/<name>/SKILL.md          # skill instructions
+  commands/*.md                   # optional: slash commands
+  scripts/                        # optional: scripts called by hooks or skills
   hooks/hooks.json                # optional: lifecycle hooks (auto-run, see Security Boundary)
 vetting/
   audit_skill.py                  # static auditor
@@ -259,6 +268,7 @@ vetting/
 | `0` | Clean | Continue. |
 | `1` | HIGH findings | Warn locally; CI reports a warning. |
 | `2` | CRITICAL findings | Stop locally; CI fails. |
+| `3` | Stale reviewed entries (`--strict-reviewed` only) | CI fails. |
 
 Run a manual audit with:
 
@@ -267,6 +277,13 @@ python3 vetting/audit_skill.py plugins/<name> --no-color
 ```
 
 Add `--json report.json` if you need a machine-readable report.
+
+Findings already read and judged expected are listed in
+`vetting/reviewed-findings.json` (plugin, file, rule, full line text, a
+fingerprint of the surrounding lines, reason). They are reported as INFO only
+while the line and its surroundings are unchanged; any edit makes the finding
+fire again. CRITICAL and `taint-flow` findings are never downgraded, and CI
+fails on stale entries (`--strict-reviewed`, exit 3). Use `--no-reviewed` to see every finding at full severity.
 
 ## Maintenance Rules
 
