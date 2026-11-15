@@ -1,7 +1,7 @@
 {
   "name": "git-commit",
   "version": "0.1.0",
-  "description": "Vetted 2026-06-29. Source: /Users/bule-station/Documents/Repositories/plain-dock/.claude/skills/git-commit",
+  "description": "Run quality checks and draft a Conventional Commits message, then commit staged changes.",
   "author": { "name": "weiwei-tsao" },
   "license": "MIT"
 }
