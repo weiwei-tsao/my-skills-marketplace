@@ -40,7 +40,7 @@ New category → add a row. When one row needs more than a line of rules, move i
 
 - **❌** — not usable for the stated need now (closed, discontinued, date passed, sold out, wrong hours), or identity cannot be pinned down.
 - **⚠️** — any red flag; or two platforms each with ≥100 reviews differ by more than 0.5; or only one source; or sources conflict. Brand-own-site ratings and expert scores (e.g. RTINGS /10) are listed but not used in the gap test.
-- **✅** — identity confirmed, available, and ≥2 independent platforms positive with no red flags.
+- **✅** — identity confirmed, available, and ≥2 independent platforms positive with no red flags, at least one of them read on-page (a page or thread you opened, not `snippet_only`).
 
 A red flag is about the item itself (quality, safety, honesty of its reviews). Market noise — third-party marketplace mark-ups, a newer model also on sale, bundles — goes in a `notes` line and doesn't block ✅.
 
@@ -68,20 +68,34 @@ Every verdict carries its reason and the date of the evidence behind it — in t
 
 ## Audit (before handing over)
 
-1. Quote check — every `quote` must be a substring of its `raw` file:
+1. Script check, run from the topic folder — every `quote` is in its `raw` file (JSON raw is parsed and HTML entities decoded first), and every `ratings[]` score appears in one of that item's quotes:
 ```python
-import json,re
-norm=lambda t:re.sub(r"\s+"," ",t.replace("\xa0"," ")).strip()
-d=json.load(open("crosscheck-YYYY-MM.json")); exact=fuzzy=0; bad=[]
+import json,re,html
+def text(p):  # raw file as plain text: JSON → its string values joined; HTML entities decoded
+    s=open(p,encoding="utf-8").read()
+    if p.endswith(".json"):
+        out=[]
+        def walk(x):
+            if isinstance(x,str): out.append(x)
+            elif isinstance(x,(list,dict)): [walk(v) for v in (x.values() if isinstance(x,dict) else x)]
+        walk(json.loads(s)); s="\n".join(out)
+    return html.unescape(s)
+norm=lambda t:re.sub(r"\s+"," ",t).strip()
+d=json.load(open("crosscheck-YYYY-MM.json",encoding="utf-8")); exact=fuzzy=0; bad=[]
 for i in d["items"]:
     for n in i["evidence_notes"]:
-        raw=open(n["raw"]).read()
-        if n["quote"] in raw: exact+=1
-        elif norm(n["quote"]) in norm(raw): fuzzy+=1
+        try: raw=text(n["raw"])
+        except Exception as e: bad.append((i["name"],n.get("raw"),repr(e))); continue
+        q=html.unescape(n["quote"])
+        if q in raw: exact+=1
+        elif norm(q) in norm(raw): fuzzy+=1
         else: bad.append((i["name"],n["quote"]))
+nosrc=[(i["name"],r["platform"],r["score"]) for i in d["items"] for r in i.get("ratings",[])
+       if not any(str(r["score"]) in n["quote"] for n in i["evidence_notes"])]
 print(f"exact {exact} / whitespace-normalised {fuzzy} / unmatched {len(bad)}",bad)
+print(f"scores without an evidence quote: {len(nosrc)}",nosrc)
 ```
-2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date?
+2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Does every score in the md / verdict reasons (incl. expert sub-scores) and every identity claim map to an evidence note? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date?
 3. Fix, re-run the quote check, then note in the `.md` header how many corrections the audit made.
 
 ## Common mistakes
