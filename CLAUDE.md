@@ -16,10 +16,10 @@ The script runs four steps and stops on any failure:
 1. **Static audit** (`vetting/audit_skill.py`) — regex + AST taint analysis. Exit code 2 (CRITICAL) = hard stop; exit 1 (HIGH) = prompt to continue.
 2. **Sandbox first-run** (`vetting/sandbox_skill.sh`) — Docker container with `--network none`; logs network attempts and sensitive file access. Skipped with a loud warning if Docker is absent.
 3. **Human read** — shows `SKILL.md` and asks for confirmation.
-4. **Admit** — copies into `plugins/<name>/`, generates `plugin.json`, and prints the `marketplace.json` entry to paste in manually.
+4. **Admit** — copies into `plugins/<name>/`, generates `plugin.json` (with a `TODO` description), and prints the `marketplace.json` entry to paste in manually.
 
 After the script finishes:
-1. Paste the printed JSON entry into `.claude-plugin/marketplace.json` (fill in `description` and `category`).
+1. Paste the printed JSON entry into `.claude-plugin/marketplace.json` (fill in `description` and `category`), and copy the same `description` into `plugins/<name>/.claude-plugin/plugin.json`.
 2. Validate: `claude plugin validate .`
 3. Commit and push: `git add -A && git commit -m "add <name> (vetted)" && git push`
 
@@ -75,6 +75,8 @@ Each plugin follows this structure:
 plugins/<name>/
   .claude-plugin/plugin.json   # manifest (name, version, author, license)
   skills/<name>/SKILL.md       # the skill payload
+  commands/*.md                # optional: slash commands
+  scripts/                     # optional: scripts called by hooks or skills
   hooks/hooks.json             # optional: lifecycle hooks, see "Plugin hooks" above
 ```
 

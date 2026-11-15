@@ -46,6 +46,11 @@ discovers and links the individual `skills/*` directories inside those bundles.
 | `ai-engineering-workspace` | workflow | Ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction — five skills, each usable standalone where applicable. |
 | `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. |
 | `weiwei-notes` | writing | Turns discussions, debugging sessions, or ticket analysis into notes/blog articles in Weiwei's writing style. |
+| `xhs-topic-digest` | research | Summarizes what xiaohongshu (小红书) posts and comments actually say about a keyword: consensus, disagreements, recommendations, warnings. |
+| `en-community-digest` | research | English community digest from Reddit, RedFlagDeals, Doctor of Credit, and Danny Deal Guru, with traceable evidence; companion to `xhs-topic-digest`. |
+| `member-site-digest` | research | Distills members-only forums (美卡论坛, 悠卡, 悠酒) through the user's logged-in browser: topic research, full-thread reads, incremental updates. |
+| `shortlist-crosscheck` | research | Verifies an existing shortlist across platforms (identity, availability, ratings, red flags) and screens each item ✅/⚠️/❌. |
+| `award-vs-cash-check` | finance | Prices the cash fare against an award redemption and computes value per point before redeeming. |
 
 The source of truth for the list is
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json).
@@ -148,7 +153,7 @@ cd my-skills-marketplace
 For example:
 
 ```bash
-./add-skill.sh ~/Documents/Repositories/plain-dock/.claude/skills/git-commit git-commit
+./add-skill.sh ~/path/to/project/.claude/skills/git-commit git-commit
 ```
 
 The script runs four gates:
@@ -161,11 +166,13 @@ The script runs four gates:
 3. **Human review**: the script prints the discovered `SKILL.md` for manual
    confirmation.
 4. **Admission**: the skill is copied into `plugins/<plugin-name>/`, a minimal
-   plugin manifest is generated, and a catalog entry is printed.
+   plugin manifest is generated with a `TODO` description, and a catalog entry
+   is printed.
 
 After admission, paste the printed entry into the `plugins` array in
 `.claude-plugin/marketplace.json`, fill in `description`, `category`, and
-`keywords`, then validate and commit:
+`keywords`, copy the same `description` into
+`plugins/<plugin-name>/.claude-plugin/plugin.json`, then validate and commit:
 
 ```bash
 claude plugin validate .
@@ -243,6 +250,8 @@ install-codex-skills.sh           # symlink installer for Codex local skills
 plugins/<name>/
   .claude-plugin/plugin.json      # plugin manifest
   skills/<name>/SKILL.md          # skill instructions
+  commands/*.md                   # optional: slash commands
+  scripts/                        # optional: scripts called by hooks or skills
   hooks/hooks.json                # optional: lifecycle hooks (auto-run, see Security Boundary)
 vetting/
   audit_skill.py                  # static auditor

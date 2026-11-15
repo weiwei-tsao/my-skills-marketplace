@@ -43,6 +43,11 @@ bundle 内部的各个 `skills/*` 目录。
 | `ai-engineering-workspace` | workflow | Ticket 全家桶：工作区脚手架、阶段门控 ticket 流程、结构化 bug 修复、跨会话 handoff、ticket completion 知识沉淀 —— 五个 skill，可按场景单独使用。 |
 | `system-design-coach` | learning | 通过路线图、case drill 和答案 review 辅助学习系统设计。 |
 | `weiwei-notes` | writing | 把讨论、排查过程或 ticket 分析整理成 Weiwei 风格的笔记 / blog 文章（结论先行、根因导向、中英混合）。 |
+| `xhs-topic-digest` | research | 总结小红书某个关键词下笔记和评论的实际内容：共识、分歧、推荐、避坑。 |
+| `en-community-digest` | research | 英文社区摘要（Reddit、RedFlagDeals、Doctor of Credit、Danny Deal Guru），证据可追溯；与 `xhs-topic-digest` 配套。 |
+| `member-site-digest` | research | 用登录态浏览器提炼会员站内容（美卡论坛、悠卡、悠酒）：主题研究、长帖通读、追更新。 |
+| `shortlist-crosscheck` | research | 对已有候选清单做跨平台核实（是否存在、是否可用、评分、风险），逐项给出 ✅/⚠️/❌。 |
+| `award-vs-cash-check` | finance | 兑换前对比同日现金票价与里程票成本，计算每点价值。 |
 
 权威列表以
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) 为准。
@@ -139,7 +144,7 @@ cd my-skills-marketplace
 示例：
 
 ```bash
-./add-skill.sh ~/Documents/Repositories/plain-dock/.claude/skills/git-commit git-commit
+./add-skill.sh ~/path/to/project/.claude/skills/git-commit git-commit
 ```
 
 脚本会执行四道关卡：
@@ -150,10 +155,11 @@ cd my-skills-marketplace
    并记录可疑访问。如果没有 Docker，脚本会明确警告并询问是否继续。
 3. **人工阅读**：脚本会打印发现的 `SKILL.md`，由维护者手动确认。
 4. **准入复制**：skill 会被复制到 `plugins/<plugin-name>/`，脚本生成最小
-   plugin manifest，并打印需要粘贴到 marketplace 的 catalog entry。
+   plugin manifest（description 为 `TODO` 占位），并打印需要粘贴到 marketplace 的 catalog entry。
 
 准入后，把脚本打印的条目粘贴到 `.claude-plugin/marketplace.json` 的
-`plugins` 数组中，补全 `description`、`category` 和 `keywords`，然后验证并提交：
+`plugins` 数组中，补全 `description`、`category` 和 `keywords`，并把同一个
+`description` 写进 `plugins/<plugin-name>/.claude-plugin/plugin.json`，然后验证并提交：
 
 ```bash
 claude plugin validate .
@@ -229,6 +235,8 @@ install-codex-skills.sh           # Codex 本地 skills 软链接安装脚本
 plugins/<name>/
   .claude-plugin/plugin.json      # plugin manifest
   skills/<name>/SKILL.md          # skill 指令
+  commands/*.md                   # 可选：slash commands
+  scripts/                        # 可选：hooks 或 skills 调用的脚本
   hooks/hooks.json                # 可选：生命周期 hooks（自动执行，见"安全边界"）
 vetting/
   audit_skill.py                  # 静态审计器
