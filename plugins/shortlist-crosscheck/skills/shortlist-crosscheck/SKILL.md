@@ -71,7 +71,8 @@ This is deliberately strict: a place confirmed permanently closed whose communit
 - **Positive** = an explicit favourable judgment relevant to the user's need, per the category's *Positive signal* column. A rating alone is not positive unless the source shows it in a favourable context you can quote; no complaints found is not positive.
 - **Independent** = a different originating source (`origin`): who first published the judgment. Count origins, not URLs:
   - all `snippet_only` notes from one search results page = **one indirect source**, however many platforms it lists (Google aggregates; it is not Yelp + TripAdvisor + Google); the **knowledge panel is part of that page** — Google's own aggregate, `snippet_only`, not an opened page (it still counts as Google evidence for identity/availability);
-  - a repost, quote or syndicated copy of a review = the original's origin (identical text on two sites counts once);
+  - a snippet whose origin you also opened (a Google result quoting the Reddit thread you read) is that same origin, not an extra source; a snippet whose origin you can't identify stays page-level indirect evidence;
+- a repost, quote or syndicated copy of a review = the original's origin (identical text on two sites counts once);
   - one thread = one origin, however many people in it (still report "同一帖 n 人").
 - **Investigation triggers** (rating gap between two comparable platforms each with ≥100 reviews of more than 0.5 — brand-own-site and expert /10 scores excluded; suspicious review velocity; the category's triggers column) are not findings. Record each in `investigation_triggers[]` {trigger, check, result: resolved | unresolved, note}: do the check (same model/location/time window? recent spike?) and say what it showed. Only a substantiated problem becomes a `red_flag`; an unresolved trigger keeps the item at ⚠️ with the explanation.
 - Every verdict states `verdict_scope`: what was actually checked and how (e.g. "identity+hours via Google panel; Reddit thread opened; RFD searched, no results; Yelp snippet only").
@@ -146,10 +147,12 @@ for i in d["items"]:
             rule.append((i["name"],"note missing provenance",n["quote"][:30]))
     if not i.get("verdict_scope"): rule.append((i["name"],"no verdict_scope",None))
     if vd=="✅" and any(t.get("result")!="resolved" for t in i.get("investigation_triggers",[])): rule.append((i["name"],"✅ with unresolved trigger",None))
-    keys,seen,opened=[],{},False  # independence: snippets on one results page = one source; same quote text = same source
-    for n in i["evidence_notes"]:
-        if "positive" not in (n.get("supports") or []): continue
-        k=("serp",n["raw"]) if n.get("snippet_only") else ("origin",str(n.get("origin")).lower())
+    pos=[n for n in i["evidence_notes"] if "positive" in (n.get("supports") or [])]
+    op={str(n.get("origin")).lower() for n in pos if not n.get("snippet_only")}
+    keys,seen,opened=[],{},False  # independence: snippets on one results page = one source, unless their origin was also opened (then = that origin); same quote text = same source
+    for n in pos:
+        o=str(n.get("origin")).lower()
+        k=("origin",o) if (not n.get("snippet_only") or o in op) else ("serp",n["raw"])
         q=norm(n["quote"]).lower(); k=seen.setdefault(q,k) if len(q)>=30 else k
         keys.append(k); opened|=not n.get("snippet_only")
     if vd=="✅" and (len(set(keys))<2 or not opened): rule.append((i["name"],"✅ without 2 independent positive sources incl. 1 opened",sorted(set(keys))))
