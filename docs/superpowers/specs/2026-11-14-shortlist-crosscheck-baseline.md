@@ -35,3 +35,6 @@
 - GREEN（新 SKILL.md）：结果是 ❌·verified、⚠️·blocked、⚠️·ambiguous（两家都列出，没替用户选）、✅·verified（RFD 搜不到结果记为 no_results，没有变成 partial）、⚠️·partial。脚本报 0 条违规。
 - GREEN 中发现一处不一致：同样缺 RFD 搜索，Maple 没记进 missing，Harbour 记了。原因是"社区搜索"没写清楚要 Reddit 和 RFD 都搜过，另外 Maple 的测试数据漏放了 RFD 搜索记录。
 - 写明规则、补上测试数据后，只重跑了这两项：Maple ❌·verified（RFD 记为 no_results），Harbour ⚠️·partial（missing 里是营业时间和 RFD）。脚本报 0 条违规。md 初筛格的格式和 JSON 一致。
+- **review 跟进的两项修复**：
+  - **反向一致性检查**：新增一条违规记录（状态是 verified、给了 ✅，但 `missing[]` 不为空）。改之前脚本不报（RED），改之后报出（GREEN）。测试数据里的违规从 5 条变成 6 条；两次 GREEN 的真实输出仍然 0 条违规，没有误报。
+  - **❌ 的依据**：只加了人工审计规则，"不能用"的那个事实本身（关门、停产等）必须有一条写明它、带日期的证据。脚本只能查到这一项有没有带日期的证据，没法判断是不是这条证据支撑了 ❌，所以把它和具体证据自动对上留到以后。

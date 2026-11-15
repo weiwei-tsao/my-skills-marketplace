@@ -128,11 +128,13 @@ for i in d["items"]:
     if st not in ("verified","partial","blocked","ambiguous"): rule.append((i["name"],"bad status",st))
     if vd in ("✅","❌") and st!="verified": rule.append((i["name"],f"{vd} needs verified",st))
     if st in ("partial","blocked","ambiguous") and not v.get("missing"): rule.append((i["name"],"missing[] empty",st))
+    if st=="verified" and v.get("missing"): rule.append((i["name"],"verified with unfinished checks",v["missing"]))
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",str(i.get("verdict_date") or "")): rule.append((i["name"],"no verdict_date",None))
     if vd=="❌" and not any(n.get("date") for n in i["evidence_notes"]): rule.append((i["name"],"❌ without dated evidence",None))
 print(f"screen/verification rule violations: {len(rule)}",rule)
 ```
-2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Does every score in the md / verdict reasons (incl. expert sub-scores) and every identity claim map to an evidence note? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date?
+2. Claim-by-claim re-read of the `.md` against `raw/`: is each quote about **this** item (read the posts around it)? Is each rating on the right platform? Is a single source called consensus? Does every score in the md / verdict reasons (incl. expert sub-scores) and every identity claim map to an evidence note? Is any `snippet_only` evidence presented as read? Was any quote cherry-picked against the same author's later reply? Does each ❌/⚠️ name its reason and date? For each ❌, does the unusability fact itself (closed, discontinued, sold out…) cite a dated evidence note that states it — not just any dated note on the item? (The script only checks that some dated note exists.)
+   Hand over only when the script prints 0 unmatched and 0 rule violations.
 3. Fix, re-run the quote check, then note in the `.md` header how many corrections the audit made.
 
 ## Common mistakes
