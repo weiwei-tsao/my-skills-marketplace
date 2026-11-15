@@ -13,14 +13,20 @@ implement code, run deploys, create PRs, or replace `ticket-workflow`.
 
 Before writing public-safe artifacts:
 
-1. Read the local `weiwei-notes` skill if available:
-   `../../../weiwei-notes/skills/weiwei-notes/SKILL.md`.
-2. Read the local system design references if available:
-   `../../../system-design-coach/references/interview-rubric.md` and
-   `../../../system-design-coach/references/topic-map.md`.
+1. If the `weiwei-notes` skill is available (it appears in your skill list),
+   load it by name and apply its public-safe redaction and writing rules.
+2. If the `system-design-answer-review` skill (from the `system-design-coach`
+   plugin) is available, read the rubric it uses: `interview-rubric.md` and
+   `topic-map.md` in the `references/` directory two levels above that
+   skill's own directory (`<its base directory>/../../references/`).
 
-If those files are unavailable, continue with the rules in this skill. Do not
-block ticket completion solely because companion skill references are missing.
+Locate companion skills by name, never by a path relative to this file —
+plugins are installed into separate directories, so sibling paths that work
+in the source repo do not exist after installation.
+
+If a companion skill is unavailable, say so in one line and continue with the
+rules in this skill. Do not block ticket completion solely because companion
+skill references are missing.
 
 ## Modes
 
