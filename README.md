@@ -38,19 +38,19 @@ The current catalog includes these plugin bundles. For Claude Code, each row is
 installed as a plugin from the marketplace. For Codex, `install-codex-skills.sh`
 discovers and links the individual `skills/*` directories inside those bundles.
 
-| Plugin | Category | Purpose |
-| --- | --- | --- |
-| `a11y-audit` | quality | Accessibility audit support for WCAG 2.1/2.2 checks. |
-| `git-commit` | workflow | Runs the repo's quality checks, drafts a one-line commit message that follows the repo's own conventions, and commits staged changes. |
-| `setup` | workflow | Initializes and refreshes `.claude/` project infrastructure. |
-| `ai-engineering-workspace` | workflow | Ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction — five skills, each usable standalone where applicable. |
-| `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. |
-| `weiwei-notes` | writing | Turns discussions, debugging sessions, or ticket analysis into notes/blog articles in Weiwei's writing style. |
-| `xhs-topic-digest` | research | Summarizes what xiaohongshu (小红书) posts and comments actually say about a keyword: consensus, disagreements, recommendations, warnings. |
-| `en-community-digest` | research | English community digest from Reddit, RedFlagDeals, Doctor of Credit, and Danny Deal Guru, with traceable evidence; companion to `xhs-topic-digest`. |
-| `member-site-digest` | research | Distills members-only forums (美卡论坛, 悠卡, 悠酒) through the user's logged-in browser: topic research, full-thread reads, incremental updates. |
-| `shortlist-crosscheck` | research | Verifies an existing shortlist across platforms (identity, availability, ratings, red flags) and screens each item ✅/⚠️/❌. |
-| `award-vs-cash-check` | finance | Prices the cash fare against an award redemption and computes value per point before redeeming. |
+| Plugin | Category | Purpose | Requires |
+| --- | --- | --- | --- |
+| `a11y-audit` | quality | Accessibility audit support for WCAG 2.1/2.2 checks. | — |
+| `git-commit` | workflow | Runs the repo's quality checks, drafts a one-line commit message that follows the repo's own conventions, and commits staged changes. | — |
+| `setup` | workflow | Initializes and refreshes `.claude/` project infrastructure. | — |
+| `ai-engineering-workspace` | workflow | Ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction — five skills, each usable standalone where applicable. | Optional: `git-commit`, `weiwei-notes`, `system-design-coach` |
+| `system-design-coach` | learning | Supports system design study through roadmaps, drills, and answer review. | — |
+| `weiwei-notes` | writing | Turns discussions, debugging sessions, or ticket analysis into notes/blog articles in Weiwei's writing style. | Optional: `WEIWEI_PROMPTS_PATH` env var (style source file) |
+| `xhs-topic-digest` | research | Summarizes what xiaohongshu (小红书) posts and comments actually say about a keyword: consensus, disagreements, recommendations, warnings. | xiaohongshu MCP server |
+| `en-community-digest` | research | English community digest from Reddit, RedFlagDeals, Doctor of Credit, and Danny Deal Guru, with traceable evidence; companion to `xhs-topic-digest`. | `browser-use` skill |
+| `member-site-digest` | research | Distills members-only forums (美卡论坛, 悠卡, 悠酒) through the user's logged-in browser: topic research, full-thread reads, incremental updates. | `browser-use` skill + logged-in Chrome |
+| `shortlist-crosscheck` | research | Verifies an existing shortlist across platforms (identity, availability, ratings, red flags) and screens each item ✅/⚠️/❌. | `browser-use` skill, `en-community-digest` |
+| `award-vs-cash-check` | finance | Prices the cash fare against an award redemption and computes value per point before redeeming. | `browser-use` skill |
 
 The source of truth for the list is
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json).

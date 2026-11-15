@@ -35,19 +35,19 @@ Codex 都提供清晰的审核、安装和更新流程。
 里可安装的 plugin；对 Codex 来说，`install-codex-skills.sh` 会发现并链接这些
 bundle 内部的各个 `skills/*` 目录。
 
-| 插件 | 分类 | 用途 |
-| --- | --- | --- |
-| `a11y-audit` | quality | 辅助进行 WCAG 2.1/2.2 可访问性审计。 |
-| `git-commit` | workflow | 运行仓库自己的质量检查，按该仓库的提交习惯起草一行提交信息，并提交 staged changes。 |
-| `setup` | workflow | 初始化和刷新项目中的 `.claude/` 基础设施。 |
-| `ai-engineering-workspace` | workflow | Ticket 全家桶：工作区脚手架、阶段门控 ticket 流程、结构化 bug 修复、跨会话 handoff、ticket completion 知识沉淀 —— 五个 skill，可按场景单独使用。 |
-| `system-design-coach` | learning | 通过路线图、case drill 和答案 review 辅助学习系统设计。 |
-| `weiwei-notes` | writing | 把讨论、排查过程或 ticket 分析整理成 Weiwei 风格的笔记 / blog 文章（结论先行、根因导向、中英混合）。 |
-| `xhs-topic-digest` | research | 总结小红书某个关键词下笔记和评论的实际内容：共识、分歧、推荐、避坑。 |
-| `en-community-digest` | research | 英文社区摘要（Reddit、RedFlagDeals、Doctor of Credit、Danny Deal Guru），证据可追溯；与 `xhs-topic-digest` 配套。 |
-| `member-site-digest` | research | 用登录态浏览器提炼会员站内容（美卡论坛、悠卡、悠酒）：主题研究、长帖通读、追更新。 |
-| `shortlist-crosscheck` | research | 对已有候选清单做跨平台核实（是否存在、是否可用、评分、风险），逐项给出 ✅/⚠️/❌。 |
-| `award-vs-cash-check` | finance | 兑换前对比同日现金票价与里程票成本，计算每点价值。 |
+| 插件 | 分类 | 用途 | 依赖 |
+| --- | --- | --- | --- |
+| `a11y-audit` | quality | 辅助进行 WCAG 2.1/2.2 可访问性审计。 | — |
+| `git-commit` | workflow | 运行仓库自己的质量检查，按该仓库的提交习惯起草一行提交信息，并提交 staged changes。 | — |
+| `setup` | workflow | 初始化和刷新项目中的 `.claude/` 基础设施。 | — |
+| `ai-engineering-workspace` | workflow | Ticket 全家桶：工作区脚手架、阶段门控 ticket 流程、结构化 bug 修复、跨会话 handoff、ticket completion 知识沉淀 —— 五个 skill，可按场景单独使用。 | 可选：`git-commit`、`weiwei-notes`、`system-design-coach` |
+| `system-design-coach` | learning | 通过路线图、case drill 和答案 review 辅助学习系统设计。 | — |
+| `weiwei-notes` | writing | 把讨论、排查过程或 ticket 分析整理成 Weiwei 风格的笔记 / blog 文章（结论先行、根因导向、中英混合）。 | 可选：环境变量 `WEIWEI_PROMPTS_PATH`（风格源文件） |
+| `xhs-topic-digest` | research | 总结小红书某个关键词下笔记和评论的实际内容：共识、分歧、推荐、避坑。 | 小红书 MCP 服务 |
+| `en-community-digest` | research | 英文社区摘要（Reddit、RedFlagDeals、Doctor of Credit、Danny Deal Guru），证据可追溯；与 `xhs-topic-digest` 配套。 | `browser-use` skill |
+| `member-site-digest` | research | 用登录态浏览器提炼会员站内容（美卡论坛、悠卡、悠酒）：主题研究、长帖通读、追更新。 | `browser-use` skill + 已登录的 Chrome |
+| `shortlist-crosscheck` | research | 对已有候选清单做跨平台核实（是否存在、是否可用、评分、风险），逐项给出 ✅/⚠️/❌。 | `browser-use` skill、`en-community-digest` |
+| `award-vs-cash-check` | finance | 兑换前对比同日现金票价与里程票成本，计算每点价值。 | `browser-use` skill |
 
 权威列表以
 [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) 为准。
