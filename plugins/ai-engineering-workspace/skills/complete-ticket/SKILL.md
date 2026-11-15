@@ -16,17 +16,21 @@ Before writing public-safe artifacts:
 1. If the `weiwei-notes` skill is available (it appears in your skill list),
    load it by name and apply its public-safe redaction and writing rules.
 2. If the `system-design-answer-review` skill (from the `system-design-coach`
-   plugin) is available, read the rubric it uses: `interview-rubric.md` and
-   `topic-map.md` in the `references/` directory two levels above that
-   skill's own directory (`<its base directory>/../../references/`).
+   plugin) is available, load it and use the rubric it applies. Its full
+   rubric lives in `interview-rubric.md` and `topic-map.md` under the plugin's
+   `references/` directory — read those files only when you know that skill's
+   actual base directory (e.g. the host reported it when the skill loaded) and
+   you have confirmed the files exist there
+   (`<its base directory>/../../references/`). Do not guess an install path.
 
 Locate companion skills by name, never by a path relative to this file —
 plugins are installed into separate directories, so sibling paths that work
-in the source repo do not exist after installation.
+in the source repo do not exist after installation, and other hosts (Codex,
+a copied skill folder) may lay files out differently again.
 
-If a companion skill is unavailable, say so in one line and continue with the
-rules in this skill. Do not block ticket completion solely because companion
-skill references are missing.
+If a companion skill or its reference files are unavailable, say so in one
+line and continue with the rules in this skill. Do not block ticket completion
+solely because companion skill references are missing.
 
 ## Modes
 
