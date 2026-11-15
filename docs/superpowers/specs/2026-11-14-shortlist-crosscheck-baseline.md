@@ -121,3 +121,8 @@ RED：旧脚本报出 0 条。GREEN：恰好报出这 5 条，合规的那条（
   - **新检查**：所有要交付的项都必须 `audited: true`，不只限于 ✅/❌。
   - **调整审计顺序**：两步人工审计做完后先标 `audited: true`，最后才运行 audit.py 作为关口；之后这一项再有改动，`audited` 就退回 false。
   - **回归**：#26 三次 GREEN 的真实输出仍是 HANDOVER: OK。
+
+## Codex review follow-up on c90ea0b (2026-11-15)
+- **Hours availability from the knowledge panel.** A ✅ whose need was only opening hours was being blocked as "✅ without availability evidence", which contradicted SKILL.md (the panel counts as availability evidence). A new test (hours need, panel snippet as the availability evidence, two opened positives) went RED BLOCKED → GREEN OK. Change: a snippet availability note is accepted only when `need.requires == "hours"`. A guard case (reservation backed only by a snippet) still blocks.
+- **✅ with a recorded red flag.** This passed handover. New test RED OK → GREEN BLOCKED ("✅ with a red flag").
+- Totals: 1 base + 31 mutations + 1 positive case, all passing. The three #26 GREEN outputs still give HANDOVER: OK.

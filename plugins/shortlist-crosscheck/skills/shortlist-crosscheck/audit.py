@@ -47,6 +47,7 @@ for i in d["items"]:
             rule.append((i["name"],"note missing provenance",n["quote"][:30]))
     if not i.get("verdict_scope"): rule.append((i["name"],"no verdict_scope",None))
     if vd=="✅" and any(t.get("result")!="resolved" for t in i.get("investigation_triggers",[])): rule.append((i["name"],"✅ with unresolved trigger",None))
+    if vd=="✅" and i.get("red_flags"): rule.append((i["name"],"✅ with a red flag",i["red_flags"]))
     pos=[n for n in i["evidence_notes"] if "positive" in (n.get("supports") or []) and not n.get("superseded_by")]  # a reversed note no longer counts
     op={str(n.get("origin")).lower() for n in pos if not n.get("snippet_only")}
     keys,seen,opened=[],{},False  # independence: snippets on one results page = one source, unless their origin was also opened (then = that origin); same quote text = same source
@@ -89,7 +90,8 @@ for i in d["items"]:
     if any(not re.search(r"\[E\d+\]",l) for l in rows): rule.append((i["name"],"md row without evidence id",None))
     if i["name"] not in (au.get("attribution_checked") or []): rule.append((i["name"],"attribution audit not recorded",None))
     if i["name"] not in (au.get("claim_checked") or []): rule.append((i["name"],"claim audit not recorded",None))
-    if i.get("verdict")=="✅" and not any("availability" in (n.get("supports") or []) and not n.get("snippet_only") for n in i["evidence_notes"]):
+    # hours: Google's panel/Maps is the live source, a snippet note is enough; reservation/stock/seats/dates need an opened page
+    if i.get("verdict")=="✅" and not any("availability" in (n.get("supports") or []) and (not n.get("snippet_only") or need.get("requires")=="hours") for n in i["evidence_notes"]):
         rule.append((i["name"],"✅ without availability evidence",None))
     pg=(prog or {}).get(i["name"])
     if prog is not None and i.get("verdict") in ("✅","❌") and (not pg or any(pg.get(s)!="done" for s in ("identity","availability","community"))):

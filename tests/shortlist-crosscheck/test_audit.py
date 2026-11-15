@@ -84,6 +84,15 @@ def set_status(o, st, missing=True):
     it(o)["verification"].update(status=st, missing=[{"step": "community", "reason": "rate_limited"}] if missing else [])
 
 
+def hours_need(o, snippet_kind="hours"):
+    """need requires `snippet_kind`; availability evidence only from the Google knowledge panel (snippet)."""
+    o["need"]["requires"] = snippet_kind
+    it(o)["availability"].update(kind=snippet_kind)
+    it(o)["evidence_notes"][2] = note(3, "Party size 6 · Sat, Nov 14 · 12:30 PM", "google maps", "google_serp", "raw/ot.txt",
+                                      ("availability",), snippet=True)
+    return o
+
+
 # name -> (mutation(out, md, progress) -> (out, md, progress), expected rule kind substring | blocking key)
 CASES = {
     # --- #23 verification vs verdict
@@ -129,6 +138,8 @@ CASES = {
     "claim audit not recorded": (lambda o, m, p: (o["audit"].update(claim_checked=[]), (o, m, p))[-1], "claim audit not recorded"),
     "verdict while stage pending": (lambda o, m, p: (p["items"][NAME].update(community="pending", audited=False), (o, m, p))[-1], "stage not done"),
     "no progress file": (lambda o, m, p: (o, m, None), "no progress.json"),
+    "reservation proven only by a snippet": (lambda o, m, p: (hours_need(o, "reservation"), (o, m, p))[-1], "without availability evidence"),
+    "✅ with a recorded red flag": (lambda o, m, p: (it(o).update(red_flags=["sponsored posts presented as reviews"]), (o, m, p))[-1], "red flag"),
     "audited false, all stages done": (lambda o, m, p: (p["items"][NAME].update(audited=False), (o, m, p))[-1], "item not audited"),
     "superseded positive still counted": (lambda o, m, p: (it(o).update(evidence_notes=[
         copy.deepcopy(E_RED), dict(copy.deepcopy(E_RFD), superseded_by="E4"),
@@ -142,6 +153,11 @@ class AuditRegression(unittest.TestCase):
         rc, res = run(*base())
         self.assertEqual(res["handover"], "OK", res)
         self.assertEqual(rc, 0)
+
+    def test_hours_from_knowledge_panel_hands_over(self):
+        o, m, p = base()
+        rc, res = run(hours_need(o), m, p)
+        self.assertEqual(res["handover"], "OK", res)
 
     def test_cases(self):
         for name, (mutate, expect) in CASES.items():
