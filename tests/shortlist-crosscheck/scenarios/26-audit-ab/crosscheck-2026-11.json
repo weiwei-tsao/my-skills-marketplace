@@ -1,0 +1,137 @@
+{
+ "shortlist": [
+  "Breville Bambino Plus"
+ ],
+ "category": "product",
+ "need": {
+  "text": "buy in Canada this week",
+  "requires": "stock",
+  "target_window": "2026-11-14/2026-11-21",
+  "tz": "America/Toronto"
+ },
+ "items": [
+  {
+   "name": "Breville Bambino Plus",
+   "canonical_name": "Breville Bambino Plus BES500BSS",
+   "identity": "BES500BSS1BCA1 (Canada)",
+   "ratings": [],
+   "red_flags": [],
+   "notes": [],
+   "investigation_triggers": [],
+   "verification": {
+    "status": "verified",
+    "missing": [],
+    "no_results": [],
+    "reason": "all four checks done"
+   },
+   "availability": {
+    "kind": "stock",
+    "status": "confirmed",
+    "target_window": "2026-11-14/2026-11-21",
+    "tz": "America/Toronto",
+    "checked_at": "2026-11-14",
+    "source": "https://www.bestbuy.ca/en-ca/product/breville-bambino-plus/12345",
+    "method": "browser-use"
+   },
+   "access_log": [
+    {
+     "source": "bestbuy",
+     "url": "https://www.bestbuy.ca/en-ca/product/breville-bambino-plus/12345",
+     "method": "browser-use",
+     "at": "2026-11-14T10:00-05:00",
+     "outcome": "ok",
+     "partial": false,
+     "note": ""
+    }
+   ],
+   "verdict": "✅",
+   "verdict_reason": "Reddit and RFD owners praise it; one owner reports a pump failure; in stock at Best Buy",
+   "verdict_date": "2026-11-14",
+   "verdict_scope": "Google result; Reddit thread opened; RFD thread opened; Best Buy page opened",
+   "evidence_notes": [
+    {
+     "id": "E1",
+     "platform": "reddit",
+     "origin": "reddit r/espresso bb11",
+     "via": "reddit_json",
+     "url": "https://www.reddit.com/r/espresso/comments/bb11/bambino_vs_bambino_plus_after_a_year/c1/",
+     "raw": "raw/reddit_bambino.json",
+     "date": "2025-09-01",
+     "checked_at": "2026-11-14",
+     "quote": "My Bambino (the non-Plus one) died after 8 months, pump failure.",
+     "snippet_only": false,
+     "supports": [
+      "negative"
+     ]
+    },
+    {
+     "id": "E2",
+     "platform": "reddit",
+     "origin": "reddit r/espresso bb11",
+     "via": "reddit_json",
+     "url": "https://www.reddit.com/r/espresso/comments/bb11/bambino_vs_bambino_plus_after_a_year/c2/",
+     "raw": "raw/reddit_bambino.json",
+     "date": "2025-09-02",
+     "checked_at": "2026-11-14",
+     "quote": "Bambino Plus has been flawless for me, the auto milk frothing is great.",
+     "snippet_only": false,
+     "supports": [
+      "positive"
+     ]
+    },
+    {
+     "id": "E3",
+     "platform": "rfd",
+     "origin": "rfd breville-bambino-plus p8001",
+     "via": "rfd_page",
+     "url": "https://forums.redflagdeals.com/breville-bambino-plus-2500001/#p8001",
+     "raw": "raw/rfd_bambino.json",
+     "date": "2026-08-03",
+     "checked_at": "2026-11-14",
+     "quote": "Bambino Plus BES500 has been great for two years, steam wand is the best at this price.",
+     "snippet_only": false,
+     "supports": [
+      "positive"
+     ]
+    },
+    {
+     "id": "E4",
+     "platform": "bestbuy.ca",
+     "origin": "bestbuy.ca",
+     "via": "site_page",
+     "url": "https://www.bestbuy.ca/en-ca/product/breville-bambino-plus/12345",
+     "raw": "raw/bestbuy_bambino.txt",
+     "date": "2026-11-14",
+     "checked_at": "2026-11-14",
+     "quote": "Available to ship",
+     "snippet_only": false,
+     "supports": [
+      "availability"
+     ]
+    },
+    {
+     "id": "E5",
+     "platform": "breville.com",
+     "origin": "breville.com",
+     "via": "google_serp",
+     "url": "https://www.breville.com/en-ca/product/bes500",
+     "raw": "raw/google_bambino.txt",
+     "date": "2026-11-14",
+     "checked_at": "2026-11-14",
+     "quote": "Model BES500BSS1BCA1",
+     "snippet_only": true,
+     "supports": [
+      "identity"
+     ]
+    }
+   ]
+  }
+ ],
+ "uncertainties": [],
+ "audit": {
+  "attribution_checked": [],
+  "claim_checked": [],
+  "findings": [],
+  "corrections": 0
+ }
+}
