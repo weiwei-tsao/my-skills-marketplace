@@ -90,8 +90,9 @@ for i in d["items"]:
     if any(not re.search(r"\[E\d+\]",l) for l in rows): rule.append((i["name"],"md row without evidence id",None))
     if i["name"] not in (au.get("attribution_checked") or []): rule.append((i["name"],"attribution audit not recorded",None))
     if i["name"] not in (au.get("claim_checked") or []): rule.append((i["name"],"claim audit not recorded",None))
-    # hours: Google's panel/Maps is the live source, a snippet note is enough; reservation/stock/seats/dates need an opened page
-    if i.get("verdict")=="✅" and not any("availability" in (n.get("supports") or []) and (not n.get("snippet_only") or need.get("requires")=="hours") for n in i["evidence_notes"]):
+    # hours: Google's own panel/Maps is the live source, so its snippet is enough (origin "google…"); another site's result line is not;
+    # reservation/stock/seats/dates always need an opened page
+    if i.get("verdict")=="✅" and not any("availability" in (n.get("supports") or []) and (not n.get("snippet_only") or (need.get("requires")=="hours" and str(n.get("origin")).lower().startswith("google"))) for n in i["evidence_notes"]):
         rule.append((i["name"],"✅ without availability evidence",None))
     pg=(prog or {}).get(i["name"])
     if prog is not None and i.get("verdict") in ("✅","❌") and (not pg or any(pg.get(s)!="done" for s in ("identity","availability","community"))):

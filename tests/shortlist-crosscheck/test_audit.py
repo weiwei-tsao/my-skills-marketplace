@@ -18,6 +18,8 @@ RAW = {
         {"id": "p7001", "txt": "Kimchi House did our team lunch for 8, great banchan and quick service."}]}),
     "raw/ot.txt": "Party size 6 · Sat, Nov 14 · 12:30 PM\nAvailable times: 12:30 PM\n",
     "raw/serp.txt": "Yelp 4.4(152) Best Korean in the area, generous banchan\nTripadvisor 4.5(40) Great value lunch special here\n",
+    "raw/google_panel.txt": "Kimchi House\n4.4\n380 Google reviews\nKorean restaurant\nOpen · Saturday 11 a.m.–9 p.m.\n20 Leslie St, Richmond Hill, ON\n",
+    "raw/serp_other.txt": "Kimchi House - Yelp\nhttps://www.yelp.ca/biz/kimchi-house\nHours: Sat 11:00 AM - 9:00 PM · Korean\n",
     "raw/blog.txt": "What locals say: Kimchi House galbi jjim is fantastic and they handle big groups well.\n",
 }
 
@@ -84,12 +86,15 @@ def set_status(o, st, missing=True):
     it(o)["verification"].update(status=st, missing=[{"step": "community", "reason": "rate_limited"}] if missing else [])
 
 
-def hours_need(o, snippet_kind="hours"):
-    """need requires `snippet_kind`; availability evidence only from the Google knowledge panel (snippet)."""
-    o["need"]["requires"] = snippet_kind
-    it(o)["availability"].update(kind=snippet_kind)
-    it(o)["evidence_notes"][2] = note(3, "Party size 6 · Sat, Nov 14 · 12:30 PM", "google maps", "google_serp", "raw/ot.txt",
-                                      ("availability",), snippet=True)
+def hours_need(o, kind="hours", panel=True):
+    """need requires `kind`; the only availability evidence is a search-page snippet:
+    the Google knowledge panel's hours (panel=True) or another site's result line (panel=False)."""
+    o["need"]["requires"] = kind
+    it(o)["availability"].update(kind=kind)
+    it(o)["evidence_notes"][2] = (
+        note(3, "Open · Saturday 11 a.m.–9 p.m.", "google maps", "google_serp", "raw/google_panel.txt", ("availability",), snippet=True)
+        if panel else
+        note(3, "Hours: Sat 11:00 AM - 9:00 PM", "yelp.ca", "google_serp", "raw/serp_other.txt", ("availability",), snippet=True))
     return o
 
 
@@ -139,6 +144,7 @@ CASES = {
     "verdict while stage pending": (lambda o, m, p: (p["items"][NAME].update(community="pending", audited=False), (o, m, p))[-1], "stage not done"),
     "no progress file": (lambda o, m, p: (o, m, None), "no progress.json"),
     "reservation proven only by a snippet": (lambda o, m, p: (hours_need(o, "reservation"), (o, m, p))[-1], "without availability evidence"),
+    "hours only from another site's snippet": (lambda o, m, p: (hours_need(o, panel=False), (o, m, p))[-1], "without availability evidence"),
     "✅ with a recorded red flag": (lambda o, m, p: (it(o).update(red_flags=["sponsored posts presented as reviews"]), (o, m, p))[-1], "red flag"),
     "audited false, all stages done": (lambda o, m, p: (p["items"][NAME].update(audited=False), (o, m, p))[-1], "item not audited"),
     "superseded positive still counted": (lambda o, m, p: (it(o).update(evidence_notes=[
