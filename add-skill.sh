@@ -103,7 +103,7 @@ cat > "$DEST/.claude-plugin/plugin.json" << JSON
 {
   "name": "$NAME",
   "version": "0.1.0",
-  "description": "Vetted $(date +%Y-%m-%d). Source: $SRC",
+  "description": "TODO: one-line description (same as marketplace.json)",
   "author": { "name": "weiwei-tsao" },
   "license": "MIT"
 }
