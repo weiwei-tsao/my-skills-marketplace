@@ -1,6 +1,14 @@
 # Site access recipes (browser-use, user's logged-in Chrome)
 
-Open the site once with `new_tab(url); wait_for_load()`, then do everything with same-origin `fetch` inside `js(...)` — cookies ride along, no HTML scraping. Switching to the other site: `goto_url(base)`; a `Page.navigate` timeout there is often harmless — `wait_for_load()`, check `page_info()['url']`, continue. Read sequentially; pause ~1s between API calls (Discourse rate-limits). Each `browser-use` heredoc is a fresh Python process — re-paste helpers/recipes in every call; nothing carries over except the browser tab. If even `js("1+1")` times out, the tab is wedged (e.g. after a timed-out fetch): `new_tab(url)` and continue there.
+If the caller's project names a dedicated agent browser (a wrapper command, or `BU_NAME`/`BU_CDP_URL`), run every browser-use call through it instead of the user's everyday Chrome.
+
+## Pacing
+
+- One tab, sequential. Random 3–8 s between page navigations; ~1 s between same-origin API fetches. Never fire fetches in parallel.
+- Cap ~30 threads per site per run; need more → split into runs and say so.
+- Captcha, "prove your humanity", or a login wall → stop and ask the user. No captcha solving, no headless, no user-agent/fingerprint changes.
+
+Open the site once with `new_tab(url); wait_for_load()`, then do everything with same-origin `fetch` inside `js(...)` — cookies ride along, no HTML scraping. Switching to the other site: `goto_url(base)`; a `Page.navigate` timeout there is often harmless — `wait_for_load()`, check `page_info()['url']`, continue. Follow the **Pacing** rules below (Discourse rate-limits). Each `browser-use` heredoc is a fresh Python process — re-paste helpers/recipes in every call; nothing carries over except the browser tab. If even `js("1+1")` times out, the tab is wedged (e.g. after a timed-out fetch): `new_tab(url)` and continue there.
 
 ## Discourse sites
 
