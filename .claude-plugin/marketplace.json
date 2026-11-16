@@ -74,7 +74,7 @@
     {
       "name": "en-community-digest",
       "source": "./plugins/en-community-digest",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "English community digest (Reddit, RedFlagDeals, Doctor of Credit, Danny Deal Guru) via browser-use — consensus, disagreements, key terms and warnings with traceable evidence; companion to xhs-topic-digest.",
       "author": { "name": "weiwei-tsao" },
       "category": "research",
@@ -83,7 +83,7 @@
     {
       "name": "member-site-digest",
       "source": "./plugins/member-site-digest",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Distill members-only forum/site content (美卡论坛 uscardforum, 悠卡 youcard.ca, 悠酒 tripwinego) via the user's logged-in browser session — topic research, full-thread reads, and incremental updates with traceable post citations.",
       "author": { "name": "weiwei-tsao" },
       "category": "research",

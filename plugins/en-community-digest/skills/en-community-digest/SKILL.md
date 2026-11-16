@@ -9,7 +9,7 @@ description: Use when the user wants English-language community opinion on a top
 
 English counterpart of `xhs-topic-digest`: a small UGC qualitative study — search → diversify → read bodies **and** comments → corroborate → stop at saturation → synthesize. Value lives in comment threads (corrections, data points, "don't bother"), not in the post that asked the question.
 
-All page access goes through the **browser-use** skill (user's real Chrome, logged-in, human-like). Don't try `curl`/WebFetch first — Reddit and many forums block them.
+All page access goes through the **browser-use** skill (a real, headful, logged-in Chrome). If the caller's project names a dedicated agent browser (a wrapper command, or `BU_NAME`/`BU_CDP_URL`), run every browser-use call through it instead of the user's everyday Chrome. If that browser can't be reached, stop and report — never fall back to the default/everyday Chrome. Don't try `curl`/WebFetch first — Reddit and many forums block them.
 
 Sources in scope: Reddit, RFD, Doctor of Credit (`doctorofcredit.com`), Danny Deal Guru (`dannydealguru.com`). DoC and DDG are **US-focused** deal blogs (bank/credit-card bonuses, US issuers): search them for US topics, skip them for Canada-only topics unless the user names them. Other platforms (X, Telegram, GitHub, custom sites) are not covered yet — see repo issue #1; for a user-named site, use the same Google `site:` + read-the-page approach and say it's ad hoc.
 
@@ -68,7 +68,12 @@ return {id,title:document.querySelector('h1')?.innerText||document.title,publish
 ```
 `parent` links a reply to its comment (0 = top-level). Capped at the newest 500 comments — enough for current terms. Both blogs keep one evergreen post per bonus, edit it in place and re-date it on every repost — `published`/`modified` mean "last reposted", not "offer started" (`published` can even be later than `modified`). Cite the later of the two as the post date. The comment date range is only the *sample's* coverage (truncated at 500 on busy posts), not the offer's age — leave the current offer's start date in 待确认 unless the body or a dated source states it. Older comments may describe an earlier version of the offer: check them against the current terms before citing. Check the body for an "expired"/"update" note before citing its terms.
 
-Pace like a person: read threads sequentially in one tab, don't fire dozens of fetches in parallel.
+## Pacing
+
+- One tab, sequential. Random 3–8 s between page navigations; ~1 s between same-origin API fetches. Never fire fetches in parallel.
+- Soft cap ~30 threads per site per run (not a global quota); need more → split into runs and say so.
+- Captcha, "prove your humanity", or a login wall → stop and ask the user. No captcha solving, no headless, no user-agent/fingerprint changes.
+- These rules lower request density; they don't guarantee a site won't rate-limit or challenge.
 
 ## Merging with a xiaohongshu digest
 
