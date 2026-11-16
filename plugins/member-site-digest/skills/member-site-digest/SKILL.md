@@ -7,7 +7,7 @@ description: Use when the user wants content distilled from a specific site they
 
 ## Overview
 
-Distill what members of a user-named site actually say, read through the user's **own logged-in Chrome session** via the **browser-use** skill (never curl/WebFetch — members-only content and bot blocking). If the caller's project names a dedicated agent browser (a wrapper command, or `BU_NAME`/`BU_CDP_URL`), run every browser-use call through it instead of the user's everyday Chrome. Same research discipline as `en-community-digest`: read replies not just the OP, label consensus vs single DP vs conflict, date everything, audit against raw before handing over.
+Distill what members of a user-named site actually say, read through an **authenticated Chrome session** (the dedicated agent browser when the caller's project names one) via the **browser-use** skill (never curl/WebFetch — members-only content and bot blocking). If the caller's project names a dedicated agent browser (a wrapper command, or `BU_NAME`/`BU_CDP_URL`), run every browser-use call through it instead of the user's everyday Chrome. If that browser can't be reached, stop and report — never fall back to the default/everyday Chrome. Same research discipline as `en-community-digest`: read replies not just the OP, label consensus vs single DP vs conflict, date everything, audit against raw before handing over.
 
 Site access recipes live in `sites.md` (this directory) — read it before touching a site. Site not in `sites.md` → follow **Adding a new site** below before researching.
 
