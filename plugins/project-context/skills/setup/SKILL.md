@@ -57,7 +57,7 @@ Read `package.json` `"scripts"` (or `Makefile` targets). Record the exact comman
 - Type check: look for `typecheck`, `type-check`, `tsc --noEmit`
 - Test: look for `test`, `jest`, `vitest`, `playwright`
 
-Also record a **per-file lint command** for the edit hook — the linter invoked on a single file, not the project-wide script — and the file extensions it handles. Examples: ESLint → `npx eslint` for `ts tsx js jsx`; Biome → `npx biome lint` for `ts tsx js jsx json`; Ruff → `ruff check` for `py`; golangci-lint → skip (it lints packages, not files). If no linter can run on a single file, record none.
+Also record a **per-file lint command** for the edit hook — the linter invoked on a single file, not the project-wide script — and the file extensions it handles. Examples: ESLint → `npx eslint` for `ts tsx js jsx`; Biome → `npx biome lint` for `ts tsx js jsx json`; Ruff → `ruff check` for `py`; golangci-lint → skip (it lints packages, not files). If no linter can run on a single file, record none. The command must be a program plus plain arguments (no quotes, pipes, redirects or `$variables`): the hook splits it on spaces and runs it without a shell.
 
 ### Project structure
 List top-level directories under `src/` (or root if no `src/`). Note the purpose of each module if inferable from name.
@@ -102,7 +102,7 @@ Print the plan below. Use actual detected values. Do not create files yet.
 ### Refresh routine
   Will offer a weekly scheduled check after setup completes.
 
-No files have been created yet. Confirm to proceed?
+No project context files have been created yet (only .gitignore was updated, in Phase 0). Confirm to proceed?
 ```
 
 Wait for explicit confirmation before Phase 3.
@@ -155,7 +155,7 @@ Create each file confirmed in the plan at `.claude/rules/<name>.md`. Only create
 - Data flow: trace a typical request from UI action → API → DB → response using actual file paths detected in Phase 1
 - Server/client boundary rules (if applicable)
 - Key invariants: serialization steps, auth check points, singleton patterns, edge runtime constraints
-- Key Pitfalls: non-obvious gotchas worth remembering (start empty; `/refresh` proposes entries from recent fix commits)
+- Key Pitfalls: non-obvious gotchas worth remembering (start empty; `/project-context:refresh` proposes entries from recent fix commits)
 
 ### api.md *(if API layer detected)*
 - Endpoint naming convention and URL structure
@@ -292,7 +292,9 @@ echo '{"tool_input":{"command":"git push -f origin main"}}' | .claude/hooks/guar
 echo '{"tool_input":{"command":"git status"}}' | .claude/hooks/guard-bash.sh; echo $?              # expect 0
 ```
 
-The scripts read JSON with `jq`, falling back to `python3`. If neither is installed, tell the user the guard will not check commands.
+The scripts read JSON with `jq`, falling back to `python3`. The guard **fails closed**: if it cannot parse its input or neither parser is installed, it blocks every Bash command. So before installing it, check `command -v jq || command -v python3`; if both are missing, skip the guard and explain to the user why it was skipped.
+
+When reporting, describe the guard as a safety net against common accidents, not a security boundary: it reads command text, so commands built at run time (`eval`, scripts, variables holding commands) are not inspected.
 
 ---
 
@@ -318,6 +320,6 @@ Requires Claude Code Remote (CCR). [y/N]
 If yes, create a trigger:
 - `cron_expression`: `0 9 * * 1`
 - `name`: `claude-docs-refresh`
-- `prompt`: `Run /refresh to check if .claude/ documentation is in sync with the current codebase and suggest any needed updates.`
+- `prompt`: `Run /project-context:refresh to check if .claude/ documentation is in sync with the current codebase and suggest any needed updates.`
 - `create_new_session_on_fire`: false
 - `notifications`: `{ "push": true }`
