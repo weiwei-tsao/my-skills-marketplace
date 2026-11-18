@@ -99,9 +99,6 @@ Print the plan below. Use actual detected values. Do not create files yet.
   PostToolUse(Write,Edit) → lint-edited-file.sh: [per-file lint command + extensions, else "none — no per-file linter found"]
   PreToolUse(Bash)        → guard-bash.sh: block recursive delete of / or ~, force push to main/master, DROP TABLE/DATABASE/SCHEMA
 
-### Refresh routine
-  Will offer a weekly scheduled check after setup completes.
-
 No project context files have been created yet (only .gitignore was updated, in Phase 0). Confirm to proceed?
 ```
 
@@ -298,9 +295,9 @@ When reporting, describe the guard as a safety net against common accidents, not
 
 ---
 
-## Phase 7 — Offer Refresh Routine
+## Phase 7 — Summary
 
-After all files are created, print a summary of what was created, then ask:
+After all files are created, print a summary of what was created:
 
 ```
 Setup complete.
@@ -312,14 +309,8 @@ Created:
   ✓ .claude/settings.json
   ✓ .claude/hooks/ ([n] scripts, guard verified)
 
-Would you like a weekly scheduled check (every Monday 09:00) that scans
-for doc drift and sends a push notification with suggested updates?
-Requires Claude Code Remote (CCR). [y/N]
+Keep these docs current: run /project-context:refresh after significant
+code changes (new modules, dependency or command changes, a run of fixes).
 ```
 
-If yes, create a trigger:
-- `cron_expression`: `0 9 * * 1`
-- `name`: `claude-docs-refresh`
-- `prompt`: `Run /project-context:refresh to check if .claude/ documentation is in sync with the current codebase and suggest any needed updates.`
-- `create_new_session_on_fire`: false
-- `notifications`: `{ "push": true }`
+Do not offer or create a scheduled cloud routine for refresh: cloud sessions clone the repo, and `CLAUDE.md` / `.claude/` are gitignored, so a remote run cannot see them.
