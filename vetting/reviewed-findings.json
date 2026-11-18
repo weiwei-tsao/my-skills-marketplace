@@ -64,7 +64,7 @@
     "reason": "Describes a charset pitfall (UTF-8 search silently returns 0 hits); not an instruction."
   },
   {
-    "plugin": "setup",
+    "plugin": "project-context",
     "file": "SKILL.md",
     "rule": "allowed-tool",
     "text": "allowed-tools includes: Bash",
@@ -72,7 +72,7 @@
     "reason": "setup needs Bash to detect the stack and write .claude/ files; every write happens after plan confirmation except the .gitignore update."
   },
   {
-    "plugin": "setup",
+    "plugin": "project-context",
     "file": "skills/refresh/SKILL.md",
     "rule": "silent-action",
     "text": "Scan for drift between the current codebase and the existing `.claude/` documentation. Present specific, targeted suggestions. **Apply nothing without confirmation.**",
@@ -80,15 +80,15 @@
     "reason": "'Apply nothing without confirmation' is the opposite of a silent action."
   },
   {
-    "plugin": "setup",
+    "plugin": "project-context",
     "file": "skills/refresh/SKILL.md",
     "rule": "silent-action",
     "text": "Also re-check `.gitignore` for `CLAUDE.md` and `.claude/`. If either is missing, add it silently and note it in the final report.",
-    "context_sha256": "5fdf97258a54ba094baae3d091853b63708607b456fee339cb6945b8efa180d8",
+    "context_sha256": "8c956344f850ba0a1d297631f39e81b3a6207038a226ad18d035233c9b4c927e",
     "reason": "Adding CLAUDE.md/.claude/ to .gitignore without asking is intended (owner decision 2026-11-15), reported in the final report, and skipped for paths already tracked by git."
   },
   {
-    "plugin": "setup",
+    "plugin": "project-context",
     "file": "skills/setup/SKILL.md",
     "rule": "silent-action",
     "text": "Add any missing entries now. Tell the user exactly what was added. This phase runs silently before the plan is presented.",

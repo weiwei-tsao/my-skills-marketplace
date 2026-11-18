@@ -14,7 +14,7 @@ Scan for drift between the current codebase and the existing `.claude/` document
 
 Check that `CLAUDE.md` and `.claude/` both exist. If neither is present, stop:
 
-> No .claude/ infrastructure found. Run /setup first.
+> No .claude/ infrastructure found. Run /project-context:setup first.
 
 Also re-check `.gitignore` for `CLAUDE.md` and `.claude/`. If either is missing, add it silently and note it in the final report.
 Skip any path that `git ls-files -- CLAUDE.md .claude` shows as already tracked — ignoring a tracked file does not untrack it — and note in the report that it was left shared.
@@ -62,6 +62,10 @@ Re-read `package.json` scripts (or Makefile). Compare against the commands liste
 - Flag commands that have been renamed or removed.
 - Flag new quality gate commands not yet in Dev Commands.
 - If the project still has legacy `.claude/skills/fix/` or `.claude/skills/git-commit/` copies from an older setup, flag them for removal — the plugins replace them.
+- If `.claude/settings.json` has an inline hook command that reads `$CLAUDE_TOOL_INPUT` (written by an older setup), flag it: that variable does not exist, so the guard never fires. Propose replacing it with `.claude/hooks/guard-bash.sh` from the setup skill's `templates/hooks/`, and replacing a whole-project `... || true` lint hook with `lint-edited-file.sh`. If the user confirms, the migration must:
+  - Remove only the old inline entries, so old and new hooks never both run; keep every other hook entry and key in `settings.json` unchanged.
+  - Install the scripts the same way setup Phase 6 does (including its `jq`/`python3` check), then confirm `settings.json` is valid JSON.
+  - Run setup Phase 6's guard self-check (force push → exit 2, `git status` → exit 0) and report the result.
 
 ### 2e. Recent fix commits → Key Pitfalls candidates
 ```bash

@@ -39,7 +39,7 @@ bundle 内部的各个 `skills/*` 目录。
 | --- | --- | --- | --- |
 | `a11y-audit` | quality | 辅助进行 WCAG 2.1/2.2 可访问性审计。 | — |
 | `git-commit` | workflow | 运行仓库自己的质量检查，按该仓库的提交习惯起草一行提交信息，并提交 staged changes。 | — |
-| `setup` | workflow | 初始化和刷新项目中的 `.claude/` 基础设施。 | — |
+| `project-context` | workflow | 初始化和刷新项目中的 `.claude/` 基础设施。 | — |
 | `ai-engineering-workspace` | workflow | Ticket 全家桶：工作区脚手架、阶段门控 ticket 流程、结构化 bug 修复、跨会话 handoff、ticket completion 知识沉淀 —— 五个 skill，可按场景单独使用。 | 可选：`git-commit`、`weiwei-notes`、`system-design-coach` |
 | `system-design-coach` | learning | 通过路线图、case drill 和答案 review 辅助学习系统设计。 | — |
 | `weiwei-notes` | writing | 把讨论、排查过程或 ticket 分析整理成 Weiwei 风格的笔记 / blog 文章（结论先行、根因导向、中英混合）。 | 可选：环境变量 `WEIWEI_PROMPTS_PATH`（风格源文件） |
