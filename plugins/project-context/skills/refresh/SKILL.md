@@ -132,5 +132,4 @@ After all updates are applied:
 
 ```
 Refresh complete. [n] files updated.
-Next scheduled refresh: [date of next Monday 09:00, if routine is active]
 ```
