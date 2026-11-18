@@ -14,6 +14,9 @@
 #   - force push that targets main/master, including HEAD or no refspec while
 #     main/master is checked out (and when the current branch can't be read)
 #   - DROP TABLE / DATABASE / SCHEMA
+#   - Docker commands that delete volumes: compose down -v/--volumes,
+#     docker volume rm/prune, docker system prune --volumes
+#     (a Makefile target that runs them is not inspected)
 # If the input can't be parsed, the guard blocks instead of allowing.
 
 fail_closed() {
@@ -138,6 +141,24 @@ check_push() {   # args: words after "push"
   return 0
 }
 
+check_docker() {   # args: words after "docker" (or "compose" for docker-compose)
+  local w compose=0 down=0 vol=0 volume=0 vrm=0 system=0 prune=0
+  for w in "$@"; do
+    case "$w" in
+      compose) compose=1 ;;
+      down) down=1 ;;
+      -v | --volumes | --volumes=true) vol=1 ;;
+      volume) volume=1 ;;
+      rm | remove | prune) [ $volume = 1 ] && vrm=1; [ "$w" = prune ] && prune=1 ;;
+      system) system=1 ;;
+    esac
+  done
+  [ $compose = 1 ] && [ $down = 1 ] && [ $vol = 1 ] && block "docker compose down with volumes deletes their data"
+  [ $vrm = 1 ] && block "docker volume rm/prune deletes volume data"
+  [ $system = 1 ] && [ $prune = 1 ] && [ $vol = 1 ] && block "docker system prune --volumes deletes volume data"
+  return 0
+}
+
 while IFS= read -r seg; do
   read -r -a words <<< "$seg" || true
   [ ${#words[@]} -gt 0 ] || continue
@@ -155,6 +176,12 @@ while IFS= read -r seg; do
   case "$prog" in
     rm)
       check_rm "${words[@]:$((i+1))}"
+      ;;
+    docker)
+      check_docker "${words[@]:$((i+1))}"
+      ;;
+    docker-compose)
+      check_docker compose "${words[@]:$((i+1))}"
       ;;
     git)
       # Find the "push" subcommand, skipping git's global options (-C dir, -c k=v, --git-dir=...).

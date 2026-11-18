@@ -61,7 +61,26 @@ Repository conventions first: take the commands the repo already uses, from `pac
 
 Never present a tool the repo does not have as a required gate; if one would help, list it in the plan as optional.
 
-Also record a **per-file lint command** for the edit hook — the linter invoked on a single file, not the project-wide script — and the file extensions it handles. Examples: ESLint → `npx eslint` for `ts tsx js jsx`; Biome → `npx biome lint` for `ts tsx js jsx json`; Ruff (if configured) → `ruff check` for `py`; Python with no linter → `python3 -m py_compile` for `py` (syntax only — say so in the plan); Rust → `rustfmt --check --edition <edition>` for `rs`; Go → none (`go vet` and golangci-lint work on packages, and `gofmt -l` exits 0 even when a file is unformatted). If no linter can run on a single file, record none. The command must be a program plus plain arguments (no quotes, pipes, redirects or `$variables`): the hook splits it on spaces and runs it without a shell.
+Also record a **per-file lint command** for the edit hook — the linter invoked on a single file, not the project-wide script — and the file extensions it handles. Examples: ESLint → `npx eslint` for `ts tsx js jsx`; Biome → `npx biome lint` for `ts tsx js jsx json`; Ruff (if configured) → `ruff check` for `py`; Python with no linter → `python3 -m py_compile` for `py` (syntax only — say so in the plan); Rust → `rustfmt --check --edition <edition>` for `rs`; Go → none (`go vet` and golangci-lint work on packages, and `gofmt -l` exits 0 even when a file is unformatted). If no linter can run on a single file, record none. The command must be a program plus plain arguments (no quotes, pipes, redirects or `$variables`): the hook splits it on spaces and runs it without a shell. It always runs locally, never through Docker (starting a container on every edit is too slow); if the linter only exists inside a container, record none.
+
+### Where checks run (local or Docker)
+Only if the repo tracks a `Dockerfile*`, `compose.y*ml` / `docker-compose*.y*ml` or `.devcontainer/`; otherwise checks are local and this step is skipped.
+
+1. **Primary environment — follow the repo.** Docker is primary only when the repo's own commands run checks in a container: a Makefile / justfile / `package.json` script or CI `run:` step like `docker compose run --rm <svc> <cmd>` or `docker run … <test cmd>`, a Dockerfile stage named `test` / `ci` that runs tests, or a `.devcontainer/` that the README says to develop in. A Dockerfile or compose file that only builds or starts the app does not make Docker primary. Note the evidence (file and line).
+2. **Check what is actually available — run, don't guess:**
+   - Local toolchain for each module root: the tool exists and meets the manifest's version — `go version` against `go.mod`'s `go` line, `python3 --version` against `requires-python` / `.python-version`, `node --version` against `engines.node`, `rustc --version` against `rust-version`. For Go, run `GOTOOLCHAIN=local go version` so an older Go does not download the required toolchain during this read-only phase; if `go env GOTOOLCHAIN` is `auto` (the default), record that the local Go will fetch the required version on first use, with the Docker fallback for when that download is blocked.
+   - Docker: `docker info` succeeds (daemon running) and `docker compose version` works. Never start, build or pull anything in this phase.
+3. **Decide where each kind of check runs:**
+
+   | Check | Where |
+   | --- | --- |
+   | build, vet/lint, unit tests, format | the primary environment. If it is local but the toolchain is missing or too old, fall back to a throwaway container from the Dockerfile's build-stage base image, e.g. `docker run --rm -v "$PWD":/src -w /src golang:1.25-alpine go test ./...` |
+   | runtime-dependent behaviour (CGO, musl vs glibc, system libraries such as Chromium) | Docker — the local OS cannot verify it |
+   | after changing a Dockerfile, compose file, or dependencies the image installs | `docker compose build` (or the repo's Makefile target for it) |
+   | integration tests needing a database or other service | `docker compose run --rm <svc> <cmd>` |
+
+   When Docker is primary, use the repo's own container commands exactly. Every container command must exit by itself: `docker compose run --rm …`, `docker run --rm …`, or `docker compose up -d` followed by a check — never a foreground `docker compose up`, which never returns. Do not offer `down -v` / `--volumes` or other volume-deleting commands as a gate: they destroy data.
+4. Record: the primary environment with its evidence, when a Docker re-check is required (with the exact command), and the fallback command if the local toolchain is missing or too old (with the reason, e.g. "local go1.22 < go.mod 1.25").
 
 ### Project structure
 List top-level directories under `src/` (or root if no `src/`), and in a monorepo under each module root. Note the purpose of each module if inferable from name.
@@ -92,6 +111,11 @@ Print the plan below. Use actual detected values. Do not create files yet.
   .claude/skills/travel-planner yes       keep        (setup never writes it)
   Overwriting a file git tracks changes shared content — say so next to it.
 
+### Checks  [only if Phase 1 found Docker files — otherwise omit this section]
+  Checks: [local / Docker] ([evidence]) · Docker: [when a container re-check is required, with the command]
+  [Fallback: if the local toolchain is missing or too old — reason + the one-off `docker run --rm …` command]
+  (change this line if checks should run elsewhere; the lint hook always runs locally)
+
 ### Rules  (.claude/rules/ — loaded automatically, no @imports)
   git.md          ✓ always · loads every session
   architecture.md ✓ always · loads every session
@@ -110,7 +134,7 @@ Print the plan below. Use actual detected values. Do not create files yet.
 
 ### Hooks  (.claude/settings.json → scripts in .claude/hooks/)
   PostToolUse(Write,Edit) → lint-edited-file.sh: [per-file lint command + extensions, else "none — no per-file linter found"]
-  PreToolUse(Bash)        → guard-bash.sh: block recursive delete of / or ~, force push to main/master, DROP TABLE/DATABASE/SCHEMA
+  PreToolUse(Bash)        → guard-bash.sh: block recursive delete of / or ~, force push to main/master, DROP TABLE/DATABASE/SCHEMA, Docker commands that delete volumes
 
 ### CLAUDE.md (root, written last)
   Sections: Tech Stack · Project Structure · Dev Commands · Architecture Notes · Rules (names only, no @imports)
@@ -191,7 +215,7 @@ Patterns are relative to the project root. Only use globs that match files that 
 
 ### <language>.md *(one per language with real code: `go.md`, `python.md`, `rust.md`, …)*
 Scope it with `paths:` to that language's files (e.g. `"apps/api/**/*.go"`, `"**/*.py"`, `"**/*.rs"`). Write only conventions found in Phase 1, each with a file path as evidence — never generic advice the code doesn't follow:
-- Verify before finishing: the exact gate commands and the module root they run from (e.g. `cd apps/api && go build ./... && go vet ./... && go test ./...`)
+- Verify before finishing: the exact gate commands and the module root they run from (e.g. `cd apps/api && go build ./... && go vet ./... && go test ./...`). If the repo has Docker files, add where the checks run (from the confirmed Checks line), which changes need a Docker re-check and its command (e.g. "after editing `apps/api/Dockerfile`, `docker-compose.yml` or `go.mod`: `make docker-build`"), and the fallback command if the local toolchain is missing
 - Error handling convention, and for Go how `context.Context` is passed
 - Package / module layout and import rules (e.g. Go `internal/` boundaries, where new `cmd/` programs go)
 - Typing conventions (Python hints and checker; Go/Rust exported API shape)
@@ -333,6 +357,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 \`\`\`bash
 [exact commands from package.json scripts, only those that exist]
 \`\`\`
+[If the repo has Docker files: one line saying where checks run (local / Docker), when to re-check in Docker and with which command, and the fallback if the local toolchain is missing]
 
 ## Architecture Notes
 [data flow summary, key module boundaries, invariants that would surprise a reader — nothing derivable from reading the code]
