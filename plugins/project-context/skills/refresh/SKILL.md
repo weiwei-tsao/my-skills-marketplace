@@ -57,6 +57,10 @@ grep -rn "src/" .claude/
 
 For each referenced path, verify it still exists. Flag paths that have moved or been deleted.
 
+For each rules file with `paths:` frontmatter, check that every pattern still matches at least one file (`git ls-files ':(glob)<pattern>' | head -1`; without the `:(glob)` prefix `src/**/*.ts` misses `src/a.ts`, and git does not expand `{a,b}` braces, so check each alternative separately). A pattern that matches nothing means the rule never loads: flag it and propose the pattern that matches where those files live now.
+
+If `CLAUDE.md` still has `@.claude/rules/...` import lines (written by an older setup), flag them for removal: rules in `.claude/rules/` load automatically, and an import loads a path-scoped rule in every session, defeating its `paths:`. Propose replacing them with a one-line `## Rules` list of the rule names in backticks.
+
 ### 2d. Quality gate drift
 Re-read `package.json` scripts (or Makefile). Compare against the commands listed in CLAUDE.md's Dev Commands (CLAUDE.md is loaded every session, so that is where the git-commit and structured-bug-fix plugins find them) and any hooks in `.claude/settings.json`.
 - Flag commands that have been renamed or removed.
@@ -64,8 +68,8 @@ Re-read `package.json` scripts (or Makefile). Compare against the commands liste
 - If the project still has legacy `.claude/skills/fix/` or `.claude/skills/git-commit/` copies from an older setup, flag them for removal — the plugins replace them.
 - If `.claude/settings.json` has an inline hook command that reads `$CLAUDE_TOOL_INPUT` (written by an older setup), flag it: that variable does not exist, so the guard never fires. Propose replacing it with `.claude/hooks/guard-bash.sh` from the setup skill's `templates/hooks/`, and replacing a whole-project `... || true` lint hook with `lint-edited-file.sh`. If the user confirms, the migration must:
   - Remove only the old inline entries, so old and new hooks never both run; keep every other hook entry and key in `settings.json` unchanged.
-  - Install the scripts the same way setup Phase 6 does (including its `jq`/`python3` check), then confirm `settings.json` is valid JSON.
-  - Run setup Phase 6's guard self-check (force push → exit 2, `git status` → exit 0) and report the result.
+  - Install the scripts the same way setup Phase 5 does (including its `jq`/`python3` check), then confirm `settings.json` is valid JSON.
+  - Run setup Phase 5's guard self-check (force push → exit 2, `git status` → exit 0) and report the result.
 
 ### 2e. Recent fix commits → Key Pitfalls candidates
 ```bash
@@ -80,6 +84,7 @@ For each rules file, check if new patterns in the codebase fall outside its curr
 - New API route directories not matching `api.md` conventions.
 - New DB models or tables not covered by `db.md`.
 - New auth middleware or endpoint patterns not in `security.md`.
+- New directories whose files a path-scoped rule should cover but its `paths:` patterns miss (e.g. a new `src/routes/` when `api.md` only matches `src/api/**`).
 
 ---
 

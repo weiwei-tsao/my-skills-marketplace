@@ -76,18 +76,14 @@ Print the plan below. Use actual detected values. Do not create files yet.
 
 ### Gitignore  [already updated in Phase 0]
 
-### CLAUDE.md (root)
-  Sections: Tech Stack · Project Structure · Dev Commands · Architecture Notes
-  @imports: [list each rules file that will be created]
-
-### Rules  (.claude/rules/)
-  git.md          ✓ always
-  architecture.md ✓ always
-  api.md          [✓ if API layer detected / — if not]
-  testing.md      [✓ if test command detected / — if not]
-  styling.md      [✓ if frontend framework detected / — if not]
-  db.md           [✓ if ORM/DB detected / — if not]
-  security.md     [✓ if auth layer detected / — if not]
+### Rules  (.claude/rules/ — loaded automatically, no @imports)
+  git.md          ✓ always · loads every session
+  architecture.md ✓ always · loads every session
+  api.md          [✓ if API layer detected / — if not] · paths: [detected API globs, or "every session"]
+  testing.md      [✓ if test command detected / — if not] · paths: [detected test globs, or "every session"]
+  styling.md      [✓ if frontend framework detected / — if not] · paths: [detected style/component globs, or "every session"]
+  db.md           [✓ if ORM/DB detected / — if not] · paths: [detected schema/DB globs, or "every session"]
+  security.md     [✓ if auth layer detected / — if not] · loads every session
 
 ### Skills  (.claude/skills/)
   (not generated: commits → git-commit plugin; bug diagnosis →
@@ -99,6 +95,9 @@ Print the plan below. Use actual detected values. Do not create files yet.
   PostToolUse(Write,Edit) → lint-edited-file.sh: [per-file lint command + extensions, else "none — no per-file linter found"]
   PreToolUse(Bash)        → guard-bash.sh: block recursive delete of / or ~, force push to main/master, DROP TABLE/DATABASE/SCHEMA
 
+### CLAUDE.md (root, written last)
+  Sections: Tech Stack · Project Structure · Dev Commands · Architecture Notes · Rules (names only, no @imports)
+
 No project context files have been created yet (only .gitignore was updated, in Phase 0). Confirm to proceed?
 ```
 
@@ -106,39 +105,24 @@ Wait for explicit confirmation before Phase 3.
 
 ---
 
-## Phase 3 — Create CLAUDE.md
-
-Create `CLAUDE.md` at the project root. Keep it under 60 lines. Only include sections that have real content.
-
-```markdown
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Tech Stack
-[one line per detected technology, e.g.: Next.js 15 (App Router) · TypeScript · Prisma (SQLite) · Tailwind CSS]
-
-## Project Structure
-[top-level modules with one-line purpose — only what isn't obvious from the name]
-
-## Dev Commands
-\`\`\`bash
-[exact commands from package.json scripts, only those that exist]
-\`\`\`
-
-## Architecture Notes
-[data flow summary, key module boundaries, invariants that would surprise a reader — nothing derivable from reading the code]
-
-@.claude/rules/git.md
-@.claude/rules/architecture.md
-[one line per additional rules file being created]
-```
-
----
-
-## Phase 4 — Create Rules Files
+## Phase 3 — Create Rules Files
 
 Create each file confirmed in the plan at `.claude/rules/<name>.md`. Only create files on the confirmed list.
+
+Claude Code loads every `.claude/rules/*.md` file on its own, so nothing imports them. How each file loads depends on its frontmatter:
+
+- **No frontmatter** → loads at the start of every session. Use this for `git.md`, `architecture.md` and `security.md`, which apply across the codebase.
+- **`paths:` frontmatter** → loads only when Claude reads or edits a matching file. Use it for `api.md`, `testing.md`, `styling.md` and `db.md`, built from the directories and extensions actually found in Phase 1, for example:
+
+```markdown
+---
+paths:
+  - "src/app/api/**/*.ts"
+  - "src/server/**/*.ts"
+---
+```
+
+Patterns are relative to the project root. Only use globs that match files that exist now: check each with `git ls-files ':(glob)<pattern>' | head` (the `:(glob)` prefix makes `**` match zero or more directories, as Claude Code does; git does not expand `{a,b}` braces, so check each alternative separately). If no reliable pattern exists (e.g. API handlers spread across the tree), leave the file without `paths:` so it loads every session.
 
 ### git.md
 - Commit message convention: describe the pattern this repo's `git log` already uses (prefix form, types/scopes, casing); only if history has no clear pattern, write Conventional Commits `type(scope): description`
@@ -189,7 +173,7 @@ Create each file confirmed in the plan at `.claude/rules/<name>.md`. Only create
 
 ---
 
-## Phase 5 — Create Skills
+## Phase 4 — Create Skills
 
 Do **not** generate `fix` or `git-commit` skills: those come from installed plugins (`git-commit`, and `ai-engineering-workspace:structured-bug-fix`), which run "the repo's checks"; CLAUDE.md is loaded into every session, so its Dev Commands section is where they find them. Only generate the project-specific skills below when their trigger is detected; if none is, skip this phase.
 
@@ -242,7 +226,7 @@ description: Create, apply, and roll back database migrations safely. Use when c
 
 ---
 
-## Phase 6 — Create Hooks Configuration
+## Phase 5 — Create Hooks Configuration
 
 Hook logic lives in script files, not inline in `settings.json`. Claude Code passes each tool call to a hook as JSON on **stdin** (there is no `$CLAUDE_TOOL_INPUT` variable), and only **exit code 2** blocks a PreToolUse call or feeds a PostToolUse failure back to Claude.
 
@@ -292,6 +276,37 @@ echo '{"tool_input":{"command":"git status"}}' | .claude/hooks/guard-bash.sh; ec
 The scripts read JSON with `jq`, falling back to `python3`. The guard **fails closed**: if it cannot parse its input or neither parser is installed, it blocks every Bash command. So before installing it, check `command -v jq || command -v python3`; if both are missing, skip the guard and explain to the user why it was skipped.
 
 When reporting, describe the guard as a safety net against common accidents, not a security boundary: it reads command text, so commands built at run time (`eval`, scripts, variables holding commands) are not inspected.
+
+---
+
+## Phase 6 — Create CLAUDE.md (last)
+
+Write `CLAUDE.md` only after Phases 3–5 are done, so it never points at files that were not written. If any earlier write failed (for example, permission to write under `.claude/` was denied), stop and report what is missing instead of writing `CLAUDE.md`; write it once those files exist.
+
+Create `CLAUDE.md` at the project root. Keep it under 60 lines. Only include sections that have real content. Do not add `@` imports of rules files: they are loaded automatically, and an import would load a path-scoped rule in every session. Write rule names in backticks (as below) so they are not read as imports.
+
+```markdown
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Tech Stack
+[one line per detected technology, e.g.: Next.js 15 (App Router) · TypeScript · Prisma (SQLite) · Tailwind CSS]
+
+## Project Structure
+[top-level modules with one-line purpose — only what isn't obvious from the name]
+
+## Dev Commands
+\`\`\`bash
+[exact commands from package.json scripts, only those that exist]
+\`\`\`
+
+## Architecture Notes
+[data flow summary, key module boundaries, invariants that would surprise a reader — nothing derivable from reading the code]
+
+## Rules
+Topic rules in `.claude/rules/` load automatically (path-scoped ones when matching files are opened): [backticked names of the rules files actually written, e.g. `git.md` · `architecture.md` · `api.md`]
+```
 
 ---
 
