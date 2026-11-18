@@ -12,16 +12,16 @@ Initialize a complete `.claude/` development environment tailored to this projec
 
 ## Phase 0 — Gitignore Check
 
-Read `.gitignore` at the project root (create it if absent). Verify these two entries exist:
+Read `.gitignore` at the project root (create it if absent). The project context setup writes is local by default, so it should be ignored — but never a path git already tracks: ignoring a tracked file does not untrack it, so the entry would only mislead. Decide per path:
 
-```
-CLAUDE.md
-.claude/
-```
+1. **`CLAUDE.md`** — if `git ls-files -- CLAUDE.md` is empty, ensure `CLAUDE.md` is in `.gitignore`. If it is tracked, leave it shared.
+2. **`.claude/`** — run `git ls-files -- .claude`:
+   - **Nothing tracked** → ensure `.claude/` is in `.gitignore` (the whole directory).
+   - **Something tracked** (e.g. a committed `.claude/skills/<name>`) → do **not** ignore `.claude/` as a whole. Instead ensure each path setup owns is ignored, unless git tracks files under it: `.claude/rules/`, `.claude/hooks/`, `.claude/settings.json`. Skill directories setup creates are handled in Phase 4.
 
 Add any missing entries now. Tell the user exactly what was added. This phase runs silently before the plan is presented.
 
-**Exception — already tracked:** first check `git ls-files -- CLAUDE.md .claude`. If either path is already tracked by git, do **not** add it to `.gitignore`: ignoring a tracked file does not untrack it, so the entry would only mislead. Leave those paths shared as they are and say so in the plan (e.g. "CLAUDE.md is tracked in git — left shared, not ignored").
+In the plan, say which paths stay shared and why (e.g. "`.claude/skills/travel-planner` is tracked in git — `.claude/` left shared; `.claude/rules/`, `.claude/hooks/`, `.claude/settings.json` ignored").
 
 ---
 
@@ -63,7 +63,7 @@ Also record a **per-file lint command** for the edit hook — the linter invoked
 List top-level directories under `src/` (or root if no `src/`). Note the purpose of each module if inferable from name.
 
 ### Existing Claude files
-Check for `CLAUDE.md` at root and `.claude/` directory. If either exists, flag it and ask the user whether to overwrite or skip before continuing.
+List every file that already exists among the paths setup can write — `CLAUDE.md`, `.claude/rules/*.md`, `.claude/skills/*/`, `.claude/hooks/*`, `.claude/settings.json` — and for each note whether git tracks it (`git ls-files -- <path>`). Do not write anything and do not ask yet: the decision is made in the Phase 2 plan, where each existing file gets an explicit action. Ignore files setup never writes (e.g. `.claude/settings.local.json`).
 
 ---
 
@@ -75,6 +75,15 @@ Print the plan below. Use actual detected values. Do not create files yet.
 ## Setup Plan
 
 ### Gitignore  [already updated in Phase 0]
+  [entries added, and which paths stay shared because git tracks them]
+
+### Existing files  [only if Phase 1 found any — otherwise omit this section]
+  path                          tracked?  action
+  CLAUDE.md                     no        keep        (default for existing files)
+  .claude/rules/git.md          no        overwrite   (only if the user agrees)
+  .claude/settings.json         no        merge       (add hooks; existing keys untouched)
+  .claude/skills/travel-planner yes       keep        (setup never writes it)
+  Overwriting a file git tracks changes shared content — say so next to it.
 
 ### Rules  (.claude/rules/ — loaded automatically, no @imports)
   git.md          ✓ always · loads every session
@@ -98,10 +107,13 @@ Print the plan below. Use actual detected values. Do not create files yet.
 ### CLAUDE.md (root, written last)
   Sections: Tech Stack · Project Structure · Dev Commands · Architecture Notes · Rules (names only, no @imports)
 
+Every file below is marked [new], [overwrite] or [merge]; existing files not listed are kept.
 No project context files have been created yet (only .gitignore was updated, in Phase 0). Confirm to proceed?
 ```
 
-Wait for explicit confirmation before Phase 3.
+Mark each file in the Rules, Skills, Hooks and CLAUDE.md sections as **[new]**, **[overwrite]** or **[merge]**. An existing file defaults to **keep**: only mark it [overwrite] if the user asks for that, and when existing files are present, ask explicitly which (if any) to overwrite as part of the confirmation question — a plain "proceed" keeps them. `.claude/settings.json` is always [merge].
+
+Wait for explicit confirmation before Phase 3. In Phases 3–6, write only files marked [new] or [overwrite], and merge `.claude/settings.json`; never touch a file marked keep.
 
 ---
 
@@ -174,6 +186,8 @@ Patterns are relative to the project root. Only use globs that match files that 
 ---
 
 ## Phase 4 — Create Skills
+
+If Phase 0 found `.claude/` partly tracked, add each skill directory you create here (e.g. `.claude/skills/deploy/`) to `.gitignore` as well, unless git tracks files under it.
 
 Do **not** generate `fix` or `git-commit` skills: those come from installed plugins (`git-commit`, and `ai-engineering-workspace:structured-bug-fix`), which run "the repo's checks"; CLAUDE.md is loaded into every session, so its Dev Commands section is where they find them. Only generate the project-specific skills below when their trigger is detected; if none is, skip this phase.
 
@@ -283,7 +297,7 @@ When reporting, describe the guard as a safety net against common accidents, not
 
 Write `CLAUDE.md` only after Phases 3–5 are done, so it never points at files that were not written. If any earlier write failed (for example, permission to write under `.claude/` was denied), stop and report what is missing instead of writing `CLAUDE.md`; write it once those files exist.
 
-Create `CLAUDE.md` at the project root. Keep it under 60 lines. Only include sections that have real content. Do not add `@` imports of rules files: they are loaded automatically, and an import would load a path-scoped rule in every session. Write rule names in backticks (as below) so they are not read as imports.
+If `CLAUDE.md` already exists and the plan keeps it, do not write it; mention in the summary that its rules list may need updating (`/project-context:refresh` checks it). Otherwise create `CLAUDE.md` at the project root. Keep it under 60 lines. Only include sections that have real content. Do not add `@` imports of rules files: they are loaded automatically, and an import would load a path-scoped rule in every session. Write rule names in backticks (as below) so they are not read as imports.
 
 ```markdown
 # CLAUDE.md
@@ -317,12 +331,11 @@ After all files are created, print a summary of what was created:
 ```
 Setup complete.
 
-Created:
-  ✓ CLAUDE.md
-  ✓ .claude/rules/ ([n] files)
-  ✓ .claude/skills/ ([n] skills)
-  ✓ .claude/settings.json
-  ✓ .claude/hooks/ ([n] scripts, guard verified)
+Created:     [new files]
+Overwritten: [files replaced, marking any tracked by git]
+Merged:      .claude/settings.json ([keys added])
+Kept:        [existing files left as they were]
+Guard:       verified (force push → 2, git status → 0)
 
 Keep these docs current: run /project-context:refresh after significant
 code changes (new modules, dependency or command changes, a run of fixes).
