@@ -62,7 +62,7 @@ For each rules file with `paths:` frontmatter, check that every pattern still ma
 If `CLAUDE.md` still has `@.claude/rules/...` import lines (written by an older setup), flag them for removal: rules in `.claude/rules/` load automatically, and an import loads a path-scoped rule in every session, defeating its `paths:`. Propose replacing them with a one-line `## Rules` list of the rule names in backticks.
 
 ### 2d. Quality gate drift
-Re-read `package.json` scripts (or Makefile). Compare against the commands listed in CLAUDE.md's Dev Commands (CLAUDE.md is loaded every session, so that is where the git-commit and structured-bug-fix plugins find them) and any hooks in `.claude/settings.json`.
+Re-read where the repo defines its commands — `package.json` scripts, `Makefile` / `justfile` targets, `.github/workflows/*.yml` `run:` steps, `.pre-commit-config.yaml` — and each module root's toolchain (`go.mod`, `pyproject.toml`, `Cargo.toml`), the same way setup Phase 1 does. Compare against the commands listed in CLAUDE.md's Dev Commands (CLAUDE.md is loaded every session, so that is where the git-commit and structured-bug-fix plugins find them) and any hooks in `.claude/settings.json`.
 - Flag commands that have been renamed or removed.
 - Flag new quality gate commands not yet in Dev Commands.
 - If the project still has legacy `.claude/skills/fix/` or `.claude/skills/git-commit/` copies from an older setup, flag them for removal — the plugins replace them.
@@ -84,6 +84,7 @@ For each rules file, check if new patterns in the codebase fall outside its curr
 - New API route directories not matching `api.md` conventions.
 - New DB models or tables not covered by `db.md`.
 - New auth middleware or endpoint patterns not in `security.md`.
+- A language with real code but no `<language>.md` rule (e.g. Go added to a TypeScript repo), or a language rule whose gate commands or conventions no longer match the code.
 - New directories whose files a path-scoped rule should cover but its `paths:` patterns miss (e.g. a new `src/routes/` when `api.md` only matches `src/api/**`).
 
 ---

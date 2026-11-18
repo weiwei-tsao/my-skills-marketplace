@@ -30,14 +30,16 @@ In the plan, say which paths stay shared and why (e.g. "`.claude/skills/travel-p
 Scan the project. Collect everything needed to fill in the plan. Do not write files.
 
 ### Language / runtime
+List every manifest git tracks, not just the root: `git ls-files ':(glob)**/package.json' ':(glob)**/go.mod' ':(glob)**/go.work' ':(glob)**/pyproject.toml' ':(glob)**/setup.py' ':(glob)**/setup.cfg' ':(glob)**/requirements*.txt' ':(glob)**/Pipfile' ':(glob)**/Cargo.toml'` (skip vendored and `node_modules` paths). Each manifest's directory is a **module root**: its commands run from there (e.g. `cd apps/api && go test ./...`). A repo with several roots is a monorepo; record each root with its language.
+
 - `package.json` present → Node.js
   - `"typescript"` in deps or `tsconfig.json` → TypeScript
   - `"next"` → Next.js (note App Router if `app/` exists, Pages Router if `pages/`)
   - `"react"` / `"vue"` / `"svelte"` / `"astro"` → frontend framework
   - `"express"` / `"fastify"` / `"hono"` / `"koa"` → Node API server
-- `go.mod` → Go
-- `requirements.txt` / `pyproject.toml` → Python
-- `Cargo.toml` → Rust
+- `go.mod` → Go (`go.work` → multi-module workspace). Note the Go version, the module path, and the layout in use: `cmd/<name>/` binaries, `internal/` packages, `pkg/`, `testdata/`
+- `pyproject.toml` / `setup.py` / `setup.cfg` / `requirements*.txt` / `Pipfile` → Python. Note the package manager from its lock file (`uv.lock`, `poetry.lock`, `Pipfile.lock`) and the Python version (`requires-python`, `.python-version`). Tracked `.py` files with no manifest → a standard-library script project
+- `Cargo.toml` → Rust (`[workspace]` → note its `members`). Note the edition and whether `unsafe` appears in the code
 - `pom.xml` / `build.gradle` → Java / Kotlin
 
 ### Database / ORM
@@ -51,16 +53,21 @@ Scan the project. Collect everything needed to fill in the plan. Do not write fi
 - `middleware.ts` or `middleware.js` at root → custom auth middleware
 
 ### Quality gate commands
-Read `package.json` `"scripts"` (or `Makefile` targets). Record the exact command names for:
-- Lint: look for `lint`, `eslint`, `biome lint`
-- Format check: look for `format:check`, `prettier --check`, `biome format`
-- Type check: look for `typecheck`, `type-check`, `tsc --noEmit`
-- Test: look for `test`, `jest`, `vitest`, `playwright`
+Repository conventions first: take the commands the repo already uses, from `package.json` `"scripts"`, `Makefile` / `justfile` / `Taskfile.yml` targets, the `run:` steps in `.github/workflows/*.yml`, `.pre-commit-config.yaml`, and the README's development section. Record each command exactly, with the module root it runs from. Then fill gaps from the stack's own toolchain:
+- Node: lint (`lint`, `eslint`, `biome lint`), format check (`format:check`, `prettier --check`, `biome format`), type check (`typecheck`, `tsc --noEmit`), test (`test`, `jest`, `vitest`, `playwright`)
+- Go: `go build ./...` (compile and type check), `go vet ./...` (static analysis), `go test ./...`, and `gofmt -l .` (format check: it lists unformatted files and exits 0, so it passes only when it prints nothing). Add `golangci-lint run` only if a `.golangci.*` config or a CI step uses it
+- Python: the test runner the repo actually uses — `pytest` only if it is configured or installed (`[tool.pytest.ini_options]`, `pytest.ini`, `conftest.py`, a dev dependency), otherwise `python -m unittest` (with the module or `discover` arguments the README or CI uses). Add ruff, flake8, black, mypy or pyright only if configured (`pyproject.toml` `[tool.*]`, `setup.cfg`, `tox.ini`, `.pre-commit-config.yaml`) or listed as a dev dependency
+- Rust: `cargo build`, `cargo test`, `cargo clippy -- -D warnings`, `cargo fmt --check` (add `--workspace` in a workspace)
 
-Also record a **per-file lint command** for the edit hook — the linter invoked on a single file, not the project-wide script — and the file extensions it handles. Examples: ESLint → `npx eslint` for `ts tsx js jsx`; Biome → `npx biome lint` for `ts tsx js jsx json`; Ruff → `ruff check` for `py`; golangci-lint → skip (it lints packages, not files). If no linter can run on a single file, record none. The command must be a program plus plain arguments (no quotes, pipes, redirects or `$variables`): the hook splits it on spaces and runs it without a shell.
+Never present a tool the repo does not have as a required gate; if one would help, list it in the plan as optional.
+
+Also record a **per-file lint command** for the edit hook — the linter invoked on a single file, not the project-wide script — and the file extensions it handles. Examples: ESLint → `npx eslint` for `ts tsx js jsx`; Biome → `npx biome lint` for `ts tsx js jsx json`; Ruff (if configured) → `ruff check` for `py`; Python with no linter → `python3 -m py_compile` for `py` (syntax only — say so in the plan); Rust → `rustfmt --check --edition <edition>` for `rs`; Go → none (`go vet` and golangci-lint work on packages, and `gofmt -l` exits 0 even when a file is unformatted). If no linter can run on a single file, record none. The command must be a program plus plain arguments (no quotes, pipes, redirects or `$variables`): the hook splits it on spaces and runs it without a shell.
 
 ### Project structure
-List top-level directories under `src/` (or root if no `src/`). Note the purpose of each module if inferable from name.
+List top-level directories under `src/` (or root if no `src/`), and in a monorepo under each module root. Note the purpose of each module if inferable from name.
+
+### Language conventions
+For each language with real code (Go, Python, Rust, …), read a few representative files and note the conventions the code actually follows — these feed that language's rules file (Phase 3). Look for: error handling (Go `fmt.Errorf("…: %w", err)` wrapping and sentinel errors; Python exception types and where they are caught; Rust `Result` with `thiserror` / `anyhow`), `context.Context` passing in Go, typing (Python type hints and checker; Go/Rust public API shape), package layout and import rules (Go `internal/`; Python package vs single script; Rust crate/module split), logging, and how tests are organised (table-driven tests and `testdata/` in Go; `unittest` vs `pytest` fixtures in Python; `#[cfg(test)]` modules vs `tests/` in Rust). Record only what you saw, with a file path as evidence.
 
 ### Existing Claude files
 List every file that already exists among the paths setup can write — `CLAUDE.md`, `.claude/rules/*.md`, `.claude/skills/*/`, `.claude/hooks/*`, `.claude/settings.json` — and for each note whether git tracks it (`git ls-files -- <path>`). Do not write anything and do not ask yet: the decision is made in the Phase 2 plan, where each existing file gets an explicit action. Ignore files setup never writes (e.g. `.claude/settings.local.json`).
@@ -93,6 +100,7 @@ Print the plan below. Use actual detected values. Do not create files yet.
   styling.md      [✓ if frontend framework detected / — if not] · paths: [detected style/component globs, or "every session"]
   db.md           [✓ if ORM/DB detected / — if not] · paths: [detected schema/DB globs, or "every session"]
   security.md     [✓ if auth layer detected / — if not] · loads every session
+  <lang>.md       [one per language with real code, e.g. go.md / python.md / rust.md] · paths: [that language's files, e.g. "apps/api/**/*.go"]
 
 ### Skills  (.claude/skills/)
   (not generated: commits → git-commit plugin; bug diagnosis →
@@ -180,6 +188,17 @@ Patterns are relative to the project root. Only use globs that match files that 
 - Protected vs. public paths and how they're distinguished
 - Session / token storage and expiry
 - Forbidden patterns: hardcoded secrets, client-side auth checks, logging sensitive values
+
+### <language>.md *(one per language with real code: `go.md`, `python.md`, `rust.md`, …)*
+Scope it with `paths:` to that language's files (e.g. `"apps/api/**/*.go"`, `"**/*.py"`, `"**/*.rs"`). Write only conventions found in Phase 1, each with a file path as evidence — never generic advice the code doesn't follow:
+- Verify before finishing: the exact gate commands and the module root they run from (e.g. `cd apps/api && go build ./... && go vet ./... && go test ./...`)
+- Error handling convention, and for Go how `context.Context` is passed
+- Package / module layout and import rules (e.g. Go `internal/` boundaries, where new `cmd/` programs go)
+- Typing conventions (Python hints and checker; Go/Rust exported API shape)
+- Test conventions: file naming, table-driven tests / fixtures / `testdata/`, how to run one test (`go test ./pkg/x -run TestName`, `python -m unittest tests.test_x.TestY.test_z`, `pytest path::test`, `cargo test name`)
+- Language pitfalls actually seen in this repo (e.g. nil vs empty slice in JSON output, mutable default arguments, `unwrap()` in library code)
+
+Topic rules (`api.md`, `db.md`, `testing.md`) still describe the project's own patterns; put language-wide conventions here instead of repeating them in each.
 
 **Each file:** ≤80 lines. Add a one-line cross-reference at the bottom to related files (e.g., `Auth details → see security.md`).
 
