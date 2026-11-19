@@ -43,7 +43,8 @@ You are starting ticket $ARGUMENTS. This is Phase 1 of 4: Understand.
    requirement the restatement dropped, treated as material factual
    claims. On HARD_FAIL, fix the restatement and re-verify once with a new
    fresh verifier instance; if it still fails, stop and report the exact
-   unresolved claim instead of presenting a restatement. On PASS or
+   unresolved claim instead of presenting a restatement; continuing after
+   that follows "After BLOCKED" in the shared verification section. On PASS or
    SOFT_FLAGS, proceed to step 6 and include any flags in what you show
    the user.
 6. Output the restatement. STOP. Do not read or search any code. Do not
@@ -56,8 +57,8 @@ You are starting ticket $ARGUMENTS. This is Phase 1 of 4: Understand.
    record). If `context.md` predates this field and has no `Status:` line
    at all, add one directly under the H1 title reading `Status: confirmed`
    instead of trying to find a line to replace. Append a `Verified:` line
-   per the shared verification section (PASS, PASS with flags, or the
-   BLOCKED note if step 5 stopped here instead). In workspace mode, also
+   per the shared verification section (PASS or PASS with flags, below
+   any BLOCKED line recorded when step 5 stopped). In workspace mode, also
    append a `timeline.md` row for this gate (see `ticket-workflow`'s
    "Keeping records in sync without over-documenting").
 

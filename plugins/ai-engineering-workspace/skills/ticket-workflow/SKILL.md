@@ -194,11 +194,32 @@ Fresh verifier #1
 Dispatch each verifier as a fresh agent with no shared context from the authoring
 session — it must not be told the conclusion is expected to be correct.
 
-**Recording** (one line on the ticket's `Status:`-bearing file, no new files):
+**After BLOCKED.** The two verifiers above are one *automatic* budget: what
+the author may spend without a human in the loop. When it runs out:
+
+1. Stop as above. In workspace mode, record the BLOCKED line now (see
+   Recording), not later. Tell the user the unresolved claim and what is
+   still missing to settle it: evidence not found, a surface not searched,
+   a question only they can answer.
+2. Only an explicit instruction from the user to continue opens a new
+   budget: at most two more fresh verifiers, run the same way. Don't
+   continue without one, and don't refuse one because you judge the
+   user's reason too thin; say what is still missing and let them decide.
+3. Continuing is not confirming. After repairing the blocked claim, it
+   goes to a fresh verifier (never one from the earlier budget) with the
+   rest of the draft, and only that verifier's PASS lets the gate summary
+   be presented. The user's go-ahead and the earlier budget's results never
+   carry it past the gate.
+4. If the new budget also ends in HARD_FAIL, stop again the same way. Each
+   further budget needs its own explicit instruction.
+
+**Recording** (on the ticket's `Status:`-bearing file, no new files):
 `Verified: <date> — PASS`, `Verified: <date> — PASS — flags: <short list>`, or
 `Verified: <date> — BLOCKED: claim 2 (root cause is X) lacks supporting code
 evidence`. Keep the specific unresolved claim in the line — a bare `HARD_FAIL`
-tells a future session nothing.
+tells a future session nothing. Append, never replace: a later result goes on
+a new line below the earlier ones, so a BLOCKED line stays visible after a
+later PASS.
 
 **Scope freeze for v1**: only `ticket-understand.md`, `ticket-investigate.md`,
 and `structured-bug-fix.md` Phase 3 call this. All three answer "do we
@@ -498,6 +519,7 @@ nodding along.
 | "Verification failed, but the failure looks unrelated." | Do not mark implementation complete and do not suggest Finish. Report the failure and stop. |
 | "The notes repo and implementation repo are basically the same workflow." | Treat them separately. Implementation repos are never auto-committed or pushed. |
 | "The verifier passed, so I can mark `Status:` confirmed myself." | PASS only means no blocking issue was found. The human still has to explicitly confirm before `Status:` changes. |
+| "Verification was BLOCKED, but the user said to keep going, so the claim is accepted." | Continuing opens a new verification budget; it doesn't confirm anything. Repair the claim and send it to a fresh verifier before any gate summary. |
 | "I couldn't find evidence against the claim, so it passes." | Absence of contradicting evidence is not evidence for the claim. It still needs positive, traceable support. |
 | "This is just ruling something out, not asserting the root cause, so it doesn't need the same verification." | A broad claim's evidence burden doesn't shrink because it's phrased as a negative — route it through the same gate regardless of phrasing. |
 | "I found this while investigating something else, so it's a side observation, not part of the diagnosis." | If it will be stated as a reason to proceed, it's a material claim regardless of where it was discovered. |
