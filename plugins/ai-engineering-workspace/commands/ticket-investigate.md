@@ -87,7 +87,8 @@ Do not edit any code in this phase.
    a dated `## Correction (<date>)` note to `context.md` instead of
    rewriting it. Re-verify once with a new fresh verifier instance; if it
    still fails, stop, report the exact unresolved claim, and do not
-   present a gate summary. On PASS or SOFT_FLAGS, proceed to the gate
+   present a gate summary; continuing after that follows "After BLOCKED"
+   in the shared verification section. On PASS or SOFT_FLAGS, proceed to the gate
    below and include any flags in the summary.
 
    If the draft contains negative claims (including "Checked but not

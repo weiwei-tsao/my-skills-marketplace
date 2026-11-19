@@ -121,7 +121,8 @@ about to tell the user a repo/module/theory is ruled out, add it to
 checked-not-responsible and verify it before saying so. On HARD_FAIL, fix
 or downgrade the flagged claim and re-verify once with a new fresh verifier
 instance; if it still fails, stop, report the exact unresolved claim, and
-do not present a diagnosis. On PASS or SOFT_FLAGS, include any flags in the
+do not present a diagnosis; continuing after that follows "After BLOCKED" in
+`ticket-workflow`'s verification section. On PASS or SOFT_FLAGS, include any flags in the
 diagnosis below.
 
 Before writing a single line of code, present:
