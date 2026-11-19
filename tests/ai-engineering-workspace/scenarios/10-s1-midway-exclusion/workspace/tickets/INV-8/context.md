@@ -9,9 +9,11 @@ The inventory CSV export contains every item.
 
 ## User-visible problem / business need
 
-A warehouse with 51 items exports 50 rows; the last item is missing. Small
-warehouses (under 50 items) export nothing at all, according to one report,
-but that report has not been reproduced.
+Since 2026-11-02 every warehouse's export is missing exactly one item: the
+last one in the list. 2026-11-02 is also when the vendor switched to its new
+nightly file format. Nobody on the team has the new format's spec; the
+warehouse lead (Robin) can pull a sample file from the vendor portal on
+request.
 
 ## Expected behavior
 
@@ -19,13 +21,13 @@ One CSV row per inventory item.
 
 ## Current behavior
 
-Some items at the end of the list are missing from the export.
+The last item is missing from every export.
 
 ## Scope
 
 ### In scope
 
-- `inventory_app` export path.
+- `inventory_app`: vendor feed load, query, export.
 
 ### Out of scope
 
@@ -33,11 +35,13 @@ Some items at the end of the list are missing from the export.
 
 ## Repos / modules likely involved
 
-| Area | Repo / module | Why it may be involved |
-|---|---|---|
-| Export | `inventory_app/exporter.py` | builds the CSV; drops a trailing row in some cases |
-| Query | `inventory_app/query.py` | reads the rows |
+| Area | Module | Team | Why it may be involved |
+|---|---|---|---|
+| Vendor feed | `inventory_app/feed.py` | Data ingestion | loads the vendor file |
+| Query | `inventory_app/query.py` | Platform | reads the rows in pages |
+| Export | `inventory_app/exporter.py` | Reports | builds the CSV; drops a trailing row in some cases |
 
 ## Important constraints
 
 - Do not edit code until ownership is confirmed.
+- Each team is holding time for this ticket until it is told it isn't involved.
