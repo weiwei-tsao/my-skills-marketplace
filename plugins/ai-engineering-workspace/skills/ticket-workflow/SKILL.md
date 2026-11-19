@@ -229,7 +229,10 @@ budget (item 2 above).
 evidence`. Keep the specific unresolved claim in the line — a bare `HARD_FAIL`
 tells a future session nothing. Append, never replace: a later result goes on
 a new line below the earlier ones, so a BLOCKED line stays visible after a
-later PASS.
+later PASS. A verification run mid-investigation, before the draft is
+complete (for an exclusion about to be told to the user), is recorded as
+`Verified: <date> — PASS (interim: <the claim checked>)`. It covers only that
+claim: the gate still needs its own verification of the whole draft.
 
 **Scope freeze for v1**: only `ticket-understand.md`, `ticket-investigate.md`,
 and `structured-bug-fix.md` Phase 3 call this. All three answer "do we
