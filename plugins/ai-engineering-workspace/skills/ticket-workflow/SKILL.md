@@ -213,6 +213,16 @@ the author may spend without a human in the loop. When it runs out:
 4. If the new budget also ends in HARD_FAIL, stop again the same way. Each
    further budget needs its own explicit instruction.
 
+**New evidence after a PASS.** If the latest verification of the draft
+passed and evidence that isn't the author's own repair (a log, a ticket
+comment, an answer from the user) then changes a material claim, that PASS
+no longer covers the draft (see "Supporting documents"). Re-verification gets
+two fresh verifiers; it doesn't inherit what earlier budgets left. The
+author's own repair after a verifier finding spends the current budget.
+**After BLOCKED, new evidence alone opens nothing:** report it with what is
+still missing, and only the user's explicit instruction to continue opens a
+budget (item 2 above).
+
 **Recording** (on the ticket's `Status:`-bearing file, no new files):
 `Verified: <date> — PASS`, `Verified: <date> — PASS — flags: <short list>`, or
 `Verified: <date> — BLOCKED: claim 2 (root cause is X) lacks supporting code
