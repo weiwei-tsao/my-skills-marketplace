@@ -178,7 +178,7 @@ Patterns are relative to the project root. Only use globs that match files that 
 
 ### git.md
 - Commit message convention: describe the pattern this repo's `git log` already uses (prefix form, types/scopes, casing); only if history has no clear pattern, write Conventional Commits `type(scope): description`
-- Commit message format as the plan's git.md line settled it: the plugin default (one subject line, ≤12-word description, imperative mood — no body, no `Co-Authored-By:` or other trailers) unless the user changed or dropped it; if dropped, describe only what the history shows (body, trailers)
+- Commit message format as the plan's git.md line settled it: the plugin default (one subject line, ≤12-word description, imperative mood — no body, no `Co-Authored-By:` or other trailers) unless the user changed or dropped it; if dropped, describe only what the history shows (body, trailers) across the whole history, not just the latest commits — if it is mixed, say so (e.g. "the last 7 are subject-only; earlier ones have bodies and `Co-Authored-By:`")
 - Branch naming convention (e.g. `feat/`, `fix/`, `chore/`)
 - What must never be committed: what `.gitignore` already excludes (env files, secrets, build output, dependencies), as listed there
 - PR checklist: the repo's own (PR template, `CONTRIBUTING`) if it has one; otherwise only the gate commands that must pass
