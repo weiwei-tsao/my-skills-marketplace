@@ -284,10 +284,16 @@ description: Create, apply, and roll back database migrations safely. Use when c
 [Describe rollback procedure for detected ORM]
 
 ## Safety checklist
+[Checks the repo's own migrations or docs show — dry-run first, backup step, ordering — each with where it comes from]
+
+## Safety checklist (suggested — not yet repo practice)
+[Only the items below the user accepted under Suggestions; omit this section if none]
 - [ ] Migration is additive where possible (new columns nullable or with defaults)
 - [ ] Tested on a copy of production data if the table is large
 - [ ] No data-destructive steps without a backup confirmed
 ```
+
+When the plan includes the migrate skill, list under Suggestions each of the three generic safety items above that the repo shows no evidence for, so the user sees them and decides; an item the repo already practices goes in the first checklist instead.
 
 If the repo has no migration CLI and its migrations are programs or scripts, describe how the existing ones are built and run. Batch sizes, limits, dry-run flags and ordering in these steps come from the existing migrations, not from the database's documented maximums.
 
@@ -380,7 +386,7 @@ Topic rules in `.claude/rules/` load automatically (path-scoped ones when matchi
 
 ## Phase 7 — Summary
 
-Before the summary, re-read every prescriptive statement you wrote (numbers, limits, required or forbidden practices) and confirm its evidence in the repo. Fix or remove any statement without evidence, and list what you changed in the summary.
+Before the summary, re-read every prescriptive statement you wrote (numbers, limits, required or forbidden practices) and confirm its evidence in the repo. Fix or remove any statement without evidence (a choice the user made in the plan, including an accepted suggestion, counts as evidence), and list what you changed in the summary. This check covers only the files this run wrote ([new] or [overwrite]); never edit a file marked keep — note any doubt about one in the summary instead.
 
 After all files are created, print a summary of what was created:
 
