@@ -118,6 +118,8 @@ Print the plan below. Use actual detected values. Do not create files yet.
 
 ### Rules  (.claude/rules/ — loaded automatically, no @imports)
   git.md          ✓ always · loads every session
+                  commit format: one subject line, ≤12-word description, imperative — no body, no trailers
+                  (plugin default, not from this repo's history — change or drop it here)
   architecture.md ✓ always · loads every session
   api.md          [✓ if API layer detected / — if not] · paths: [detected API globs, or "every session"]
   testing.md      [✓ if test command detected / — if not] · paths: [detected test globs, or "every session"]
@@ -136,6 +138,10 @@ Print the plan below. Use actual detected values. Do not create files yet.
   PostToolUse(Write,Edit) → lint-edited-file.sh: [per-file lint command + extensions, else "none — no per-file linter found"]
   PreToolUse(Bash)        → guard-bash.sh: block recursive delete of / or ~, force push to main/master, DROP TABLE/DATABASE/SCHEMA, Docker commands that delete volumes
 
+### Suggestions  [only if any — otherwise omit this section]
+  [practices or tools the repo does not use yet but that would help, one line each with why]
+  Not repo practice: written only if you confirm, and marked as suggestions in the files.
+
 ### CLAUDE.md (root, written last)
   Sections: Tech Stack · Project Structure · Dev Commands · Architecture Notes · Rules (names only, no @imports)
 
@@ -152,6 +158,8 @@ Wait for explicit confirmation before Phase 3. In Phases 3–6, write only files
 ## Phase 3 — Create Rules Files
 
 Create each file confirmed in the plan at `.claude/rules/<name>.md`. Only create files on the confirmed list.
+
+**Repository evidence first** — this applies to every file setup writes: rules, skills (Phase 4) and `CLAUDE.md` (Phase 6). A prescriptive statement — a number or limit (batch size, timeout, retry count, page size), a required or forbidden practice, a step the reader must follow — goes in only if the repo shows it (code, config, a comment, a script, a CI step, a commit) or the user chose it in the plan. Before writing one, find where the repo does it and write the repo's value, not the platform's or library's documented maximum: if every migration batches 100 documents and a fix commit lowered one to 50 because of payload size, write that, not "Firestore allows 500". If the repo does it in more than one way, say so instead of picking one. Generic best practice the repo does not follow is not a convention: leave it out, or list it under Suggestions in the plan and write it only if the user confirms, marked as a suggestion. The bullet lists below are topics to look for, not content to fill in — skip a topic the repo gives no evidence for.
 
 Claude Code loads every `.claude/rules/*.md` file on its own, so nothing imports them. How each file loads depends on its frontmatter:
 
@@ -170,10 +178,10 @@ Patterns are relative to the project root. Only use globs that match files that 
 
 ### git.md
 - Commit message convention: describe the pattern this repo's `git log` already uses (prefix form, types/scopes, casing); only if history has no clear pattern, write Conventional Commits `type(scope): description`
-- Commit messages are one subject line, ≤12-word description, imperative mood — no body, no `Co-Authored-By:` or other trailers
+- Commit message format as the plan's git.md line settled it: the plugin default (one subject line, ≤12-word description, imperative mood — no body, no `Co-Authored-By:` or other trailers) unless the user changed or dropped it; if dropped, describe only what the history shows (body, trailers) across the whole history, not just the latest commits — if it is mixed, say so (e.g. "the last 7 are subject-only; earlier ones have bodies and `Co-Authored-By:`")
 - Branch naming convention (e.g. `feat/`, `fix/`, `chore/`)
-- What must never be committed: `.env*`, secrets, build artifacts, database files, `node_modules/`
-- PR checklist: tests pass, no console.log, no hardcoded values
+- What must never be committed: what `.gitignore` already excludes (env files, secrets, build output, dependencies), as listed there
+- PR checklist: the repo's own (PR template, `CONTRIBUTING`) if it has one; otherwise only the gate commands that must pass
 
 ### architecture.md
 - Module boundaries: which directories own which concerns, what must not cross layers
@@ -190,7 +198,7 @@ Patterns are relative to the project root. Only use globs that match files that 
 - Anything that deviates from REST conventions
 
 ### testing.md *(if test command detected)*
-- What to test: integration/unit split, what is too trivial to test
+- How tests are split (unit / integration / e2e) and where each kind lives
 - Test file naming and co-location convention
 - Mock strategy: when to use real DB vs. mock, and why
 - How to run a single test file or test case
@@ -199,10 +207,10 @@ Patterns are relative to the project root. Only use globs that match files that 
 - CSS approach (Tailwind / CSS Modules / styled-components / etc.) and any constraints
 - Component structure: where styles live relative to components
 - Responsive breakpoints and mobile-first vs. desktop-first
-- Forbidden patterns (e.g., no inline styles for layout, no `!important`)
+- Forbidden patterns that the code or a lint config enforces (e.g. a stylelint rule), not general style advice
 
 ### db.md *(if ORM/DB detected)*
-- ORM usage patterns and what to avoid (raw queries, N+1, etc.)
+- ORM / client usage patterns the code follows, and what the code, a comment or a fix commit shows to avoid — including write limits (batch sizes) as the code sets them
 - Migration convention: how to create, run, and roll back
 - Serialization boundary: when Prisma/ORM objects must be converted before leaving the server
 - Connection singleton location and import pattern
@@ -276,10 +284,18 @@ description: Create, apply, and roll back database migrations safely. Use when c
 [Describe rollback procedure for detected ORM]
 
 ## Safety checklist
+[Checks the repo's own migrations or docs show — dry-run first, backup step, ordering — each with where it comes from]
+
+## Safety checklist (suggested — not yet repo practice)
+[Only the items below the user accepted under Suggestions; omit this section if none]
 - [ ] Migration is additive where possible (new columns nullable or with defaults)
 - [ ] Tested on a copy of production data if the table is large
 - [ ] No data-destructive steps without a backup confirmed
 ```
+
+When the plan includes the migrate skill, list under Suggestions each of the three generic safety items above that the repo shows no evidence for, so the user sees them and decides; an item the repo already practices goes in the first checklist instead.
+
+If the repo has no migration CLI and its migrations are programs or scripts, describe how the existing ones are built and run. Batch sizes, limits, dry-run flags and ordering in these steps come from the existing migrations, not from the database's documented maximums.
 
 ---
 
@@ -369,6 +385,8 @@ Topic rules in `.claude/rules/` load automatically (path-scoped ones when matchi
 ---
 
 ## Phase 7 — Summary
+
+Before the summary, re-read every prescriptive statement you wrote (numbers, limits, required or forbidden practices) and confirm its evidence in the repo. Fix or remove any statement without evidence (a choice the user made in the plan, including an accepted suggestion, counts as evidence), and list what you changed in the summary. This check covers only the files this run wrote ([new] or [overwrite]); never edit a file marked keep — note any doubt about one in the summary instead.
 
 After all files are created, print a summary of what was created:
 
