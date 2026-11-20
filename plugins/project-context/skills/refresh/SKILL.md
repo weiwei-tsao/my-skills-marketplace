@@ -31,6 +31,8 @@ Read and internalize:
 - `.claude/skills/*/SKILL.md` (all skills)
 - `.claude/settings.json`
 
+Read only files that exist. Skip missing files and report them as missing; do not create replacement files during refresh unless a report item proposes one and the user confirms it.
+
 For each file, note what it currently covers — you'll compare this against the live codebase in Phase 2.
 
 ---
