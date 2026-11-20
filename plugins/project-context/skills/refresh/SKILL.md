@@ -12,7 +12,7 @@ Scan for drift between the current codebase and the existing `.claude/` document
 
 ## Phase 0 — Verify Setup Exists
 
-Look for the files setup manages: `CLAUDE.md`, `.claude/rules/`, `.claude/hooks/`, `.claude/settings.json`. Other `.claude/` content — tracked skills, `settings.local.json`, worktrees — does not count. If none of the managed files exists, stop:
+Look for the files setup manages: `CLAUDE.md`, `.claude/rules/`, `.claude/hooks/`, `.claude/settings.json`, and the skill directories setup generates (`.claude/skills/deploy/`, `.claude/skills/migrate/`) when git does not track them. Other `.claude/` content — tracked skills, `settings.local.json`, worktrees — does not count. If none of the managed files exists, stop:
 
 > No .claude/ infrastructure found. Run /project-context:setup first.
 
@@ -65,7 +65,7 @@ For each rules file with `paths:` frontmatter, check that every pattern still ma
 
 If `CLAUDE.md` still has `@.claude/rules/...` import lines (written by an older setup), flag them for removal: rules in `.claude/rules/` load automatically, and an import loads a path-scoped rule in every session, defeating its `paths:`. Propose replacing them with a one-line `## Rules` list of the rule names in backticks.
 
-For each rules file without `paths:` whose content only applies to part of the tree — typically `testing.md`, `api.md`, `styling.md`, `db.md` or a `<language>.md`, often left unscoped by an older setup — propose `paths:` patterns for where those files live, each checked with `git ls-files ':(glob)<pattern>'`. Without them the rule loads in every session. Rules that apply everywhere (`git.md`, `architecture.md`, `security.md`) stay unscoped.
+For each rules file without `paths:` whose content only applies to part of the tree — typically `testing.md`, `api.md`, `styling.md`, `db.md` or a `<language>.md`, often left unscoped by an older setup — propose `paths:` patterns for where those files live, each checked with `git ls-files ':(glob)<pattern>'`. Without them the rule loads in every session. Rules that apply everywhere (`git.md`, `architecture.md`, `security.md`) stay unscoped. If no pattern reliably covers where a rule applies (e.g. API handlers spread across the tree), do not propose one: setup leaves such rules unscoped on purpose, and proposing a pattern there would repeat on every run.
 
 ### 2d. Quality gate drift
 Re-read where the repo defines its commands — `package.json` scripts, `Makefile` / `justfile` targets, `.github/workflows/*.yml` `run:` steps, `.pre-commit-config.yaml` — and each module root's toolchain (`go.mod`, `pyproject.toml`, `Cargo.toml`), the same way setup Phase 1 does. Compare against the commands listed in CLAUDE.md's Dev Commands (CLAUDE.md is loaded every session, so that is where the git-commit and structured-bug-fix plugins find them) and any hooks in `.claude/settings.json`.
