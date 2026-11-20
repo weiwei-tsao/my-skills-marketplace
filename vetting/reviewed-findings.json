@@ -84,7 +84,7 @@
     "file": "skills/refresh/SKILL.md",
     "rule": "silent-action",
     "text": "Also re-check `.gitignore` for `CLAUDE.md` and `.claude/`. If either is missing, add it silently and note it in the final report.",
-    "context_sha256": "8adca77b4e4be2b690cffe41b5878022f96d54c1c26e935ec79e5696c2e8700f",
+    "context_sha256": "372e3c4ee9de5c88a5d5f8a74595ef8e31ccdb645239eca2fc95592e99b8f67d",
     "reason": "Adding CLAUDE.md/.claude/ to .gitignore without asking is intended (owner decision 2026-11-15), reported in the final report, and skipped for paths already tracked by git."
   },
   {

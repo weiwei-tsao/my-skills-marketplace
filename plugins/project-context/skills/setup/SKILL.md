@@ -386,7 +386,7 @@ Topic rules in `.claude/rules/` load automatically (path-scoped ones when matchi
 
 ## Phase 7 — Summary
 
-Before the summary, re-read every prescriptive statement you wrote (numbers, limits, required or forbidden practices) and confirm its evidence in the repo. Fix or remove any statement without evidence (a choice the user made in the plan, including an accepted suggestion, counts as evidence), and list what you changed in the summary. This check covers only the files this run wrote ([new] or [overwrite]); never edit a file marked keep — note any doubt about one in the summary instead.
+Before the summary, re-read every prescriptive statement you wrote (numbers, limits, required or forbidden practices) and confirm its evidence in the repo. When a statement cites a specific source — a commit, a code comment, a doc quote, a value in code — open that source and confirm the statement says what it says (e.g. what the commit actually changed, from which value to which), not only that the source exists. Fix or remove any statement without evidence (a choice the user made in the plan, including an accepted suggestion, counts as evidence), and list what you changed in the summary. This check covers only the files this run wrote ([new] or [overwrite]); never edit a file marked keep — note any doubt about one in the summary instead.
 
 After all files are created, print a summary of what was created:
 
