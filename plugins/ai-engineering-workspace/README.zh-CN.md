@@ -37,7 +37,7 @@ AI 编程会话很短，每次都从零开始；而一个工程 ticket 往往要
 | `/ai-engineering-workspace:workspace-scaffold [path]` | 创建或升级 ticket 工作区 |
 | `/ai-engineering-workspace:ask [ID]` | 只读路由：读 ticket 的 `Status:` 字段，告诉你下一步运行哪个命令 |
 | `/ai-engineering-workspace:ticket-understand <ID>` | 阶段 1：拉取 ticket 和评论，在碰代码之前确认需求 |
-| `/ai-engineering-workspace:ticket-investigate <ID>` | 阶段 2：只读调查，追数据流，确认根因和归属 |
+| `/ai-engineering-workspace:ticket-investigate <ID>` | 阶段 2：先查已有知识，再只读调查，追数据流，确认根因和归属 |
 | `/ai-engineering-workspace:ticket-implement <ID>` | 阶段 3：做最小的安全改动，然后跑验证命令 |
 | `/ai-engineering-workspace:ticket-finish <ID>` | 阶段 4：PR 说明、给实现 repo 的 commit 报告、handoff |
 
@@ -89,7 +89,7 @@ $WORKSPACE_ROOT/scripts/new-ticket.sh ABC-123 "short title"
 ```text
 <workspace>/
   ecosystem.md            有哪些 repo、各自负责什么、请求怎么在它们之间流转
-  conventions.md          ticket ID 和来源、验证命令、
+  conventions.md          ticket ID 和来源、知识来源、验证命令、
                           分支/commit/PR 格式、设计问题在哪里讨论
   tickets/_template/      context、investigation、implementation、test、
                           pr、timeline、handoff
@@ -120,6 +120,10 @@ handoff 文件用来代替旧会话的历史，所以要保持精简（大约 1,
 | 决策 | 需求没变就可以信 |
 | 进度 | 游标，每次存档都更新 |
 | 死胡同 | 只追加，作为"别再试"清单 |
+
+## 已有知识
+
+Investigate 开始时，会先读 `conventions.md` 的 "Knowledge sources" 里列出的跨 ticket 知识索引（默认是 `complete-ticket` 的 `knowledge/private/repo-relationships-index.md`，也可以加上你自己的，比如按领域整理的 findings 文件）。只打开和本 ticket 匹配的条目所指的文档，并且只当作线索、不当作证据：每条在支撑任何结论之前，都要对照当前代码重新核实，然后记在 `investigation.md` 的 `## Prior knowledge` 里，标为 ✅ 已确认、⚠️ 已变化、❌ 已不存在或被推翻，或"未使用"。没有匹配的条目时，用一行说明，然后照常调查。
 
 ## 结案
 

@@ -1,6 +1,6 @@
 {
   "name": "ai-engineering-workspace",
-  "version": "0.10.4",
+  "version": "0.11.0",
   "description": "Generic AI-engineering ticket suite: workspace scaffolding, phase-gated ticket workflow, structured bug fix, cross-session handoff, and ticket completion knowledge extraction.",
   "author": { "name": "weiwei-tsao" },
   "license": "MIT"

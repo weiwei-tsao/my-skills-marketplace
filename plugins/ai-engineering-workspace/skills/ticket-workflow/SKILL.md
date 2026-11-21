@@ -468,6 +468,40 @@ plausible surface class for the claim, the verifier states why no further
 class exists and challenges the claim by a different method or from a
 different direction instead.
 
+## Prior knowledge is a lead, not evidence
+
+Investigate starts by consulting the workspace's cross-ticket knowledge: the
+indexes listed under `conventions.md`'s "Knowledge sources" (by default
+`complete-ticket`'s `knowledge/private/repo-relationships-index.md`), and
+only the documents their matching entries point to. That knowledge records
+what was true where and when it was written. Code moves, and a document can
+have been wrong from the start, so it narrows where to look and never settles
+what is true now.
+
+- **Re-check before relying.** Before a consulted document supports a fact,
+  root cause, owner or exclusion, check it against the current code and cite
+  the current anchor or evidence ID. Mark each one in `investigation.md`'s
+  `## Prior knowledge` with the handoff resume marks: ✅ confirmed,
+  ⚠️ changed, ❌ gone or contradicted, or "not used". The mark judges what
+  the document says, not the code around it: if every claim it makes still
+  holds, it is ✅ even when nearby code it never mentions has changed.
+- **A document is not an anchor.** A material claim whose only support is a
+  consulted document lacks positive evidence (HARD_FAIL source 1), however
+  confident the document sounds.
+- **Earlier exclusions are leads too.** "X was ruled out in ABC-12" bounded a
+  search of older code, even when it recorded its boundary. Re-check it
+  before you state it as an exclusion, per "Negative claims must expose their
+  search boundary".
+- **Don't fix the source here.** A ⚠️ or ❌ document is recorded in this
+  ticket and mentioned in the gate summary; this workflow doesn't edit
+  knowledge documents.
+- **No match is normal.** Record that nothing matched and investigate as
+  usual. A weak match stretched into a relationship anchors the investigation
+  on the wrong place.
+
+Prior knowledge changes where you look first, not the gates: the verifier
+budget, `Status:` rules and evidence burden are unchanged.
+
 ## Never manufacture failure against live or shared state
 
 Applies wherever this workflow reproduces a bug, tests a trigger
@@ -551,6 +585,8 @@ nodding along.
 | "The search returned nothing, so nothing uses it." | One formulation on one surface. Re-run it differently and record what was and wasn't searched. |
 | "The verifier re-ran my search and got the same result, so the negative claim is verified." | Same query on the same surface shares the same blind spot. The verifier must try to overturn it with a different query or method and a surface class the author didn't search. |
 | "It's in the dead-ends list, so I shouldn't re-check it." | Only if it records its search boundary. Without one it's a lead, not a closed door. |
+| "An earlier ticket's notes already established this, so it's a fact." | The notes are a lead. Re-check against the current code and cite the current anchor; the code may have moved or the notes may be wrong. |
+| "Nothing in the knowledge index fits exactly, but this entry is close enough." | No match is a normal result. Record it and investigate from the code; a stretched match anchors you on the wrong place. |
 
 ## Red flags
 
@@ -573,6 +609,8 @@ nodding along.
 - Treating a single empty query as a finding.
 - A verifier reconfirming a negative claim with the author's own query on the author's own surface.
 - Honoring a dead-end that records no search boundary.
+- Citing a knowledge document (a findings note, a repo-relationship card) as the evidence for a fact, root cause, owner or exclusion.
+- Opening every document a knowledge source covers instead of only the entries that match the ticket.
 - Posting, commenting on, or messaging a design question yourself (a chat message, a Jira or issue comment). You draft; the user sends.
 - Filing a design choice under Hypotheses and marking it resolved.
 - Writing a design choice into `context.md` — as an answered Open question or an appended update — instead of a Decisions entry.

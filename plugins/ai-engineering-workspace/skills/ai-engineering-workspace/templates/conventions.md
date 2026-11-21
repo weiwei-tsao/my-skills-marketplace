@@ -26,6 +26,17 @@ Format: `<PREFIX>-<number>`
 
 Command: <fill in>
 
+## Knowledge sources
+
+<!-- Cross-ticket knowledge that /ai-engineering-workspace:ticket-investigate
+     consults first, as leads (never as evidence). List each index file and
+     what its entries point to; the agent reads the index and opens only the
+     entries that match the ticket. If this section is missing, it uses
+     complete-ticket's index below when it exists. Add your own indexes,
+     e.g. a findings file organised by domain. -->
+
+- `knowledge/private/repo-relationships-index.md` — complete-ticket repo relationship index; entries link to `knowledge/private/repo-relationships/<TICKET-ID>.md`
+
 ## Branch naming
 
 ```text

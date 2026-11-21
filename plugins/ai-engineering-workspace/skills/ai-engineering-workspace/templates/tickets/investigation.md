@@ -6,6 +6,17 @@ Status: draft
 
 1. 
 
+## Prior knowledge
+
+<!-- Cross-ticket knowledge consulted before tracing (conventions.md
+     "Knowledge sources"). Leads, not evidence: anything a fact relies on
+     still needs a current anchor. One row per document opened, or one line
+     saying nothing matched. -->
+
+| Source | What it said | Re-checked against | Result |
+|---|---|---|---|
+|  |  |  | ✅ confirmed / ⚠️ changed / ❌ gone or contradicted / not used |
+
 ## Facts
 
 <!-- Evidence-backed observations only. A negative finding ("not found",
