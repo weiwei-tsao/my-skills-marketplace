@@ -74,7 +74,7 @@ the same scrutiny as skill content:
 
 - Title: `<plugin-name>: <description>`; the type goes in a label, not a title prefix.
 - Labels: one type (`bug` / `enhancement` / `research` / `tracking`) plus a scope (`plugin:<name>`, or `area:vetting`). `on-hold` marks work parked on purpose.
-- Plugins with a tracking issue: project-context #49, ai-engineering-workspace #51. Attach new issues for them as sub-issues and update the tracker's body when work lands.
+- Plugins with a tracking issue: project-context #49, ai-engineering-workspace #51, git-commit #68. Attach new issues for them as sub-issues and update the tracker's body when work lands.
 - This label set is the stable scheme: do not add labels, issue templates, automation or further tracking issues without asking.
 
 ## Plugin layout
