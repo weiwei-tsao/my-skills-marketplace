@@ -25,7 +25,8 @@ ticket phase and must not edit implementation repositories.
    scope, repo ownership, request/data flow, ticket ID format and ticket source
    command, stages/acceptance, branch/commit/PR conventions, verification
    commands, notes repo automation, where design or architecture questions
-   are raised for team visibility (or none), and workspace location.
+   are raised for team visibility (or none), cross-ticket knowledge indexes
+   to consult during Investigate (or none), and workspace location.
 4. Scaffold from the templates:
    - `ecosystem.md`
    - `conventions.md`
@@ -52,5 +53,8 @@ ticket phase and must not edit implementation repositories.
    - files created
    - template files updated or intentionally left unchanged
    - remaining placeholders the user still needs to fill
+   - for an existing workspace whose `conventions.md` has no "Knowledge
+     sources" section: that Investigate can consult cross-ticket knowledge
+     once it's added (the upgrade never edits `conventions.md`)
    - the next useful command, usually
      `/ai-engineering-workspace:ticket-understand <TICKET-ID>`

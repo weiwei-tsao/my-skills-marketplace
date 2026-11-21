@@ -67,7 +67,9 @@ interview first (skip anything already known from context or the repo itself):
    design or architecture questions raised for team visibility before they
    are decided (an engineering channel or thread, or none)? → recorded as
    `conventions.md`'s "Design decisions". The AI only drafts these; the user
-   sends.
+   sends. Also: is there cross-ticket knowledge to consult, such as
+   `complete-ticket`'s index or the team's own findings notes? → recorded as
+   `conventions.md`'s "Knowledge sources".
 6. **Location** — dedicated notes repo, or a `workspace/` (or `.tickets/`)
    folder inside the main repo?
 

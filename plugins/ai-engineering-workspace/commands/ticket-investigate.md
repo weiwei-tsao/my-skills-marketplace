@@ -26,14 +26,27 @@ confirmation of the ticket understanding earlier in this conversation; if
 there isn't one, stop and restate the ask for confirmation before tracing
 code.
 
-1. If this is a bug/regression, apply the `structured-bug-fix` skill's
+1. Consult prior knowledge before tracing code (workspace mode). Read the
+   "Knowledge sources" section of `$WORKSPACE_ROOT/conventions.md`; if it's
+   missing, use `$WORKSPACE_ROOT/knowledge/private/repo-relationships-index.md`
+   when it exists and mention once that other indexes can be listed there.
+   Read each listed index, match its entries against this ticket's repos,
+   components, surfaces and symptom (from `context.md` and
+   `$WORKSPACE_ROOT/ecosystem.md`), and open only the documents the matching
+   entries point to, never every document a source covers. Everything read
+   this way is a lead, not evidence: follow `ticket-workflow`'s "Prior
+   knowledge is a lead, not evidence" before any of it supports a claim. No
+   matching entry, or no source at all, is a normal result: record it in one
+   line and investigate as usual; don't stretch a weak match into a
+   relationship. Standalone mode: skip this step.
+2. If this is a bug/regression, apply the `structured-bug-fix` skill's
    Phase 2 method (root-cause checklist, then sequential flow trace; fan
    out to parallel agents only when `ecosystem.md` shows genuinely
    independent repos worth triaging first). Otherwise, read
    `$WORKSPACE_ROOT/ecosystem.md`'s flow map if present; otherwise trace
    from the entry point by reading the actual code.
-2. Identify the most likely owner repo/module.
-3. Separate facts (evidence-backed), hypotheses (unconfirmed), candidates
+3. Identify the most likely owner repo/module.
+4. Separate facts (evidence-backed), hypotheses (unconfirmed), candidates
    (proposed designs), and decisions (owner-confirmed only). Investigation
    can start diagnostic and cross into design partway through: when a
    question shifts from "what is true now?" to "what should the system
@@ -46,11 +59,13 @@ code.
    of the diagnosis continues as usual. Record every negative finding ("not
    found", "ruled out") with its search boundary, per "Negative claims must
    expose their search boundary".
-4. Record findings, evidence, open questions, and next steps into
+5. Record findings, evidence, open questions, and next steps into
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/investigation.md` (create it from
    `$WORKSPACE_ROOT/tickets/_template/investigation.md` if it doesn't
    exist yet, replacing `<TICKET-ID>` with $ARGUMENTS; its `Status:` line
-   starts as `draft`). Keep it short: put raw output in
+   starts as `draft`). Record step 1 under `## Prior knowledge`, adding the
+   section if the file predates it: one row per document opened, or one line
+   saying nothing matched. Keep it short: put raw output in
    `$WORKSPACE_ROOT/tickets/$ARGUMENTS/evidence/` and index it under
    `## Evidence`, per `ticket-workflow`'s "Evidence". A self-contained deep
    dive (a route comparison, a per-repo analysis) may go in
@@ -60,7 +75,7 @@ code.
 
 Do not edit any code in this phase.
 
-5. Before presenting the gate summary, run the draft findings through the
+6. Before presenting the gate summary, run the draft findings through the
    independent verification process defined in `ticket-workflow`'s
    SKILL.md ("Independent verification at gates"). Give the fresh
    verifier the complete investigation draft — not just facts, root
@@ -90,6 +105,10 @@ Do not edit any code in this phase.
    present a gate summary; continuing after that follows "After BLOCKED"
    in the shared verification section. On PASS or SOFT_FLAGS, proceed to the gate
    below and include any flags in the summary.
+
+   If the draft has a `## Prior knowledge` section, tell the verifier to
+   check that no material claim rests only on a consulted document: each
+   needs its own current anchor or evidence ID.
 
    If the draft contains negative claims (including "Checked but not
    responsible" entries), tell the verifier to apply "Negative claims must

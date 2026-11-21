@@ -43,7 +43,7 @@ Commands (user-invoked only — the model cannot call them on its own):
 | `/ai-engineering-workspace:workspace-scaffold [path]` | Create or upgrade a ticket workspace |
 | `/ai-engineering-workspace:ask [ID]` | Read-only router: read the ticket's `Status:` fields and recommend the next command |
 | `/ai-engineering-workspace:ticket-understand <ID>` | Phase 1 — fetch the ticket and comments, confirm the ask before touching code |
-| `/ai-engineering-workspace:ticket-investigate <ID>` | Phase 2 — read-only: trace the flow, confirm root cause and owner |
+| `/ai-engineering-workspace:ticket-investigate <ID>` | Phase 2 — consult prior knowledge, then read-only: trace the flow, confirm root cause and owner |
 | `/ai-engineering-workspace:ticket-implement <ID>` | Phase 3 — smallest safe change, then run the verification commands |
 | `/ai-engineering-workspace:ticket-finish <ID>` | Phase 4 — PR notes, a commit report for the implementation repo, handoff |
 
@@ -105,8 +105,9 @@ skill addresses it through an explicit `$WORKSPACE_ROOT` path.
 ```text
 <workspace>/
   ecosystem.md            repos, ownership, how a request travels through them
-  conventions.md          ticket IDs and source, verification commands,
-                          branch/commit/PR format, where design questions go
+  conventions.md          ticket IDs and source, knowledge sources, verification
+                          commands, branch/commit/PR format, where design
+                          questions go
   tickets/_template/      context, investigation, implementation, test,
                           pr, timeline, handoff
   tickets/<ID>/           one folder per ticket; files appear as phases need them
@@ -140,6 +141,18 @@ A handoff file replaces the old session's history, so it stays small
 | Decisions | Trust unless the requirement changed |
 | Progress | The cursor; updated every save |
 | Dead ends | Append-only "don't retry" list |
+
+## Prior knowledge
+
+Investigate starts by reading the cross-ticket knowledge indexes listed under
+`conventions.md`'s "Knowledge sources" (by default `complete-ticket`'s
+`knowledge/private/repo-relationships-index.md`; add your own, such as a
+findings file organised by domain). It opens only the documents whose entries
+match the ticket, and treats them as leads, not evidence: each one is
+re-checked against the current code before it supports a claim, and recorded
+under `## Prior knowledge` in `investigation.md` as ✅ confirmed, ⚠️ changed,
+❌ gone or contradicted, or not used. When nothing matches, it says so in one
+line and investigates as usual.
 
 ## Ticket completion
 
