@@ -71,6 +71,7 @@ For each rules file without `paths:` whose content only applies to part of the t
 Re-read where the repo defines its commands — `package.json` scripts, `Makefile` / `justfile` targets, `.github/workflows/*.yml` `run:` steps, `.pre-commit-config.yaml` — and each module root's toolchain (`go.mod`, `pyproject.toml`, `Cargo.toml`), the same way setup Phase 1 does. Compare against the commands listed in CLAUDE.md's Dev Commands (CLAUDE.md is loaded every session, so that is where the git-commit and structured-bug-fix plugins find them) and any hooks in `.claude/settings.json`.
 - Flag commands that have been renamed or removed.
 - Flag new quality gate commands not yet in Dev Commands.
+- Also check the commands, make targets, scripts and flags that rules and skills tell the reader to run (e.g. a skill step "run `make migrate-clean-dry` first"): flag any that no longer exists.
 - Flag a change in where checks run (setup Phase 1, "Where checks run"): Docker files added or removed, the repo's commands moving into or out of containers, or a local toolchain that no longer meets the manifest's version. Propose the matching update to the Dev Commands line and the `<language>.md` "verify before finishing" entry.
 - If `.claude/hooks/guard-bash.sh` predates the Docker volume checks (no `check_docker` in it), offer to replace it with the current template, then run setup Phase 5's guard self-check.
 - If the project still has legacy `.claude/skills/fix/` or `.claude/skills/git-commit/` copies from an older setup, flag them for removal — the plugins replace them.
@@ -94,6 +95,15 @@ For each rules file, check if new patterns in the codebase fall outside its curr
 - New auth middleware or endpoint patterns not in `security.md`.
 - A language with real code but no `<language>.md` rule (e.g. Go added to a TypeScript repo), or a language rule whose gate commands or conventions no longer match the code.
 - New directories whose files a path-scoped rule should cover but its `paths:` patterns miss (e.g. a new `src/routes/` when `api.md` only matches `src/api/**`).
+
+### 2g. Values the reader would act on
+Do not mark a file ✓ until this check has run on it. First list every value in `CLAUDE.md`, the rules and the skills that a reader would act on: batch sizes, page sizes, timeouts, retry counts, thresholds, intervals, version limits. Skip numbers in plain description that nobody acts on. Then check each one against the code:
+- **Find the code it describes.** If the statement names an identifier, constant, config key or file, read that. If it does not — typically a skill step such as "write in batches of N" — read the existing code that does the same operation (for a migrate skill, the existing migration programs; for a deploy skill, the deploy config).
+- **Ask whether following the doc goes wrong**, not whether the numbers are literally compatible. "Import up to 1000 rows per request" when every existing importer sends 200, and a fix commit lowered one to 100, is a mismatch: a reader following it would pick a value the repo does not use or has already reverted. A stated upper limit that the code enforces, or a platform limit stated as one, is a match even when callers use smaller values — "`BulkInsert` accepts at most 1000 rows" is correct if `BulkInsert` enforces 1000.
+- **Different values at different call sites are not a mismatch by themselves.** Do not infer a universal rule from existing call sites: compare the operation, the data it handles and any documented rationale (a comment, a fix commit) before flagging. Flag only when the doc gives the reader a value for a case where the code, or a fix commit's reason, shows a different one. When proposing new wording, keep the conditions (e.g. "200 for small records, 50 for records with attachments") rather than one number.
+- **Could not check** — the value comes from an environment variable or runtime config that can override the default, or no code does that operation: list it with the reason and propose no edit. Not being able to verify a value does not make it wrong.
+
+Report each mismatch under Suggested updates with the doc's text and the code evidence (file:line, and the fix commit if one changed the value). Add one count line to the report.
 
 ---
 
@@ -125,6 +135,13 @@ rules/architecture.md
     · fix(payments): handle idempotency key collision (abc1234)
     · fix(auth): await params before destructuring route handlers (def5678)
     · fix(db): call serialize() before JSON response (ghi9012)
+
+skills/import/SKILL.md
+  ~ Value: "Import up to 1000 rows per request" — existing importers send 200
+    (scripts/import_users.py:28); fix jkl3456 lowered import_orders to 100 after timeouts
+
+Values checked (2g): 7 — 6 match, 1 mismatch
+[Could not check: only if any — each value with the reason]
 
 No files have been changed yet.
 Apply all? Or list which items to skip: [all / none / item numbers]
