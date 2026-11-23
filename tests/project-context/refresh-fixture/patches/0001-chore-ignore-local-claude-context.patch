@@ -1,0 +1,24 @@
+From cce5056f1c79cc90c32d981906cc4ea4f742a29a Mon Sep 17 00:00:00 2001
+From: t <t@t>
+Date: Wed, 18 Nov 2026 21:43:56 -0500
+Subject: [PATCH 01/10] chore: ignore local claude context
+
+---
+ .gitignore | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index 63baa4e..f0a2b10 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -35,3 +35,7 @@ pnpm-debug.log*
+ .vscode/*
+ !.vscode/extensions.json
+ !.vscode/settings.json
++
++### Claude Code (local project context)
++CLAUDE.md
++.claude/
+-- 
+2.50.1 (Apple Git-155)
+

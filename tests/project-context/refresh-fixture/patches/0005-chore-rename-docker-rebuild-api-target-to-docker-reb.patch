@@ -1,0 +1,35 @@
+From 670b2bc50c3f6b5433d4ac5f25370f2d0a865ab6 Mon Sep 17 00:00:00 2001
+From: t <t@t>
+Date: Wed, 18 Nov 2026 21:54:30 -0500
+Subject: [PATCH 05/10] chore: rename docker-rebuild-api target to
+ docker-rebuild
+
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 6a083a7..51a4d34 100644
+--- a/Makefile
++++ b/Makefile
+@@ -4,7 +4,7 @@
+ 	migrate-clean-dry migrate-clean migrate-clean-all-dry migrate-clean-all \
+ 	migrate-add-source migrate-validation-fields \
+ 	force-revalidate fix-phantom-runs \
+-	docker-build docker-up docker-down docker-logs docker-rebuild-api docker-clean
++	docker-build docker-up docker-down docker-logs docker-rebuild docker-clean
+ 
+ help: ## 显示帮助信息
+ 	@echo "可用命令:"
+@@ -84,7 +84,7 @@ docker-down: ## 停止并删除容器（保留镜像）
+ docker-logs: ## 实时查看 API 容器日志
+ 	docker compose logs -f api
+ 
+-docker-rebuild-api: ## 仅重新构建并重启 API 容器（代码改动后使用）
++docker-rebuild: ## 仅重新构建并重启 API 容器（代码改动后使用）
+ 	docker compose up -d --build api
+ 
+ docker-clean: ## 删除所有容器、镜像及构建缓存
+-- 
+2.50.1 (Apple Git-155)
+

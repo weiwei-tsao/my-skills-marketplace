@@ -1,0 +1,46 @@
+From bc99081e58971b9d96d3e3040539cdc30bf5cd4b Mon Sep 17 00:00:00 2001
+From: t <t@t>
+Date: Wed, 18 Nov 2026 23:11:42 -0500
+Subject: [PATCH 10/10] chore: run api tests in a golang container
+
+---
+ Makefile           | 2 +-
+ docker-compose.yml | 9 +++++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index e9349c2..29bea72 100644
+--- a/Makefile
++++ b/Makefile
+@@ -22,7 +22,7 @@ api-server: ## 仅启动 API 服务器
+ 
+ api-test: ## 运行 API 单元测试
+ 	@echo "运行 API 测试..."
+-	docker compose run --rm api go test ./...
++	docker compose run --rm api-test
+ 
+ # ── 数据检查命令 ──────────────────────────────────────────────────────────────
+ 
+diff --git a/docker-compose.yml b/docker-compose.yml
+index 9e1bcfc..d4023eb 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -4,6 +4,15 @@
+ 
+ services:
+ 
++  # Throwaway Go toolchain for running the API test suite
++  api-test:
++    image: golang:1.25-alpine
++    working_dir: /src
++    volumes:
++      - ./apps/api:/src
++    command: go test ./...
++    profiles: ["test"]
++
+   # ───────────────────────────────────────────────────────────────────────────
+   # Go API backend
+   # ───────────────────────────────────────────────────────────────────────────
+-- 
+2.50.1 (Apple Git-155)
+
