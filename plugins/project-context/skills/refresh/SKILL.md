@@ -84,9 +84,9 @@ Re-read where the repo defines its commands — `package.json` scripts, `Makefil
 ```bash
 git log --oneline -40 --grep="fix"
 ```
-Read the commit messages. For each fix commit, check whether a corresponding entry already exists in `.claude/rules/architecture.md` under Key Pitfalls.
-- Flag patterns that appear 2+ times and are not yet documented.
-- Flag any commit message that hints at a non-obvious gotcha (stale closures, serialization, boundary violations, async ordering).
+Read the commit messages, and the diff where the message is unclear. Propose a Key Pitfall only when it captures a reusable, non-obvious failure mode that is not already covered by existing project rules. Repeated fixes are supporting evidence, not sufficient justification by themselves.
+- Check every rules file, not only Key Pitfalls in `architecture.md`, and compare the constraint, not the wording: if `db.md` already says what a fix commit teaches, do not propose it again.
+- A single ordinary fix that a pitfall entry would only restate is not a pitfall.
 
 ### 2f. Rules coverage gaps
 For each rules file, check if new patterns in the codebase fall outside its current scope:
@@ -109,6 +109,10 @@ Report each mismatch under Suggested updates with the doc's text and the code ev
 
 ## Phase 3 — Present Diff-Style Report → Wait for Confirmation
 
+Classify each finding, but only report it if following the current documentation could cause an incorrect action, an incorrect conclusion, or omission of a necessary step. Tag each reported item **[drift]** (the code changed and the doc is now stale), **[inaccurate]** (the doc contradicts the evidence) or **[gap]** (information needed to act correctly is missing). A list the reader takes as complete — modules, Dev Commands — counts as wrong when it misses an entry. Do not report improvements: equivalent commands, rewording, or optional tools and commands the repo does not use. If the user asks for doc improvements, analyse them separately.
+
+Report each finding once, under the file it concerns; list it under several files only when each of them needs its own edit.
+
 Format the report as below. Show only files with findings. If nothing needs updating, say so and stop.
 
 ```
@@ -121,23 +125,19 @@ Format the report as below. Show only files with findings. If nothing needs upda
 ### Suggested updates
 
 CLAUDE.md
-  + Add module: payments/ (src/payments/ detected — not documented)
-  ~ Update tech stack: Redis detected in package.json — not listed
+  + [drift] Add module: payments/ (src/payments/ detected — the module list omits it)
+  ~ [drift] Update tech stack: Redis detected in package.json — not listed
 
 rules/architecture.md
-  ~ Stale path: src/lib/old-auth.ts no longer exists (referenced on line 14)
+  ~ [drift] Stale path: src/lib/old-auth.ts no longer exists (referenced on line 14)
+  + [gap] Key Pitfall: retried payment requests must reuse the idempotency key, or the
+    provider charges twice — fixes abc1234, def5678; not covered by api.md or db.md
 
 rules/db.md
-  + Add: Redis caching pattern (ioredis detected in src/lib/cache.ts)
-
-rules/architecture.md
-  + Key Pitfalls — 3 recent fix commits suggest patterns worth documenting:
-    · fix(payments): handle idempotency key collision (abc1234)
-    · fix(auth): await params before destructuring route handlers (def5678)
-    · fix(db): call serialize() before JSON response (ghi9012)
+  + [gap] Add: Redis caching pattern (ioredis detected in src/lib/cache.ts)
 
 skills/import/SKILL.md
-  ~ Value: "Import up to 1000 rows per request" — existing importers send 200
+  ~ [inaccurate] Value: "Import up to 1000 rows per request" — existing importers send 200
     (scripts/import_users.py:28); fix jkl3456 lowered import_orders to 100 after timeouts
 
 Values checked (2g): 7 — 6 match, 1 mismatch
