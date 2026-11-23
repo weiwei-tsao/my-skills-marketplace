@@ -1,0 +1,25 @@
+From da468e1a3502507e1aba71cbad240faf78460594 Mon Sep 17 00:00:00 2001
+From: t <t@t>
+Date: Wed, 18 Nov 2026 21:54:30 -0500
+Subject: [PATCH 06/10] chore: run api tests inside the api container
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 51a4d34..e9349c2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -22,7 +22,7 @@ api-server: ## 仅启动 API 服务器
+ 
+ api-test: ## 运行 API 单元测试
+ 	@echo "运行 API 测试..."
+-	cd apps/api && go test ./...
++	docker compose run --rm api go test ./...
+ 
+ # ── 数据检查命令 ──────────────────────────────────────────────────────────────
+ 
+-- 
+2.50.1 (Apple Git-155)
+

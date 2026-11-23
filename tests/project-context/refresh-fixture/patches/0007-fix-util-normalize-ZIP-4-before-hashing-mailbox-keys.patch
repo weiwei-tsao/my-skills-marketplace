@@ -1,0 +1,28 @@
+From e04430c4740e583bc14853d03a84b4fc9355674a Mon Sep 17 00:00:00 2001
+From: t <t@t>
+Date: Wed, 18 Nov 2026 21:54:30 -0500
+Subject: [PATCH 07/10] fix(util): normalize ZIP+4 before hashing mailbox keys
+
+---
+ apps/api/pkg/util/hash.go | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/apps/api/pkg/util/hash.go b/apps/api/pkg/util/hash.go
+index 71123af..d53ee43 100644
+--- a/apps/api/pkg/util/hash.go
++++ b/apps/api/pkg/util/hash.go
+@@ -32,3 +32,11 @@ func hashString(input string) string {
+ 	sum := md5.Sum([]byte(input))
+ 	return hex.EncodeToString(sum[:])
+ }
++
++// normalizeZip drops the ZIP+4 suffix so "12345-6789" and "12345" hash the same.
++func normalizeZip(zip string) string {
++	if len(zip) > 5 {
++		return zip[:5]
++	}
++	return zip
++}
+-- 
+2.50.1 (Apple Git-155)
+

@@ -1,0 +1,37 @@
+From 220a6517e5eca099fcb98ec66a6886f8aa4e5feb Mon Sep 17 00:00:00 2001
+From: t <t@t>
+Date: Wed, 18 Nov 2026 21:54:30 -0500
+Subject: [PATCH 09/10] feat(scripts): add python csv export helper
+
+---
+ apps/api/scripts/export_csv.py | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+ create mode 100644 apps/api/scripts/export_csv.py
+
+diff --git a/apps/api/scripts/export_csv.py b/apps/api/scripts/export_csv.py
+new file mode 100644
+index 0000000..59186fd
+--- /dev/null
++++ b/apps/api/scripts/export_csv.py
+@@ -0,0 +1,18 @@
++"""Export mailboxes from a JSON dump to CSV (ops helper)."""
++import csv
++import json
++import sys
++
++
++def main(src: str, dst: str) -> None:
++    with open(src) as f:
++        rows = json.load(f)
++    with open(dst, "w", newline="") as f:
++        w = csv.DictWriter(f, fieldnames=["name", "street", "city", "state", "zip"])
++        w.writeheader()
++        for r in rows:
++            w.writerow({k: r.get(k, "") for k in w.fieldnames})
++
++
++if __name__ == "__main__":
++    main(sys.argv[1], sys.argv[2])
+-- 
+2.50.1 (Apple Git-155)
+

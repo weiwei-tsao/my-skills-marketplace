@@ -1,0 +1,37 @@
+From 1235bfe0d7a828621740cfeb172c0c00b642bed0 Mon Sep 17 00:00:00 2001
+From: t <t@t>
+Date: Wed, 18 Nov 2026 21:54:30 -0500
+Subject: [PATCH 03/10] refactor(api): move gin router to internal/api
+
+---
+ apps/api/cmd/server/main.go                             | 2 +-
+ apps/api/internal/{platform/http => api}/router.go      | 0
+ apps/api/internal/{platform/http => api}/router_test.go | 0
+ 3 files changed, 1 insertion(+), 1 deletion(-)
+ rename apps/api/internal/{platform/http => api}/router.go (100%)
+ rename apps/api/internal/{platform/http => api}/router_test.go (100%)
+
+diff --git a/apps/api/cmd/server/main.go b/apps/api/cmd/server/main.go
+index b5e86bd..d336168 100644
+--- a/apps/api/cmd/server/main.go
++++ b/apps/api/cmd/server/main.go
+@@ -15,7 +15,7 @@ import (
+ 	"github.com/weiwei-tsao/virtualbox-verifier/apps/api/internal/business/validation"
+ 	"github.com/weiwei-tsao/virtualbox-verifier/apps/api/internal/platform/config"
+ 	firestoreclient "github.com/weiwei-tsao/virtualbox-verifier/apps/api/internal/platform/firestore"
+-	apirouter "github.com/weiwei-tsao/virtualbox-verifier/apps/api/internal/platform/http"
++	apirouter "github.com/weiwei-tsao/virtualbox-verifier/apps/api/internal/api"
+ 	"github.com/weiwei-tsao/virtualbox-verifier/apps/api/internal/platform/smarty"
+ 	"github.com/weiwei-tsao/virtualbox-verifier/apps/api/internal/repository"
+ )
+diff --git a/apps/api/internal/platform/http/router.go b/apps/api/internal/api/router.go
+similarity index 100%
+rename from apps/api/internal/platform/http/router.go
+rename to apps/api/internal/api/router.go
+diff --git a/apps/api/internal/platform/http/router_test.go b/apps/api/internal/api/router_test.go
+similarity index 100%
+rename from apps/api/internal/platform/http/router_test.go
+rename to apps/api/internal/api/router_test.go
+-- 
+2.50.1 (Apple Git-155)
+

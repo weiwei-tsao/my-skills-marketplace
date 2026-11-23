@@ -1,0 +1,51 @@
+From 044b50a3b7d7a682bc6c11e2aabbb33066da28fa Mon Sep 17 00:00:00 2001
+From: t <t@t>
+Date: Wed, 18 Nov 2026 21:54:30 -0500
+Subject: [PATCH 02/10] feat(notify): add webhook notifier for finished runs
+
+---
+ apps/api/internal/business/notify/notify.go | 32 +++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+ create mode 100644 apps/api/internal/business/notify/notify.go
+
+diff --git a/apps/api/internal/business/notify/notify.go b/apps/api/internal/business/notify/notify.go
+new file mode 100644
+index 0000000..8f80fa1
+--- /dev/null
++++ b/apps/api/internal/business/notify/notify.go
+@@ -0,0 +1,32 @@
++// Package notify sends run-completion notifications to a webhook.
++package notify
++
++import (
++	"bytes"
++	"context"
++	"encoding/json"
++	"fmt"
++	"net/http"
++)
++
++// Notifier posts JSON events to a configured webhook URL.
++type Notifier struct {
++	URL    string
++	Client *http.Client
++}
++
++// RunFinished reports a finished crawl or validation run.
++func (n *Notifier) RunFinished(ctx context.Context, runID, status string) error {
++	body, _ := json.Marshal(map[string]string{"runId": runID, "status": status})
++	req, err := http.NewRequestWithContext(ctx, http.MethodPost, n.URL, bytes.NewReader(body))
++	if err != nil {
++		return fmt.Errorf("notify: build request: %w", err)
++	}
++	req.Header.Set("Content-Type", "application/json")
++	resp, err := n.Client.Do(req)
++	if err != nil {
++		return fmt.Errorf("notify: post: %w", err)
++	}
++	defer resp.Body.Close()
++	return nil
++}
+-- 
+2.50.1 (Apple Git-155)
+

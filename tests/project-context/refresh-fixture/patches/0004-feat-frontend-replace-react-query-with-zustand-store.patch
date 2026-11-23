@@ -1,0 +1,30 @@
+From 167a33ae00d35fcb519b8f6ee66973353707f6cb Mon Sep 17 00:00:00 2001
+From: t <t@t>
+Date: Wed, 18 Nov 2026 21:54:30 -0500
+Subject: [PATCH 04/10] feat(frontend): replace react-query with zustand store
+
+---
+ apps/web/package.json | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/apps/web/package.json b/apps/web/package.json
+index d191b30..bc19a76 100644
+--- a/apps/web/package.json
++++ b/apps/web/package.json
+@@ -9,11 +9,11 @@
+     "preview": "vite preview"
+   },
+   "dependencies": {
+-    "@tanstack/react-query": "^5.90.12",
+     "lucide-react": "^0.556.0",
+     "react": "^19.2.1",
+     "react-dom": "^19.2.1",
+-    "recharts": "^3.5.1"
++    "recharts": "^3.5.1",
++    "zustand": "^5.0.8"
+   },
+   "devDependencies": {
+     "@types/node": "^22.14.0",
+-- 
+2.50.1 (Apple Git-155)
+
