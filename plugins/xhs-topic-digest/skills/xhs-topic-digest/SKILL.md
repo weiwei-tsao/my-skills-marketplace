@@ -15,7 +15,29 @@ This is not a summary of "what the popular posts said" — it's a lightweight UG
 - Route to a content-strategy skill instead when the request is about which formats/themes get more engagement, growing an account, or "什么内容爆款" — signals: 爆款/点赞/互动/涨粉/怎么做账号.
 - Only ask which is wanted when both sets of signals are clearly and strongly present in the same request.
 
+## Access
+
+Never read xiaohongshu with the user's everyday browser or their main account — automated reading there puts the account they actually use at risk of rate limits, verification or a ban.
+
+1. **xiaohongshu-mcp first.** Call `check_login_status`. Not logged in → ask the user to scan `get_login_qrcode` themselves, with their **secondary account**; never log in for them.
+2. **MCP unavailable** (tools missing, login QR or calls time out, or every call fails) → read through the **browser-use** skill instead, using the recipe below. If the caller's project names a dedicated agent browser (a wrapper command, or `BU_NAME`/`BU_CDP_URL`), run every browser-use call through it, logged in with the secondary account.
+3. **Stop and report** if that dedicated browser can't be reached or isn't logged in to xiaohongshu — never fall back to the everyday Chrome or the main account. Captcha, "安全验证", or a login wall mid-run → stop and ask the user; no captcha solving or workaround.
+
+### Browser recipe (last verified 2026-11-23)
+
+Use `www.xiaohongshu.com`. Being sent to `rednote.com` or a `/login` page means the session isn't logged in → stop (step 3). Go one page at a time, 4–7 s apart.
+
+- **Session check**: `goto_url("https://www.xiaohongshu.com/explore")`, then check that `.login-modal` is absent and `section.note-item` cards are present.
+- **Search**: `goto_url("https://www.xiaohongshu.com/search_result?keyword=<url-encoded>&source=web_search_result_notes")`. For each `section.note-item`, read the title from `.title`, the author from `.name`, likes from `.count`, and the `/search_result/<note_id>?xsec_token=…` link. The candidate pool is these cards; there's no sort parameter, so widen with differently phrased keywords instead.
+- **Detail**: open `https://www.xiaohongshu.com/explore/<note_id>?<query string from that link>` — without the `xsec_token` the note may not open. Read `#detail-title`, `#detail-desc` (text only), the date and region from `.date` (e.g. `11-04 加拿大`), and the stated comment total from `.comments-container .total` (`共 N 条评论`).
+- **Comments**: scroll `.note-scroller` (`scrollBy(0, 3000)`, 2–3 s apart) until `.end-container` appears. Comments are `.parent-comment`, and their replies are `.reply-container .comment-item`. If a "展开 N 条回复" (`.show-more`) appears, click it for threads that matter. Compare the loaded count with the stated total, and report it when they differ.
+- The detail page shows text only. Don't claim to have read images or video; when a note's content is in its images, say so.
+
+State in the digest which route was used (MCP or browser) and, per sampled post, what was actually read: body, loaded comments (how many of the stated total), or search-card text only.
+
 ## Workflow
+
+The steps below name the MCP tools; on the browser route, use the matching recipe step and trace evidence by note id instead of `feed_id`.
 
 1. `search_feeds(keyword, sort_by=...)` returns a **candidate pool** of ~20-30 posts, not the final sample. Sorting by 最多点赞 alone skews toward one popular sub-angle — e.g. "西安亲子游" sorted by likes returns famous landmarks, not stroller access, kid-friendly hotels, or queue avoidance. If the pool looks narrow or one-note, run a second search with a different `sort_by` (综合 / 最新) to widen it.
 2. From the pool, select a sample covering different sub-angles, recency, and (where visible) differing opinions — not just the top N by likes. Call `get_feed_detail(feed_id, xsec_token)` for each selected post — required, not optional.
